@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author: 简单
- * @date: 2020/8/4 19:32
+ * @author 简单
+ * @date 2020/8/4 19:32
  */
 public class DateUtils {
     public static String formatDateTime(Date date) {

@@ -6,6 +6,7 @@ import com.jiandanjiuer.crm.commons.utils.DateUtils;
 import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +29,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private Cookie cookie;
 
     /**
      * 跳转到登入界面
@@ -92,26 +95,22 @@ public class UserController {
                     session.setAttribute(Contants.SESSION_USER, user);
 
                     if ("true".equals(isRemPew)) {
-                        Cookie cookie;
                         cookie = new Cookie("loginAct", loginAct);
                         cookie.setMaxAge(60 * 60 * 24 * 10);
                         response.addCookie(cookie);
 
                         cookie = new Cookie("loginPwd", loginPwd);
                         cookie.setMaxAge(60 * 60 * 24 * 10);
-                        response.addCookie(cookie);
 
                     } else {
-                        Cookie cookie;
                         cookie = new Cookie("loginAct", "0");
                         cookie.setMaxAge(0);
                         response.addCookie(cookie);
 
                         cookie = new Cookie("loginPwd", "0");
                         cookie.setMaxAge(0);
-                        response.addCookie(cookie);
-
                     }
+                    response.addCookie(cookie);
                 }
             }
         } else {
@@ -121,9 +120,8 @@ public class UserController {
     }
 
     @RequestMapping("/settings/qx/user/logout.do")
-    public String logout(HttpServletResponse response,HttpSession session) {
+    public String logout(HttpServletResponse response, HttpSession session) {
         System.out.println("==========================================");
-        Cookie cookie;
         cookie = new Cookie("loginAct", "0");
         cookie.setMaxAge(0);
         response.addCookie(cookie);

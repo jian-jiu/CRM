@@ -4,8 +4,8 @@ import com.jiandanjiuer.crm.commons.contants.Contants;
 import lombok.Data;
 
 /**
- * @author: 简单
- * @date: 2020/8/4 11:41
+ * @author 简单
+ * @date 2020/8/4 11:41
  */
 @Data
 public class ReturnObject {

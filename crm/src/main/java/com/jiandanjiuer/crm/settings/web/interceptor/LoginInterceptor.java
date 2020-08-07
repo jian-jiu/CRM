@@ -19,8 +19,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
 //        登入验证
         HttpSession session = httpServletRequest.getSession();
-        User User = (User) session.getAttribute(Contants.SESSION_USER);
-        if (User == null) {
+        User user = (User) session.getAttribute(Contants.SESSION_USER);
+        if (user == null) {
             //跳转登入界面
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath());
             return false;

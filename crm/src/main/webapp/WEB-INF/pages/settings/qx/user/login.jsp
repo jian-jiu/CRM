@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getLocalPort() + request.getContextPath() + "/";
 %>
@@ -20,6 +21,12 @@
             //     $("#msg").text("");
             // })
 
+            //给界面添加按下键盘事件
+            $(window).keydown(function (e) {
+                if (e.keyCode == 13) {
+                    $("#loginBth").click();
+                }
+            })
 
             $("#loginBth").click(function () {
                 var loginAct = $.trim($("#loginAct").val());
@@ -48,6 +55,10 @@
                         } else {
                             $("#msg").text(data.message);
                         }
+                    },
+                    beforeSend: function () {//在发生ajax之前执行这个函数
+                        $("#msg").text("正在验证...");
+                        return true;
                     }
                 })
             })
@@ -72,14 +83,21 @@
         <form action="workbench/index.html" class="form-horizontal" role="form">
             <div class="form-group form-group-lg">
                 <div style="width: 350px;">
-                    <input id="loginAct" class="form-control" value="${cookie.loginAct}" type="text" placeholder="用户名">
+                    <input id="loginAct" class="form-control" value="${cookie.loginAct.value}" type="text"
+                           placeholder="用户名">
                 </div>
-                <div style="width: 350px; position: relative;top: 20px;"> 
-                    <input id="loginPwd" class="form-control" value="${cookie.loginPwd}" type="password" placeholder="密码">
+                <div style="width: 350px; position: relative;top: 20px;">
+                    <input id="loginPwd" class="form-control" value="${cookie.loginPwd.value}" type="password"
+                           placeholder="密码">
                 </div>
                 <div class="checkbox" style="position: relative;top: 30px; left: 10px;">
                     <label>
-                        <input id="isRemPew" type="checkbox"> 十天内免登录
+                        <c:if test="${not empty cookie.loginPwd and not empty cookie.loginPwd}">
+                            <input id="isRemPew" checked="true" type="checkbox"> 十天内免登录
+                        </c:if>
+                        <c:if test="${empty cookie.loginPwd or empty cookie.loginPwd}">
+                            <input id="isRemPew" type="checkbox"> 十天内免登录
+                        </c:if>
                     </label>
                     &nbsp;&nbsp;
                     <span id="msg" style="color: #ff0000"></span>

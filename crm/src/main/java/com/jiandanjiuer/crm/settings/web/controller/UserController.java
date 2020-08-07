@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author 简单
  * @date 2020/7/31 21:10
  */
@@ -101,6 +100,7 @@ public class UserController {
                         cookie = new Cookie("loginPwd", loginPwd);
                         cookie.setMaxAge(60 * 60 * 24 * 10);
                         response.addCookie(cookie);
+
                     } else {
                         Cookie cookie;
                         cookie = new Cookie("loginAct", "0");
@@ -110,6 +110,7 @@ public class UserController {
                         cookie = new Cookie("loginPwd", "0");
                         cookie.setMaxAge(0);
                         response.addCookie(cookie);
+
                     }
                 }
             }
@@ -117,5 +118,22 @@ public class UserController {
             returnObject.setMessage("用户名或者密码错误");
         }
         return returnObject;
+    }
+
+    @RequestMapping("/settings/qx/user/logout.do")
+    public String logout(HttpServletResponse response,HttpSession session) {
+        System.out.println("==========================================");
+        Cookie cookie;
+        cookie = new Cookie("loginAct", "0");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        cookie = new Cookie("loginPwd", "0");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        session.invalidate();
+
+        return "redirect:/";
     }
 }

@@ -35,8 +35,7 @@
                 $(this).children("a").css("color", "white");
             });
 
-
-            window.open("type/index.jsp", "workareaFrame");
+            window.open("settings/dictionary/type/index.do", "workareaFrame");
 
         });
 
@@ -173,7 +172,7 @@
     <div id="navigation" style="left: 0px; width: 18%; position: relative; height: 100%; overflow:auto;">
 
         <ul id="no1" class="nav nav-pills nav-stacked">
-            <li class="liClass"><a href="type/index.jsp" target="workareaFrame"><span
+            <li class="liClass"><a href="settings/dictionary/type/index.do" target="workareaFrame"><span
                     class="glyphicon glyphicon-book"></span> 字典类型</a></li>
             <li class="liClass"><a href="value/index.html" target="workareaFrame"><span
                     class="glyphicon glyphicon-list"></span> 字典值</a></li>

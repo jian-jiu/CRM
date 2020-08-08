@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getLocalPort() + request.getContextPath() + "/";
 %>
@@ -6,10 +7,10 @@
 <head>
     <base href="<%=basePath%>">
     <meta charset="UTF-8">
-    <link href="../../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
 
-    <script type="text/javascript" src="../../../jquery/jquery-1.11.1-min.js"></script>
-    <script type="text/javascript" src="../../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+    <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -43,13 +44,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="active">
-            <td><input type="checkbox"/></td>
-            <td>1</td>
-            <td>sex</td>
-            <td>性别</td>
-            <td>性别包括男和女</td>
-        </tr>
+        <c:forEach items="${dicTypesList}" var="dt" varStatus="vs">
+            <c:if test="${vs.count%2==0}">
+                <tr class="active">
+            </c:if>
+            <c:if test="${vs.count%2!=0}">
+                <tr>
+            </c:if>
+            <td><input type="checkbox" value="${dt.code}"/></td>
+            <td>${vs.count}</td>
+            <td>${dt.code}</td>
+            <td>${dt.name}</td>
+            <td>${dt.description}</td>
+            </tr>
+        </c:forEach>
         </tbody>
     </table>
 </div>

@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>转发登入界面</title>
 </head>
 <body>
 <script type="text/javascript">

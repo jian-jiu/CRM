@@ -1,26 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getLocalPort() + request.getContextPath() + "/";
-%>
 <html>
 <head>
-    <base href="<%=basePath%>">
-    <meta charset="UTF-8">
-    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
-    <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
-    <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <%@include file="../../../../HeadPart.jsp" %>
+    <title>登入账号</title>
     <script type="text/javascript">
         $(function () {
-
-            // $("#loginAct").onfocus(function () {
-            //     $("#msg").text("");
-            // })
-            //
-            // $("#loginPwd").onfocus(function () {
-            //     $("#msg").text("");
-            // })
-
             //给界面添加按下键盘事件
             $(window).keydown(function (e) {
                 if (e.keyCode == 13) {
@@ -72,7 +57,7 @@
 </div>
 <div id="top" style="height: 50px; background-color: #3C3C3C; width: 100%;">
     <div style="position: absolute; top: 5px; left: 0px; font-size: 30px; font-weight: 400; color: white; font-family: 'times new roman'">
-        CRM &nbsp;<span style="font-size: 12px;">&copy;2019&nbsp;动力节点</span></div>
+        CRM &nbsp;<span style="font-size: 12px;">&copy;2020&nbsp;简单九二</span></div>
 </div>
 
 <div style="position: absolute; top: 30%; right: 100px;width:450px;height:400px;border:1px solid #D5D5D5">

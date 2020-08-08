@@ -12,7 +12,7 @@ import javax.swing.text.View;
 @Controller
 public class IndexController {
     @RequestMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
 }

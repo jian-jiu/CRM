@@ -114,4 +114,26 @@
         <include refid="Base_Column_List"/>
         from tbl_dic_type
     </select>
+
+    <select id="selectDicTypeByCode" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_dic_type
+        where code = #{code}
+    </select>
+
+    <insert id="insertDicType" parameterType="com.jiandanjiuer.crm.settings.domain.DicType">
+        insert into
+        tbl_dic_type(code,name,description)
+        values (#{code},#{name},#{description})
+    </insert>
+
+    <delete id="deleteDicTypeByCodes" parameterType="string">
+        delete
+        from tbl_dic_type
+        where code in
+        <foreach collection="array" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </delete>
 </mapper>

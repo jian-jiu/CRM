@@ -22,4 +22,19 @@ public class DicTypeServiceImpl implements DicTypeService {
     public List<DicType> queryAllDicTypes() {
         return dicTypeMapper.selectAllDicTypes();
     }
+
+    @Override
+    public DicType queryDicTypeByCode(String code) {
+        return dicTypeMapper.selectDicTypeByCode(code);
+    }
+
+    @Override
+    public int saveCreateDicType(DicType dicType) {
+        return dicTypeMapper.insertDicType(dicType);
+    }
+
+    @Override
+    public int deleteDicTypeByCoeds(String[] codes) {
+        return dicTypeMapper.deleteDicTypeByCodes(codes);
+    }
 }

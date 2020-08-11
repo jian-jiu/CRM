@@ -3,9 +3,67 @@
 <html>
 <head>
     <%@include file="../../../../HeadPart.jsp" %>
+    <script type="text/javascript">
+        $(function () {
+            //给添加按钮添加事件
+            $("#createDicTypeBtn").click(function () {
+                window.location.href = "settings/dictionary/type/toSave.do"
+            })
+            //给编辑按钮添加事件
+            $("#DicTypeBtn").click(function () {
+                window.location.href = "settings/dictionary/type/toEdit.do"
+            })
+            //给删除按钮添加时间
+            $("#deleteDicTypeBtn").click(function () {
+                //收集参数
+                var chkedCodes = $("#tBody input[type='checkbox']:checked")
+                if (chkedCodes.size() == 0) {
+                    alert("请选择要删除的记录")
+                    return
+                }
+                //遍历数组获取coed
+                var coedsStr = ""
+                $.each(chkedCodes, function () {
+                    coedsStr += "code=" + this.value + "&"
+                })
+                coedsStr = coedsStr.substr(0, coedsStr.length - 1)
+                if (window.confirm("确认删除吗？")) {
+                    //发送请求
+                    $.ajax({
+                        url: 'settings/dictionary/type/deleteDicTypeByCodes.do',
+                        data: coedsStr,
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.code == "1") {
+                                window.location.href = "settings/dictionary/type/index.do"
+                            } else {
+                                alert(data.message)
+                            }
+                        }
+                    })
+                }
+            })
+
+            //实现全选和取消全选
+            $("#chkedAll").click(function () {
+                //让列表中所有的复选框属性值和全选按钮的属性值一样
+                $("#tBody input[type='checkbox']").prop("checked", $("#chkedAll").prop("checked"))
+            })
+            //给所有的复选框添加单击事件
+            $("#tBody input[type='checkbox']").click(function () {
+                //获取总的复选框和选中的复选框进行对比
+                if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
+                    $("#chkedAll").prop("checked", true)
+                } else {
+                    $("#chkedAll").prop("checked", false)
+                }
+            })
+
+        })
+    </script>
 </head>
 <body>
-
 <div>
     <div style="position: relative; left: 30px; top: -10px;">
         <div class="page-header">
@@ -13,35 +71,36 @@
         </div>
     </div>
 </div>
-
 <div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;left: 30px;">
     <div class="btn-group" style="position: relative; top: 18%;">
-        <button type="button" class="btn btn-primary" onclick="window.location.href='save.html'"><span
+        <button type="button" class="btn btn-primary" id="createDicTypeBtn"><span
                 class="glyphicon glyphicon-plus"></span> 创建
         </button>
-        <button type="button" class="btn btn-default" onclick="window.location.href='edit.html'"><span
+        <button type="button" class="btn btn-default" id="DicTypeBtn"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
-        <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+        <button type="button" class="btn btn-danger" id="deleteDicTypeBtn"><span
+                class="glyphicon glyphicon-minus"></span> 删除
+        </button>
     </div>
 </div>
 <div style="position: relative; left: 30px; top: 20px;">
     <table class="table table-hover">
         <thead>
         <tr style="color: #B3B3B3;">
-            <td><input type="checkbox"/></td>
+            <td><input id="chkedAll" type="checkbox"/></td>
             <td>序号</td>
             <td>编码</td>
             <td>名称</td>
             <td>描述</td>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="tBody">
         <c:forEach items="${dicTypesList}" var="dt" varStatus="vs">
-            <c:if test="${vs.count%2==0}">
+            <c:if test="${vs.count%2!=0}">
                 <tr class="active">
             </c:if>
-            <c:if test="${vs.count%2!=0}">
+            <c:if test="${vs.count%2==0}">
                 <tr>
             </c:if>
             <td><input type="checkbox" value="${dt.code}"/></td>
@@ -54,6 +113,5 @@
         </tbody>
     </table>
 </div>
-
 </body>
 </html>

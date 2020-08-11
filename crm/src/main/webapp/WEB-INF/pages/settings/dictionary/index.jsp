@@ -34,14 +34,10 @@
                 window.location.href = "settings/qx/user/logout.do";
             })
         });
-
     </script>
-
 </head>
 <body>
-
 <%@ include file="../../../ModalWindow.jsp" %>
-
 <!-- 中间 -->
 <div id="center" style="position: absolute;top: 50px; bottom: 30px; left: 0px; right: 0px;">
 
@@ -51,7 +47,7 @@
         <ul id="no1" class="nav nav-pills nav-stacked">
             <li class="liClass"><a href="settings/dictionary/type/index.do" target="workareaFrame"><span
                     class="glyphicon glyphicon-book"></span> 字典类型</a></li>
-            <li class="liClass"><a href="value/index.html" target="workareaFrame"><span
+            <li class="liClass"><a href="settings/dictionary/value/index.do" target="workareaFrame"><span
                     class="glyphicon glyphicon-list"></span> 字典值</a></li>
         </ul>
 

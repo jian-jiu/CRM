@@ -58,4 +58,25 @@ public interface DicTypeMapper {
      * @return
      */
     List<DicType> selectAllDicTypes();
+
+    /**
+     * 按照code查询
+     * @param code
+     * @return
+     */
+    DicType selectDicTypeByCode(String code);
+
+    /**
+     * 保存创建的数据字典
+     * @param dicType
+     * @return
+     */
+    int insertDicType(DicType dicType);
+
+    /**
+     * 根据codes删除数据
+     * @param code
+     * @return
+     */
+    int deleteDicTypeByCodes(String[] code);
 }

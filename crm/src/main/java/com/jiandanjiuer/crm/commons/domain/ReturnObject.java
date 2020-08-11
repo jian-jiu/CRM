@@ -4,6 +4,7 @@ import com.jiandanjiuer.crm.commons.contants.Contants;
 import lombok.Data;
 
 /**
+ * 返回给前端的信息对象
  * @author 简单
  * @date 2020/8/4 11:41
  */

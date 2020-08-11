@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 用户操作
+ *
  * @author 简单
  * @date 2020/7/31 21:10
  */
@@ -119,6 +121,13 @@ public class UserController {
         return returnObject;
     }
 
+    /**
+     * 退出登入
+     *
+     * @param response
+     * @param session
+     * @return
+     */
     @RequestMapping("/settings/qx/user/logout.do")
     public String logout(HttpServletResponse response, HttpSession session) {
         System.out.println("==========================================");

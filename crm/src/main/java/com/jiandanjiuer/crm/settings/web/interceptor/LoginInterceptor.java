@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
+ * 拦截器
+ * 拦截是否是登入的用户
+ *
  * @author 简单
  * @date 2020/8/6 19:24
  */

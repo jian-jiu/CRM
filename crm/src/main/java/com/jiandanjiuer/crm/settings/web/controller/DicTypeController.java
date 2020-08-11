@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
+ * 数据字典控制层
+ *
  * @author 简单
  * @date 2020/8/7 20:08
  */
@@ -23,25 +25,45 @@ public class DicTypeController {
     @Autowired
     private DicTypeService dicTypeService;
 
+    /**
+     * 跳转到数据字典工作区
+     *
+     * @param model
+     * @return
+     */
     @RequestMapping("/settings/dictionary/type/index.do")
     public String index(Model model) {
         List<DicType> dicTypesList = dicTypeService.queryAllDicTypes();
-//        request.setAttribute("dicTypes", dicTypes);
         model.addAttribute("dicTypesList", dicTypesList);
-
         return "settings/dictionary/type/index";
     }
 
+    /**
+     * 跳转到添加数据字典界面
+     *
+     * @return
+     */
     @RequestMapping("/settings/dictionary/type/toSave.do")
     public String toSave() {
         return "settings/dictionary/type/save";
     }
 
+    /**
+     * 跳转到修改数据字典界面
+     *
+     * @return
+     */
     @RequestMapping("/settings/dictionary/type/toEdit.do")
     public String toEdit() {
         return "settings/dictionary/type/edit";
     }
 
+    /**
+     * 判断数据字典编码是否存在
+     *
+     * @param code
+     * @return
+     */
     @RequestMapping("/settings/dictionary/type/checkCode.do")
     public @ResponseBody
     Object checkCode(String code) {
@@ -54,6 +76,12 @@ public class DicTypeController {
         return returnObject;
     }
 
+    /**
+     * 添加数据字典
+     *
+     * @param dicType
+     * @return
+     */
     @RequestMapping("/settings/dictionary/type/saveCreateDicType.do")
     public @ResponseBody
     Object saveCreateDicType(DicType dicType) {
@@ -76,6 +104,12 @@ public class DicTypeController {
         return returnObject;
     }
 
+    /**
+     * 删除数据字典
+     *
+     * @param code
+     * @return
+     */
     @RequestMapping("/settings/dictionary/type/deleteDicTypeByCodes.do")
     public @ResponseBody
     Object deleteDicTypeByCodes(String[] code) {

@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 /**
+ * 业务层用户实现类
+ *
  * @author 简单
  * @date 2020/8/4 9:08
  */
@@ -24,6 +26,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * 查询用户是否存在
+     *
+     * @param map
+     * @return
+     */
     @Override
     public User queryUserByLoginAndPwd(Map<String, Object> map) {
         return userMapper.selectUserByLoginActAndPwd(map);

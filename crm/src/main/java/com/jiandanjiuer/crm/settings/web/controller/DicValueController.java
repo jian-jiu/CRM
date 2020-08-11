@@ -18,7 +18,6 @@ public class DicValueController {
 
     @RequestMapping("/settings/dictionary/value/index.do")
     public String index(Model model) {
-
         return "settings/dictionary/value/index";
     }
 }

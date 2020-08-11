@@ -1,6 +1,8 @@
 package com.jiandanjiuer.crm.commons.contants;
 
 /**
+ * 常量池
+ *
  * @author 简单
  * @date 2020/8/4 19:22
  */

@@ -62,4 +62,15 @@ public class DicTypeServiceImpl implements DicTypeService {
     public int deleteDicTypeByCoeds(String[] codes) {
         return dicTypeMapper.deleteDicTypeByCodes(codes);
     }
+
+    /**
+     * 修改数据字典
+     *
+     * @param dicType
+     * @return
+     */
+    @Override
+    public int saveEditDicType(DicType dicType) {
+        return dicTypeMapper.updateDicType(dicType);
+    }
 }

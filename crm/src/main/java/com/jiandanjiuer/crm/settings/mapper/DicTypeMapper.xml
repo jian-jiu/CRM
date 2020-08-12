@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jiandanjiuer.crm.settings.mapper.DicTypeMapper">
+
     <resultMap id="BaseResultMap" type="com.jiandanjiuer.crm.settings.domain.DicType">
         <!--
           WARNING - @mbggenerated
@@ -19,6 +20,7 @@
         -->
         code, name, description
     </sql>
+
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         <!--
           WARNING - @mbggenerated
@@ -136,4 +138,11 @@
             #{code}
         </foreach>
     </delete>
+
+    <update id="updateDicType" parameterType="com.jiandanjiuer.crm.settings.domain.DicType">
+        update tbl_dic_type
+        set name=#{name},description=#{description}
+        where code=#{code}
+    </update>
+
 </mapper>

@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class WorkbenchMainController {
+    /**
+     * 跳转到业务工作区
+     * @return
+     */
     @RequestMapping("/workbench/main/index.do")
     public String index() {
         return "workbench/main/index";

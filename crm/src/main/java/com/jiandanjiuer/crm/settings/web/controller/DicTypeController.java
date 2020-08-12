@@ -49,16 +49,6 @@ public class DicTypeController {
     }
 
     /**
-     * 跳转到修改数据字典界面
-     *
-     * @return
-     */
-    @RequestMapping("/settings/dictionary/type/toEdit.do")
-    public String toEdit() {
-        return "settings/dictionary/type/edit";
-    }
-
-    /**
      * 判断数据字典编码是否存在
      *
      * @param code
@@ -67,8 +57,8 @@ public class DicTypeController {
     @RequestMapping("/settings/dictionary/type/checkCode.do")
     public @ResponseBody
     Object checkCode(String code) {
-        DicType dicType = dicTypeService.queryDicTypeByCode(code);
         ReturnObject returnObject = new ReturnObject();
+        DicType dicType = dicTypeService.queryDicTypeByCode(code);
         if (dicType != null) {
             returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
             returnObject.setMessage("编码已经存在");
@@ -127,4 +117,37 @@ public class DicTypeController {
         }
         return returnObject;
     }
+
+    /**
+     * 根据code查询所有数据
+     * 跳转到修改界面
+     *
+     * @param code
+     * @return
+     */
+    @RequestMapping("/settings/dictionary/type/editDIcType.do")
+    public String editDIcType(String code, Model model) {
+        DicType dicType = dicTypeService.queryDicTypeByCode(code);
+        model.addAttribute("dicType", dicType);
+        return "settings/dictionary/type/edit";
+    }
+
+    @RequestMapping("/settings/dictionary/type/saveEditDicType.do")
+    public @ResponseBody
+    Object saveEditDicType(DicType dicType) {
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            int i = dicTypeService.saveEditDicType(dicType);
+            if (i > 0) {
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setMessage("数据修改失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setMessage("数据修改失败，出现异常");
+        }
+        return returnObject;
+    }
+
 }

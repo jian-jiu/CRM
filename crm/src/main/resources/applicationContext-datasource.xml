@@ -10,6 +10,7 @@
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
     <!--    获取配置文件-->
     <context:property-placeholder location="classpath:jdbc.properties"/>
+
     <!-- 配置数据源 -->
     <!--不使用连接池 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -18,6 +19,7 @@
         <property name="password" value="${jdbc.password}"/>
         <property name="url" value="${jdbc.connectionURL}"/>
     </bean>
+
     <!-- 配置SqlSessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <!-- 必须注入属性dataSource -->
@@ -25,6 +27,7 @@
         <!-- 如果mybatis没有特殊的配置(比如别名等)，configLocation可以省去 ;否则，不能省略-->
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
     </bean>
+
     <!-- mapper注解扫描器配置,扫描@MapperScan注解,自动生成代码对象 -->
     <bean id="mapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.jiandanjiuer.crm.mapper,
@@ -42,6 +45,7 @@
         <aop:pointcut expression="execution(* com.jiandanjiuer.crm..service.*.*(..))" id="allMethodPointcut"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="allMethodPointcut"/>
     </aop:config>
+
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception"/>

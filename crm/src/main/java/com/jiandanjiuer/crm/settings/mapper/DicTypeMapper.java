@@ -88,4 +88,12 @@ public interface DicTypeMapper {
      * @return
      */
     int deleteDicTypeByCodes(String[] code);
+
+    /**
+     * 修改数据字典
+     *
+     * @param dicType
+     * @return
+     */
+    int updateDicType(DicType dicType);
 }

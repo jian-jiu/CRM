@@ -9,10 +9,7 @@
             $("#createDicTypeBtn").click(function () {
                 window.location.href = "settings/dictionary/type/toSave.do"
             })
-            //给编辑按钮添加事件
-            $("#DicTypeBtn").click(function () {
-                window.location.href = "settings/dictionary/type/toEdit.do"
-            })
+
             //给删除按钮添加时间
             $("#deleteDicTypeBtn").click(function () {
                 //收集参数
@@ -60,6 +57,21 @@
                 }
             })
 
+            //给编辑按钮添加事件
+            $("#editDicTypeBtn").click(function () {
+                var chkedCodes = $("#tBody input[type='checkbox']:checked")
+                if (chkedCodes.size() == 0) {
+                    alert("请选择要编辑的记录")
+                    return
+                }
+                if (chkedCodes.size() > 1) {
+                    alert("一次只能修改1条记录")
+                    return
+                }
+                var code = chkedCodes[0].value
+
+                window.location.href = "settings/dictionary/type/editDIcType.do?code=" + code
+            })
         })
     </script>
 </head>
@@ -76,7 +88,7 @@
         <button type="button" class="btn btn-primary" id="createDicTypeBtn"><span
                 class="glyphicon glyphicon-plus"></span> 创建
         </button>
-        <button type="button" class="btn btn-default" id="DicTypeBtn"><span
+        <button type="button" class="btn btn-default" id="editDicTypeBtn"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
         <button type="button" class="btn btn-danger" id="deleteDicTypeBtn"><span

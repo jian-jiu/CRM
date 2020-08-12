@@ -65,4 +65,5 @@ public interface UserMapper {
      * @return
      */
     User selectUserByLoginActAndPwd(Map<String, Object> map);
+
 }

@@ -40,4 +40,11 @@ public interface DicTypeService {
      * @return
      */
     int deleteDicTypeByCoeds(String[] codes);
+
+    /**
+     * 修改数据字典
+     * @param dicType
+     * @return
+     */
+    int saveEditDicType(DicType dicType);
 }

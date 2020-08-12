@@ -395,4 +395,5 @@ public class User {
     public void setEditBy(String editBy) {
         this.editBy = editBy == null ? null : editBy.trim();
     }
+
 }

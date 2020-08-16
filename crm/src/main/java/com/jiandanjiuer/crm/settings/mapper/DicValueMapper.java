@@ -96,4 +96,12 @@ public interface DicValueMapper {
      * @return
      */
     int updateDicValue(DicValue dicValue);
+
+    /**
+     * 根据TypeCodes删除这些类型下的所有数据字典值
+     *
+     * @param typeCodes
+     * @return
+     */
+    int deleteDicValueByTypeCodes(String[] typeCodes);
 }

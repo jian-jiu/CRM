@@ -161,5 +161,13 @@
         set value =#{value},text=#{text},order_no=#{orderNo}
         where id=#{id}
     </update>
+    <delete id="deleteDicValueByTypeCodes" parameterType="string">
+        delete
+        from tbl_dic_value
+        where type_code in
+        <foreach collection="array" item="typeCode" open="(" close=")" separator=",">
+        #{typeCode}
+        </foreach>
+    </delete>
 
 </mapper>

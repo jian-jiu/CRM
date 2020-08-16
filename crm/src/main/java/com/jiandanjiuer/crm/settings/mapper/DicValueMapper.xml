@@ -136,7 +136,7 @@
         select
         <include refid="Base_Column_List"/>
         from tbl_dic_value
-        order by type_code,order_no
+        order by type_code,cast(order_no as signed integer)
     </select>
     <insert id="insertDicValue" parameterType="com.jiandanjiuer.crm.settings.domain.DicValue">
         insert into

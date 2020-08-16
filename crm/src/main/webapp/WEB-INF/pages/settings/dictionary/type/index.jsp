@@ -10,7 +10,7 @@
                 window.location.href = "settings/dictionary/type/toSave.do"
             })
 
-            //给删除按钮添加时间
+            //给删除按钮添加事件
             $("#deleteDicTypeBtn").click(function () {
                 //收集参数
                 var chkedCodes = $("#tBody input[type='checkbox']:checked")

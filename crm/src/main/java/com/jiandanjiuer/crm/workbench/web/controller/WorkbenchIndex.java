@@ -1,4 +1,4 @@
-package com.jiandanjiuer.crm.settings.workbench.web.controller;
+package com.jiandanjiuer.crm.workbench.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

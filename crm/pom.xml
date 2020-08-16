@@ -24,6 +24,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!--        自动生成get和set方法等等需要插件支持-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!--    MySQL数据库连接驱动-->
         <dependency>
             <groupId>mysql</groupId>

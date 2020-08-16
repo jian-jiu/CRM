@@ -4,6 +4,7 @@ import com.jiandanjiuer.crm.commons.contants.Contants;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.settings.domain.DicType;
 import com.jiandanjiuer.crm.settings.service.DicTypeService;
+import com.jiandanjiuer.crm.settings.service.DicValueService;
 import com.jiandanjiuer.crm.settings.service.impl.DicTypeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -132,6 +133,11 @@ public class DicTypeController {
         return "settings/dictionary/type/edit";
     }
 
+    /**
+     * 修改数据字典
+     * @param dicType
+     * @return
+     */
     @RequestMapping("/settings/dictionary/type/saveEditDicType.do")
     public @ResponseBody
     Object saveEditDicType(DicType dicType) {

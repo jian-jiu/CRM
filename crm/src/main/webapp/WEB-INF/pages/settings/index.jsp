@@ -24,7 +24,12 @@
         </div>
     </div>
     <div style="position: relative; width: 55%; height: 70%; left: 22%;">
-        <div style="position: relative; width: 33%; height: 50%;">
+        <div >
+            数据管理
+            <br><br>
+            <a href="settings/dictionary/index.do">数据字典表</a>
+        </div>
+        <%--<div style="position: relative; width: 33%; height: 50%;">
             常规
             <br><br>
             <a href="javascript:void(0);">个人设置</a>
@@ -62,7 +67,6 @@
             <br>
             <a href="javascript:void(0);">服务支持升级规则</a>
         </div>
-
         <div style="position: relative; width: 34%; height: 50%;  left: 66%; top: -200%">
             扩展及API
             <br><br>
@@ -84,7 +88,7 @@
             <a href="javascript:void(0);">回收站</a>
             <br>
             <a href="javascript:void(0);">审计日志</a>
-        </div>
+        </div>--%>
     </div>
 </div>
 </body>

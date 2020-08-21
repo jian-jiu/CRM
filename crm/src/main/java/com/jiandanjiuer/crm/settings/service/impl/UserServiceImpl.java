@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,5 +36,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User queryUserByLoginAndPwd(Map<String, Object> map) {
         return userMapper.selectUserByLoginActAndPwd(map);
+    }
+
+    /**
+     * 查询所有的用户
+     *
+     * @return
+     */
+    @Override
+    public List<User> queryAllUsers() {
+        return userMapper.selectAllUsers();
     }
 }

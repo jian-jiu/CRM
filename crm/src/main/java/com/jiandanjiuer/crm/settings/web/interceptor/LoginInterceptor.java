@@ -1,6 +1,7 @@
 package com.jiandanjiuer.crm.settings.web.interceptor;
 
 import com.jiandanjiuer.crm.commons.contants.Contants;
+import com.jiandanjiuer.crm.commons.utils.Ip;
 import com.jiandanjiuer.crm.settings.domain.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,7 +22,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-//        登入验证
+        //获取用户ip
+        System.out.println("用户ip：" + Ip.getIpAddress(httpServletRequest));
+
+        //登入验证
         HttpSession session = httpServletRequest.getSession();
         User user = (User) session.getAttribute(Contants.SESSION_USER);
         if (user == null) {

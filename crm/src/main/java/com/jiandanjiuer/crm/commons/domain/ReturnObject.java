@@ -1,6 +1,8 @@
 package com.jiandanjiuer.crm.commons.domain;
 
 import com.jiandanjiuer.crm.commons.contants.Contants;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;

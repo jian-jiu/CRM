@@ -9,7 +9,7 @@ var rsc_bs_pag = {
     go_to_page_title: '跳转到',
     rows_per_page_title: '每页显示',
     current_page_label: '页',
-    current_page_abbr_label: 'p.',
+    current_page_abbr_label: '页',
     total_pages_label: 'of',
     total_pages_abbr_label: '/',
     total_rows_label: 'of',

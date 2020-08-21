@@ -2,6 +2,7 @@ package com.jiandanjiuer.crm.settings.service;
 
 import com.jiandanjiuer.crm.settings.domain.User;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,4 +19,11 @@ public interface UserService {
      * @return
      */
     User queryUserByLoginAndPwd(Map<String, Object> map);
+
+    /**
+     * 查询所有的用户
+     *
+     * @return
+     */
+    List<User> queryAllUsers();
 }

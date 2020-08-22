@@ -109,4 +109,10 @@ public class ActivityController {
         return retMap;
     }
 
+    @RequestMapping("/workbench/activity/editActivity.do")
+    public @ResponseBody
+    Object editActivity(String id) {
+        Activity activity = activityService.queryActivityById(id);
+        return activity;
+    }
 }

@@ -33,7 +33,13 @@ public interface ActivityService {
      * @param map
      * @return
      */
-    long queryCountOFActivityByCondition(Map<String,Object> map);
+    long queryCountOFActivityByCondition(Map<String, Object> map);
 
-
+    /**
+     * 根据id查询数据
+     *
+     * @param id
+     * @return
+     */
+    Activity queryActivityById(String id);
 }

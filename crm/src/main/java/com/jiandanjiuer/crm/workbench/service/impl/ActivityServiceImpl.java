@@ -53,4 +53,15 @@ public class ActivityServiceImpl implements ActivityService {
     public long queryCountOFActivityByCondition(Map<String, Object> map) {
         return activityMapper.selectCountOActivityByCondition(map);
     }
+
+    /**
+     * 根据id查询数据
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Activity queryActivityById(String id) {
+        return activityMapper.selectByPrimaryKey(id);
+    }
 }

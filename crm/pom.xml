@@ -134,21 +134,22 @@
         </dependency>
 
         <!-- 加载jackson插件依赖 -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.7.3</version>
-        </dependency>
+        </dependency>-->
+        <!--        返回json格式代码-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.7.3</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>2.7.3</version>
-        </dependency>
+        </dependency>-->
 
         <!--poi依赖-->
         <dependency>
@@ -184,6 +185,7 @@
     </dependencies>
 
     <build>
+        <!--        打war包名称-->
         <finalName>crm</finalName>
         <resources>
             <resource>

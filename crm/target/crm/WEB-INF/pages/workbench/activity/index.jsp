@@ -18,10 +18,13 @@
     <script type="text/javascript" src="jquery/bs_pagination-master/localization/en.min.js"></script>
     <script type="text/javascript">
         $(function () {
+            //窗口加载完毕获取数据
+            queryActivityForPageByCondition(1, 10)
+
             //给创建按钮添加单击事件
             $("#createActivityBtn").click(function () {
                 //重置表单
-                $("#activityFoem")[0].reset()
+                $("#activityForm")[0].reset()
 
                 //显示创建市场活动的模态窗口
                 $("#createActivityModal").modal("show")
@@ -114,9 +117,6 @@
                 container: '#queryView'
             })
 
-            //窗口加载完毕获取数据
-            queryActivityForPageByCondition(1, 10)
-
             //给查询按钮添加单击事件
             $("#queryActivityBtn").click(function () {
                 queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
@@ -125,6 +125,42 @@
             //给全选按钮添加事件
             $("#checkAll").click(function () {
                 $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
+            })
+
+            //给修改按钮添加单击事件
+            $("#editActivityBtn").click(function () {
+                var chkedIds = $("#tBody input[type='checkbox']:checked")
+
+                if (chkedIds.size() < 1) {
+                    alert("请选择一个需要修改的数据")
+                    return
+                }
+
+                if (chkedIds.size() > 1) {
+                    alert("只能选择一个数据进行修改")
+                    return
+                }
+
+                var id = chkedIds[0].value
+
+                $.ajax({
+                    url: "workbench/activity/editActivity.do",
+                    data: {
+                        id: id
+                    },
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        $("#edit-id").val(data.id)
+                        //给下拉框设置选择的
+                        $("#edit-marketActivityOwner").val(data.owner)
+                        $("#edit-marketActivityName").val(data.name)
+                        $("#edit-startTime").val(data.startDate)
+                        $("#edit-endTime").val(data.endDate)
+                        $("#edit-cost").val(data.cost)
+                        $("#edit-describe").val(data.name)
+                    }
+                })
             })
 
             //给删除按钮添加事件
@@ -180,7 +216,7 @@
                         }
                     })
 
-                    $("#checkAll").prop("checked",false)
+                    $("#checkAll").prop("checked", false)
 
                     var totalPages = 0
 
@@ -210,11 +246,6 @@
                     })
                 }
             })
-
-            //给修改按钮添加单击事件
-            $("#editActivityBtn").click(function () {
-                $("#editActivityModal").modal("show")
-            })
         }
     </script>
 </head>
@@ -231,7 +262,7 @@
             </div>
             <div class="modal-body">
 
-                <form id="activityFoem" class="form-horizontal" role="form">
+                <form id="activityForm" class="form-horizontal" role="form">
 
                     <div class="form-group">
                         <label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span
@@ -298,7 +329,7 @@
             <div class="modal-body">
 
                 <form class="form-horizontal" role="form">
-
+                    <input type="hidden" id="edit-id">
                     <div class="form-group">
                         <label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
@@ -312,32 +343,32 @@
                         <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                            <input type="text" class="form-control" id="edit-marketActivityName">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+                            <input type="text" class="form-control" id="edit-startTime">
                         </div>
                         <label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+                            <input type="text" class="form-control" id="edit-endTime">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-cost" class="col-sm-2 control-label">成本</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-cost" value="5,000">
+                            <input type="text" class="form-control" id="edit-cost">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-describe" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+                            <textarea class="form-control" rows="3" id="edit-describe"></textarea>
                         </div>
                     </div>
 

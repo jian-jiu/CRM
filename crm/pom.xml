@@ -185,7 +185,6 @@
     </dependencies>
 
     <build>
-        <!--        打war包名称-->
         <finalName>crm</finalName>
         <resources>
             <resource>

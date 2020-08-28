@@ -1,6 +1,6 @@
 package com.jiandanjiuer.crm.settings.web.controller;
 
-import com.jiandanjiuer.crm.commons.contants.Contants;
+import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.commons.utils.UUIDUtils;
 import com.jiandanjiuer.crm.settings.domain.DicType;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author 简单
@@ -70,7 +69,7 @@ public class DicValueController {
             int i = dicValueService.saveCreateDicValue(dicValue);
             if (i > 0) {
                 //保存成功
-                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 //保存失败
                 returnObject.setMessage("数据保存失败");
@@ -96,7 +95,7 @@ public class DicValueController {
         try {
             int i = dicValueService.deleteDicValueByIds(id);
             if (i > 0) {
-                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 returnObject.setMessage("删除数据失败");
             }
@@ -134,7 +133,7 @@ public class DicValueController {
         try {
             int i = dicValueService.saveEditDicValue(dicValue);
             if (i > 0) {
-                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 returnObject.setMessage("数据修改失败");
             }

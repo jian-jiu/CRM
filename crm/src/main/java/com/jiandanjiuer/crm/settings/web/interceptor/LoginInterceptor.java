@@ -1,12 +1,11 @@
 package com.jiandanjiuer.crm.settings.web.interceptor;
 
-import com.jiandanjiuer.crm.commons.contants.Contants;
+import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.utils.Ip;
 import com.jiandanjiuer.crm.settings.domain.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletContextAttributeListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,7 +26,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         //登入验证
         HttpSession session = httpServletRequest.getSession();
-        User user = (User) session.getAttribute(Contants.SESSION_USER);
+        User user = (User) session.getAttribute(Contents.SESSION_USER);
         if (user == null) {
             //跳转登入界面
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath());

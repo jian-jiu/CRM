@@ -1,11 +1,9 @@
 package com.jiandanjiuer.crm.settings.web.controller;
 
-import com.jiandanjiuer.crm.commons.contants.Contants;
+import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.settings.domain.DicType;
 import com.jiandanjiuer.crm.settings.service.DicTypeService;
-import com.jiandanjiuer.crm.settings.service.DicValueService;
-import com.jiandanjiuer.crm.settings.service.impl.DicTypeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,7 +59,7 @@ public class DicTypeController {
         ReturnObject returnObject = new ReturnObject();
         DicType dicType = dicTypeService.queryDicTypeByCode(code);
         if (dicType != null) {
-            returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             returnObject.setMessage("编码已经存在");
         }
         return returnObject;
@@ -82,7 +80,7 @@ public class DicTypeController {
             int i = dicTypeService.saveCreateDicType(dicType);
             if (i > 0) {
                 //保存成功
-                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 //保存失败
                 returnObject.setMessage("数据保存失败");
@@ -108,7 +106,7 @@ public class DicTypeController {
         try {
             int i = dicTypeService.deleteDicTypeByCoeds(code);
             if (i > 0) {
-                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 returnObject.setMessage("删除数据失败");
             }
@@ -145,7 +143,7 @@ public class DicTypeController {
         try {
             int i = dicTypeService.saveEditDicType(dicType);
             if (i > 0) {
-                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 returnObject.setMessage("数据修改失败");
             }

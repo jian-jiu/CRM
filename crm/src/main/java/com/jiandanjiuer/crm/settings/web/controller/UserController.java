@@ -1,12 +1,11 @@
 package com.jiandanjiuer.crm.settings.web.controller;
 
-import com.jiandanjiuer.crm.commons.contants.Contants;
+import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.commons.utils.DateUtils;
 import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -91,10 +90,10 @@ public class UserController {
                 } else {
                     //登入成功
                     //code = 1
-                    returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                    returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
 
                     //把用户信息保存到session中
-                    session.setAttribute(Contants.SESSION_USER, user);
+                    session.setAttribute(Contents.SESSION_USER, user);
 
                     if ("true".equals(isRemPew)) {
                         cookie = new Cookie("loginAct", loginAct);

@@ -22,7 +22,7 @@ public class Ip {
      * <p>
      * 用户真实IP为： 192.168.1.110
      *
-     * @param request
+     * @param request 需要请求对象
      * @return 一个用户ip
      */
     public static String getIpAddress(HttpServletRequest request) {

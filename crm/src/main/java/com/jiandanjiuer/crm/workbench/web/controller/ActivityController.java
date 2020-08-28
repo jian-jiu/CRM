@@ -1,6 +1,6 @@
 package com.jiandanjiuer.crm.workbench.web.controller;
 
-import com.jiandanjiuer.crm.commons.contants.Contants;
+import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.commons.utils.DateUtils;
 import com.jiandanjiuer.crm.commons.utils.UUIDUtils;
@@ -59,7 +59,7 @@ public class ActivityController {
     @RequestMapping("/workbench/activity/saveCreateActivity.do")
     public @ResponseBody
     Object saveCreateActivity(Activity activity, HttpSession session) {
-        User user = (User) session.getAttribute(Contants.SESSION_USER);
+        User user = (User) session.getAttribute(Contents.SESSION_USER);
         //封装参数
         activity.setId(UUIDUtils.getUUID());
         activity.setCreateTime(DateUtils.formatDateTime(new Date()));
@@ -74,7 +74,7 @@ public class ActivityController {
             int i = activityService.saveCreateActivity(activity);
 
             if (i > 0) {
-                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 returnObject.setMessage("数据保存失败");
             }
@@ -85,9 +85,20 @@ public class ActivityController {
         return returnObject;
     }
 
+    /**
+     * 根据数据分页查询数据
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param name
+     * @param owner
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     @RequestMapping("/workbench/activity/queryActivityForPageByCondition.do")
     public @ResponseBody
-    Object queryActivityForPageByCondition(int pageNo, int pageSize,
+    Object queryActivityForPageByCondition(Integer pageNo, Integer pageSize,
                                            String name, String owner,
                                            String startDate, String endDate) {
         //封装参数

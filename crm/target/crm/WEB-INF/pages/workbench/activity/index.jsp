@@ -3,17 +3,15 @@
 <html style="height: 87%;width: 99%">
 <head>
     <%@include file="../../../HeadPart.jsp" %>
-    <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
-          rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css"
+          href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" type="text/css" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery/bootstrap_3.3.0/css/bootstrap.min.css">
 
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="jquery/bootstrap_3.3.0/css/bootstrap.min.css">
-
-    <link rel="stylesheet" type="text/css" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
     <script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
     <script type="text/javascript" src="jquery/bs_pagination-master/localization/en.min.js"></script>
     <script type="text/javascript">
@@ -87,7 +85,6 @@
                             queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
                         } else {
                             alert(data.success)
-                            $("#createActivityModal").modal("show")
                         }
                     }
                 })
@@ -159,6 +156,9 @@
                         $("#edit-endTime").val(data.endDate)
                         $("#edit-cost").val(data.cost)
                         $("#edit-describe").val(data.name)
+
+                        //显示创建市场活动的模态窗口
+                        $("#editActivityModal").modal("show")
                     }
                 })
             })

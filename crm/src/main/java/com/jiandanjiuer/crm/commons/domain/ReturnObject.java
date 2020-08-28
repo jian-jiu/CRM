@@ -1,24 +1,28 @@
 package com.jiandanjiuer.crm.commons.domain;
 
-import com.jiandanjiuer.crm.commons.contants.Contants;
+import com.jiandanjiuer.crm.commons.contants.Contents;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 
 /**
  * 返回给前端的信息对象
+ *
  * @author 简单
  * @date 2020/8/4 11:41
  */
-@Service("returnObject")
+@Component
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReturnObject {
     /**
      * 成功：1
      * 失败：0
      */
-    private String code = Contants.RETURN_OBJECT_CODE_FAIL;
+    private String code = Contents.RETURN_OBJECT_CODE_FAIL;
     /**
      * 描述信息
      */
@@ -28,60 +32,14 @@ public class ReturnObject {
      */
     private Object retData;
 
-    public ReturnObject() {
-    }
-
-    public ReturnObject(String code, String message, Object retData) {
-        this.code = code;
-        this.message = message;
-        this.retData = retData;
-    }
-
-    @Override
-    public String toString() {
-        return "ReturnObject{" +
-                "code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                ", retData=" + retData +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ReturnObject that = (ReturnObject) o;
-        return Objects.equals(code, that.code) &&
-                Objects.equals(message, that.message) &&
-                Objects.equals(retData, that.retData);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(code, message, retData);
-    }
-
-    public String getCode() {
-        return code;
-    }
-
+    /**
+     * 设置code的时候进行初始化参数
+     *
+     * @param code
+     */
     public void setCode(String code) {
+        message = null;
+        retData = null;
         this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Object getRetData() {
-        return retData;
-    }
-
-    public void setRetData(Object retData) {
-        this.retData = retData;
     }
 }

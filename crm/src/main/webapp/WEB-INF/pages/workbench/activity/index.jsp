@@ -15,167 +15,13 @@
     <script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
     <script type="text/javascript" src="jquery/bs_pagination-master/localization/en.min.js"></script>
     <script type="text/javascript">
-        $(function () {
-            //窗口加载完毕获取数据
-            queryActivityForPageByCondition(1, 10)
-
-            //给创建按钮添加单击事件
-            $("#createActivityBtn").click(function () {
-                //重置表单
-                $("#activityForm")[0].reset()
-
-                //显示创建市场活动的模态窗口
-                $("#createActivityModal").modal("show")
-            })
-
-            //给保存按钮添加单击事件
-            $("#saveCreateActivityBtn").click(function () {
-                //收集参数
-                var owner = $("#create-marketActivityOwner").val()
-                var name = $.trim($("#create-marketActivityName").val())
-                var startDate = $("#create-startDate").val()
-                var endDate = $("#create-endDate").val()
-                var cost = $.trim($("#create-cost").val())
-                var description = $.trim($("#create-description").val())
-
-                if (owner == "") {
-                    alert("所有者不能为空")
-                    return
-                }
-
-                if (name == "") {
-                    alert("名称不能为空")
-                    return
-                }
-
-                //比较日期大小
-                if (startDate != "" && endDate != "") {
-                    if (startDate > endDate) {
-                        alert("开始日期不能比结束日期大")
-                        return;
-                    }
-                }
-
-                if (cost == "") {
-                    alert("成本不能为空")
-                    return;
-                }
-
-                var reg = /^\d*\.{0,1}\d*$/
-                if (!reg.test(cost)) {
-                    alert("成本不能小于0")
-                    return;
-                }
-
-                $.ajax({
-                    url: 'workbench/activity/saveCreateActivity.do',
-                    data: {
-                        owner: owner,
-                        name: name,
-                        startDate: startDate,
-                        endDate: endDate,
-                        cost: cost,
-                        description: description
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success: function (data) {
-                        $("#createActivityModal").modal("hide")
-                        if (data.code = "1") {
-                            queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
-                        } else {
-                            alert(data.success)
-                        }
-                    }
-                })
-            })
-
-            //设置创建日期样式
-            $(".myDate").datetimepicker({
-                language: 'zh-CN',//语言
-                format: 'yyyy-mm-dd',//日期格式
-                minView: 'month',//选择器上能选择的最小日期
-                initialDate: new Date(),//设置默认时间
-                autoclose: true,//单击后是否关闭
-                todayBtn: true,//每次打开是否显示当前时间
-                clearBtn: true,//是否显示清空按钮
-                container: '#createActivityModal'
-            })
-
-            //设置查询日期样式
-            $(".queryDate").datetimepicker({
-                language: 'zh-CN',//语言
-                format: 'yyyy-mm-dd',//日期格式
-                minView: 'month',//选择器上能选择的最小日期
-                initialDate: new Date(),//设置默认时间
-                autoclose: true,//单击后是否关闭
-                todayBtn: true,//每次打开是否显示当前时间
-                clearBtn: true,//是否显示清空按钮
-                container: '#queryView'
-            })
-
-            //给查询按钮添加单击事件
-            $("#queryActivityBtn").click(function () {
-                queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
-            })
-
-            //给全选按钮添加事件
-            $("#checkAll").click(function () {
-                $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
-            })
-
-            //给修改按钮添加单击事件
-            $("#editActivityBtn").click(function () {
-                var chkedIds = $("#tBody input[type='checkbox']:checked")
-
-                if (chkedIds.size() < 1) {
-                    alert("请选择一个需要修改的数据")
-                    return
-                }
-
-                if (chkedIds.size() > 1) {
-                    alert("只能选择一个数据进行修改")
-                    return
-                }
-
-                var id = chkedIds[0].value
-
-                $.ajax({
-                    url: "workbench/activity/editActivity.do",
-                    data: {
-                        id: id
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success: function (data) {
-                        $("#edit-id").val(data.id)
-                        //给下拉框设置选择的
-                        $("#edit-marketActivityOwner").val(data.owner)
-                        $("#edit-marketActivityName").val(data.name)
-                        $("#edit-startTime").val(data.startDate)
-                        $("#edit-endTime").val(data.endDate)
-                        $("#edit-cost").val(data.cost)
-                        $("#edit-describe").val(data.name)
-
-                        //显示创建市场活动的模态窗口
-                        $("#editActivityModal").modal("show")
-                    }
-                })
-            })
-
-            //给删除按钮添加事件
-            $("#deleteActivityBtn").click(function () {
-                var checkId = $("#demo_pag1 input[type='checkbox']:checked")
-                alert(checkId)
-            })
-        })
-
+        //分页查询
         function queryActivityForPageByCondition(pageNo, pageSize) {
             //窗口加载完毕，收集数据
-            var name = $("#query-name").val()
-            var owner = $("#query-owner").val()
-            var startDate = $("#query-startDate").val()
-            var endDate = $("#query-endDate").val()
+            let name = $("#query-name").val();
+            let owner = $("#query-owner").val();
+            let startDate = $("#query-startDate").val();
+            let endDate = $("#query-endDate").val();
             //发送请求
             $.ajax({
                 url: 'workbench/activity/queryActivityForPageByCondition.do',
@@ -189,12 +35,12 @@
                 },
                 type: 'post',
                 dataType: 'json',
-                success: function (data) {
+                success(data) {
                     //显示总条数，功能被取代
                     // $("#totalRowsB").text(data.totalRows)
                     //遍历activitiesList显示数据
                     var htmlStr = ""
-                    $.each(data.activitiesList, function (index, object) {
+                    $.each(data.activitiesList, (index, object) => {
                         htmlStr += "<tr class=\"active\">"
                         htmlStr += "<td><input type=\"checkbox\" value=\"" + object.id + "\"/></td>"
                         htmlStr += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + object.name + "</a></td>"
@@ -207,7 +53,7 @@
                     $("#tBody").html(htmlStr)
 
                     //给所有的复选框添加单击事件
-                    $("#tBody input[type='checkbox']").click(function () {
+                    $("#tBody input[type='checkbox']").click(() => {
                         //获取总的复选框和选中的复选框进行对比
                         if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
                             $("#checkAll").prop("checked", true)
@@ -239,14 +85,237 @@
                         showRowsInfo: true,//是否显示记录的信息
 
                         //每次切换页号对会触发函数，函数那返回切换后的页号和每页显示条数
-                        onChangePage: function (e, pageObj) {
-                            // alert("当前页" + pageObj.currentPage + "每页条数" + pageObj.rowsPerPage)
+                        onChangePage: (e, pageObj) => {
                             queryActivityForPageByCondition(pageObj.currentPage, pageObj.rowsPerPage)
-                        }
+                        },
                     })
                 }
             })
         }
+
+        //窗口加载完毕
+        $(function () {
+            //窗口加载完毕获取数据
+            queryActivityForPageByCondition(1, 10)
+
+            //回车事件
+            $(window).keydown(function (e) {
+                if (e.keyCode == 13) {
+                    if (!$("#createActivityModal").is(":hidden")) {
+                        $("#saveCreateActivityBtn").click()
+                    }
+                }
+            })
+
+            //给创建按钮添加单击事件
+            $("#createActivityBtn").click(() => {
+                //重置表单
+                $("#activityForm")[0].reset()
+                //显示创建市场活动的模态窗口
+                $("#createActivityModal").modal("show")
+            })
+
+            //给保存按钮添加单击事件
+            $("#saveCreateActivityBtn").click(() => {
+                //收集参数
+                let owner = $("#create-marketActivityOwner").val();
+                let name = $.trim($("#create-marketActivityName").val());
+                let startDate = $("#create-startDate").val();
+                let endDate = $("#create-endDate").val();
+                let cost = $.trim($("#create-cost").val());
+                let description = $.trim($("#create-description").val());
+                //判断参数
+                if (owner == "") {
+                    alert("所有者不能为空")
+                    return
+                }
+                if (name == "") {
+                    alert("名称不能为空")
+                    return
+                }
+                if (cost == "") {
+                    alert("成本不能为空")
+                    return;
+                }
+                if (startDate != "" && endDate != "") {
+                    //比较日期大小
+                    if (startDate > endDate) {
+                        alert("开始日期不能比结束日期大")
+                        return;
+                    }
+                }
+                //发送请求
+                $.ajax({
+                    url: 'workbench/activity/saveCreateActivity.do',
+                    data: {
+                        owner: owner,
+                        name: name,
+                        startDate: startDate,
+                        endDate: endDate,
+                        cost: cost,
+                        description: description
+                    },
+                    type: 'post',
+                    dataType: 'json',
+                    success(data) {
+                        $("#createActivityModal").modal("hide")
+                        if (data.code == "1") {
+                            queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
+                        } else {
+                            alert(data.success)
+                        }
+                    }
+                })
+            });
+
+            //设置创建日期样式
+            $(".upDate").datetimepicker({
+                language: 'zh-CN',//语言
+                format: 'yyyy-mm-dd',//日期格式
+                minView: 'month',//选择器上能选择的最小日期
+                initialDate: new Date(),//设置默认时间
+                autoclose: true,//单击后是否关闭
+                todayBtn: true,//每次打开是否显示当前时间
+                clearBtn: true,//是否显示清空按钮
+                container: '#createActivityModal'
+            })
+
+            //设置查询日期样式
+            $(".queryDate").datetimepicker({
+                language: 'zh-CN',//语言
+                format: 'yyyy-mm-dd',//日期格式
+                minView: 'month',//选择器上能选择的最小日期
+                initialDate: new Date(),//设置默认时间
+                autoclose: true,//单击后是否关闭
+                todayBtn: true,//每次打开是否显示当前时间
+                clearBtn: true,//是否显示清空按钮
+                container: '#queryView'
+            })
+
+            $(".editDate").datetimepicker({
+                language: 'zh-CN',//语言
+                format: 'yyyy-mm-dd',//日期格式
+                minView: 'month',//选择器上能选择的最小日期
+                initialDate: new Date(),//设置默认时间
+                autoclose: true,//单击后是否关闭
+                todayBtn: true,//每次打开是否显示当前时间
+                clearBtn: true,//是否显示清空按钮
+                container: '#editActivityModal'
+            })
+
+            //给查询按钮添加单击事件
+            $("#queryActivityBtn").click(() => {
+                queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
+            })
+
+            //给全选按钮添加事件
+            $("#checkAll").click(() => {
+                $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
+            })
+
+            //给修改按钮添加单击事件
+            $("#editActivityBtn").click(() => {
+                var chkedIds = $("#tBody input[type='checkbox']:checked")
+                //判断数据
+                if (chkedIds.size() < 1) {
+                    alert("请选择一个需要修改的数据")
+                    return
+                }
+                if (chkedIds.size() > 1) {
+                    alert("只能选择一个数据进行修改")
+                    return
+                }
+                var id = chkedIds[0].value
+                $.ajax({
+                    url: "workbench/activity/editActivity.do",
+                    data: {
+                        id: id
+                    },
+                    type: 'post',
+                    dataType: 'json',
+                    success(data) {
+                        $("#edit-id").val(data.id)
+                        //给下拉框设置选择的
+                        $("#edit-marketActivityOwner").val(data.owner)
+                        $("#edit-marketActivityName").val(data.name)
+                        $("#edit-startTime").val(data.startDate)
+                        $("#edit-endTime").val(data.endDate)
+                        $("#edit-cost").val(data.cost)
+                        $("#edit-describe").val(data.name)
+
+                        //显示创建市场活动的模态窗口
+                        $("#editActivityModal").modal("show")
+                    }
+                })
+            })
+
+            //确定按钮
+            $("#updateActivityBtn").click(() => {
+                //收集参数
+                let id = $("#edit-id").val()
+                let owner = $("#edit-marketActivityOwner").val()
+                let name = $.trim($("#edit-marketActivityName").val())
+                let startDate = $("#edit-startTime").val()
+                let endDate = $("#edit-endTime").val()
+                let cost = $.trim($("#edit-cost").val())
+                let description = $.trim($("#edit-describe").val())
+                //判断参数
+                if (owner == "") {
+                    alert("所有者不能为空")
+                    return
+                }
+                if (name == "") {
+                    alert("名称不能为空")
+                    return;
+                }
+                if (cost == "") {
+                    alert("成本不能为空")
+                    return;
+                }
+                if (startDate != "" && endDate != "") {
+                    //比较日期大小
+                    if (startDate > endDate) {
+                        alert("开始日期不能比结束日期大")
+                        return;
+                    }
+                }
+                $.post("updateActivityById", {
+                        id: id, owner: owner, name: name, startDate: startDate,
+                        endDate: endDate, cost: cost, description: description
+                    }, (data) => {
+                        if (data.code == "1") {
+                            queryActivityForPageByCondition($("#demo_pag1").bs_pagination('getOption', 'currentPage'), $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
+                            $("#editActivityModal").modal('hide')
+                        } else {
+                            alert(data.message)
+                        }
+                    },
+                    'json'
+                )
+            })
+
+            //给删除按钮添加事件
+            $("#deleteActivityBtn").click(() => {
+                let checkId = $("#tBody input[type='checkbox']:checked")
+                if (checkId.size() < 1) {
+                    alert("每次至少删除一个数据")
+                    return;
+                }
+                let ids = ""
+                $.each(checkId, (index, object) => {
+                    ids += "ids=" + object.value + "&"
+                })
+                ids = ids.substr(0, ids.length - 1)
+                if (!confirm("确认删除吗？")) return
+                $.post("removeActivityByIds", ids, (data) => {
+                    if (data.code == "1") {
+                        queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
+                    } else {
+                        alert(data.message)
+                    }
+                }, 'json')
+            })
+        })
     </script>
 </head>
 <body>
@@ -284,18 +353,19 @@
                     <div class="form-group">
                         <label for="create-startDate" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control myDate" id="create-startDate" readonly>
+                            <input type="text" class="form-control upDate" id="create-startDate" readonly>
                         </div>
                         <label for="create-endDate" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control myDate" id="create-endDate" readonly>
+                            <input type="text" class="form-control upDate" id="create-endDate" readonly>
                         </div>
                     </div>
                     <div class="form-group">
 
                         <label for="create-cost" class="col-sm-2 control-label">成本</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="number" min="0" class="form-control" id="create-cost">
+                            <input id="create-cost" type="number" min="0" class="form-control"
+                                   oninput="value=value.replace(/[^\d]/g,'')">
                         </div>
                     </div>
                     <div class="form-group">
@@ -350,11 +420,11 @@
                     <div class="form-group">
                         <label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-startTime">
+                            <input type="text" class="form-control editDate" id="edit-startTime" readonly>
                         </div>
                         <label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-endTime">
+                            <input type="text" class="form-control editDate" id="edit-endTime" readonly>
                         </div>
                     </div>
 
@@ -377,7 +447,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button id="updateActivityBtn" type="button" class="btn btn-primary">更新</button>
             </div>
         </div>
     </div>
@@ -430,7 +500,6 @@
 </div>
 <div style="position: relative; top: -20px; left: 0px; width: 100%; height: 100%;">
     <div style="width: 100%; position: absolute;top: 5px; left: 10px;">
-
         <div id="queryView" class="btn-toolbar" role="toolbar" style="height: 80px;">
             <form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
 

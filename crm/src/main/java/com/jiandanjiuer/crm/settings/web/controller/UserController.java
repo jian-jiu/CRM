@@ -8,6 +8,7 @@ import com.jiandanjiuer.crm.settings.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
@@ -141,5 +142,30 @@ public class UserController {
         session.invalidate();
 
         return "redirect:/";
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param id
+     * @param oldPwd
+     * @param newPwd
+     * @return
+     */
+    @RequestMapping("/editUserPassword.do")
+    public @ResponseBody
+    Object editUserPassword(@RequestParam() String id, String oldPwd, String newPwd) {
+        ReturnObject returnObject = new ReturnObject();
+        if (oldPwd.equals(userService.findUserPasswordById(id))) {
+            int i = userService.modifyUserPasswordById(id, newPwd);
+            if (i > 0) {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setMessage("修改失败");
+            }
+        } else {
+            returnObject.setMessage("原密码不正确");
+        }
+        return returnObject;
     }
 }

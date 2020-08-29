@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,10 +30,8 @@ public class ActivityController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private ActivityService activityService;
-
     @Autowired
     private ReturnObject returnObject;
 
@@ -120,10 +119,64 @@ public class ActivityController {
         return retMap;
     }
 
+    /**
+     * 根据id查询数据
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping("/workbench/activity/editActivity.do")
     public @ResponseBody
-    Object editActivity(String id) {
-        Activity activity = activityService.queryActivityById(id);
-        return activity;
+    Object queryActivity(String id) {
+        return activityService.queryActivityById(id);
+    }
+
+    /**
+     * 修改市场活动数据
+     *
+     * @param request
+     * @param activity
+     * @return
+     */
+    @RequestMapping("/updateActivityById")
+    public @ResponseBody
+    Object updateActivityById(HttpServletRequest request, Activity activity) {
+        //设置修改时间和修改者id
+        activity.setEditTime(DateUtils.formatDateTime(new Date()));
+        User user = (User) request.getSession().getAttribute(Contents.SESSION_USER);
+        activity.setEditBy(user.getId());
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            int i = activityService.modifyActivityById(activity);
+            if (i > 0) {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setMessage("更新失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setMessage("更新失败，出现异常");
+        }
+        return returnObject;
+    }
+
+    /**
+     * 根据多个id删除数据
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/removeActivityByIds")
+    private @ResponseBody
+    Object removeActivityByIds(String[] ids) {
+        ReturnObject returnObject = new ReturnObject();
+        int i = activityService.removeActivityByIds(ids);
+        if (i > 0) {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        } else {
+            returnObject.setMessage("修改失败");
+        }
+        return returnObject;
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface UserService {
     /**
-     * 查询用户登入
+     * 根据登录名和密码查询用户
      *
      * @param map
      * @return
@@ -26,4 +26,21 @@ public interface UserService {
      * @return
      */
     List<User> queryAllUsers();
+
+    /**
+     * 根据id查询用户密码
+     *
+     * @param id
+     * @return
+     */
+    String findUserPasswordById(String id);
+
+    /**
+     * 根据id修改用户密码
+     *
+     * @param id
+     * @param newPwd
+     * @return
+     */
+    int modifyUserPasswordById(String id, String newPwd);
 }

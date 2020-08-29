@@ -20,10 +20,10 @@
                 <div style="position: relative; left: 40px;">
                     姓名：<b>${sessionScope.sessionUser.name}</b><br><br>
                     登录帐号：<b>${sessionScope.sessionUser.name}</b><br><br>
-                    组织机构：<b>1005，市场部，二级部门</b><br><br>
-                    邮箱：<b>zhangsan@bjpowernode.com</b><br><br>
-                    失效时间：<b>2017-02-14 10:10:10</b><br><br>
-                    允许访问IP：<b>127.0.0.1,192.168.100.2</b>
+                    组织机构：<b>${sessionScope.sessionUser.deptNo}</b><br><br>
+                    邮箱：<b>${sessionScope.sessionUser.email}</b><br><br>
+                    失效时间：<b>${sessionScope.sessionUser.expireTime}</b><br><br>
+                    允许访问IP：<b>${(sessionScope.sessionUser.allowIps).replace(',',' ')}</b>
                 </div>
             </div>
             <div class="modal-footer">
@@ -47,35 +47,82 @@
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
                         <label for="oldPwd" class="col-sm-2 control-label">原密码</label>
-                        <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="oldPwd" style="width: 200%;">
+                        <div class="col-sm-10" style="width: 700px;">
+                            <input type="password" class="form-control" id="oldPwd"
+                                   style="width: 540px;display: initial">
+                            <span id="aOldPwd" style="color: #ff0000"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="newPwd" class="col-sm-2 control-label">新密码</label>
-                        <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="newPwd" style="width: 200%;">
+                        <div class="col-sm-10" style="width: 700px;">
+                            <input type="password" class="form-control" id="newPwd"
+                                   style="width: 540px;display: initial">
+                            <span id="aNewPwd" style="color: #ff0000"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="confirmPwd" class="col-sm-2 control-label">确认密码</label>
-                        <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="confirmPwd" style="width: 200%;">
+                        <div class="col-sm-10" style="width: 700px;">
+                            <input type="password" class="form-control" id="confirmPwd"
+                                   style="width: 540px;display: initial">
+                            <span id="aConfirmPwd" style="color: #ff0000"></span>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        onclick="window.location.href='login.jsp';">更新
+                <button id="updateUserPassword" type="button" class="btn btn-primary">更新
                 </button>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(() => {
+
+        $("#updateUserPassword").click(() => {
+            //收集参数
+            let oldPwd = $.trim($("#oldPwd").val())
+            let newPwd = $.trim($("#newPwd").val())
+            let confirmPwd = $.trim($("#confirmPwd").val())
+            //判断参数
+            $("#aConfirmPwd").html("")
+            if (oldPwd == "") {
+                $("#aOldPwd").html("原密码不能为空")
+                return;
+            }
+            $("#aOldPwd").html("")
+            if (newPwd == "") {
+                $("#aNewPwd").html("新密码不能为空")
+                return;
+            }
+            $("#aNewPwd").html("")
+            if (confirmPwd == "") {
+                $("#aConfirmPwd").html("确认密码不能为空")
+                return;
+            }
+            $("#aConfirmPwd").html("")
+            if (newPwd != confirmPwd) {
+                $("#aConfirmPwd").html("两次密码不一致")
+                return
+            }
+            let id = "${sessionScope.sessionUser.id}"
+            $.post("editUserPassword.do", {id: id, oldPwd: oldPwd, newPwd: newPwd}, (data) => {
+                if (data.code == "1") {
+                    $("#editPwdModal").modal("hide")
+                    alert("修改成功,请重新登入")
+                    location = ""
+                } else {
+                    alert(data.message)
+                }
+            }, "json")
+        })
+    })
+</script>
 
 <!-- 退出系统的模态窗口 -->
 <div class="modal fade" id="exitModal" role="dialog">

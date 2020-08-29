@@ -77,4 +77,20 @@ public interface ActivityMapper {
      * @return
      */
     long selectCountOActivityByCondition(Map<String, Object> map);
+
+    /**
+     * 效果数据
+     *
+     * @param record
+     * @return
+     */
+    int updateByPrimaryId(Activity record);
+
+    /**
+     * 根据多个id删除数据
+     *
+     * @param ids
+     * @return
+     */
+    int deleteActivityByIds(String[] ids);
 }

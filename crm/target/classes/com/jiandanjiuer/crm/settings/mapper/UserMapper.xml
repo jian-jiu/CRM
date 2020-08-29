@@ -234,12 +234,22 @@
         from tbl_user
         where login_act = #{loginAct} and login_pwd = #{loginPwd}
     </select>
-
     <select id="selectAllUsers" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from tbl_user
         where lock_state='1'
     </select>
+    <select id="selectUserPasswordById" parameterType="string" resultType="string">
+        select login_pwd
+        from tbl_user
+        where id = #{id}
+    </select>
+
+    <update id="updateUserPasswordById" parameterType="string">
+        update tbl_user
+        set login_pwd = #{param2}
+        where id = #{param1}
+    </update>
 
 </mapper>

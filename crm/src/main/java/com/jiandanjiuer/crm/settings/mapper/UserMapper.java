@@ -1,6 +1,7 @@
 package com.jiandanjiuer.crm.settings.mapper;
 
 import com.jiandanjiuer.crm.settings.domain.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     /**
-     * 根据用户名和密码查询用户
+     * 根据登入名和密码查询用户
      *
      * @param map
      * @return
@@ -69,8 +70,25 @@ public interface UserMapper {
 
     /**
      * 查询所有的用户
+     *
      * @return
      */
     List<User> selectAllUsers();
 
+    /**
+     * 根据id查询用户密码
+     *
+     * @param id
+     * @return
+     */
+    String selectUserPasswordById(String id);
+
+    /**
+     * 根据id修改用户密码
+     *
+     * @param id
+     * @param newPwd
+     * @return
+     */
+    int updateUserPasswordById(String id, String newPwd);
 }

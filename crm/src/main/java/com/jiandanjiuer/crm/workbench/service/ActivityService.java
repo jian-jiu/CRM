@@ -20,6 +20,14 @@ public interface ActivityService {
     int saveCreateActivity(Activity activity);
 
     /**
+     * 修改数据
+     *
+     * @param activity
+     * @return
+     */
+    int modifyActivityById(Activity activity);
+
+    /**
      * 根据条件分页查询数据
      *
      * @param map
@@ -42,4 +50,12 @@ public interface ActivityService {
      * @return
      */
     Activity queryActivityById(String id);
+
+    /**
+     * 根据多个id删除数据
+     *
+     * @param ids
+     * @return
+     */
+    int removeActivityByIds(String[] ids);
 }

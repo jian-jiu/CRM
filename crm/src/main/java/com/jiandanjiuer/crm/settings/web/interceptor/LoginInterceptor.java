@@ -3,6 +3,8 @@ package com.jiandanjiuer.crm.settings.web.interceptor;
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.utils.Ip;
 import com.jiandanjiuer.crm.settings.domain.User;
+import com.jiandanjiuer.crm.settings.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,6 +21,9 @@ import javax.servlet.http.HttpSession;
  */
 public class LoginInterceptor implements HandlerInterceptor {
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         //获取用户ip
@@ -28,6 +33,12 @@ public class LoginInterceptor implements HandlerInterceptor {
         HttpSession session = httpServletRequest.getSession();
         User user = (User) session.getAttribute(Contents.SESSION_USER);
         if (user == null) {
+            //跳转登入界面
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath());
+            return false;
+        }
+        //判断用户密码是否已经修改
+        if (!(user.getLoginPwd().equals(userService.findUserPasswordById(user.getId())))) {
             //跳转登入界面
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath());
             return false;

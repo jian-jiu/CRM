@@ -32,6 +32,17 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     /**
+     * 修改市场活动数据
+     *
+     * @param activity
+     * @return
+     */
+    @Override
+    public int modifyActivityById(Activity activity) {
+        return activityMapper.updateByPrimaryId(activity);
+    }
+
+    /**
      * 根据条件分页查询数据
      *
      * @param map
@@ -63,5 +74,10 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Activity queryActivityById(String id) {
         return activityMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int removeActivityByIds(String[] ids) {
+        return activityMapper.deleteActivityByIds(ids);
     }
 }

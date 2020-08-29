@@ -47,4 +47,27 @@ public class UserServiceImpl implements UserService {
     public List<User> queryAllUsers() {
         return userMapper.selectAllUsers();
     }
+
+    /**
+     * 查询用户密码
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public String findUserPasswordById(String id) {
+        return userMapper.selectUserPasswordById(id);
+    }
+
+    /**
+     * 根据id修改用户密码
+     *
+     * @param id
+     * @param newPwd
+     * @return
+     */
+    @Override
+    public int modifyUserPasswordById(String id, String newPwd) {
+        return userMapper.updateUserPasswordById(id,newPwd);
+    }
 }

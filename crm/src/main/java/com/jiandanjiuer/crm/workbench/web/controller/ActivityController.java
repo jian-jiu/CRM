@@ -9,13 +9,18 @@ import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -178,5 +183,55 @@ public class ActivityController {
             returnObject.setMessage("修改失败");
         }
         return returnObject;
+    }
+
+    /**
+     * 下载市场活动文件
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/workbench/activity/downloadsActivity")
+    public void downloadsActivity(HttpServletRequest request, HttpServletResponse response) {
+        //读取文件
+        //1 设置响应类型
+        response.setContentType("application/octet-stream:charset=UTF-8");
+
+        ServletOutputStream outputStream;
+        InputStream inputStream = null;
+        try {
+            String userAgent = request.getHeader("User-Agent");
+            System.out.println(userAgent);
+            String fileName = new String("学生列表".getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+            //设置响应头信息
+            response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+
+            try {
+                //2 获取输出流
+                outputStream = response.getOutputStream();
+
+                //3 读取文件
+                inputStream = new FileInputStream("D:/test/abc.xls");
+
+                byte[] bytes = new byte[1024];
+                int len = 0;
+                while ((len = inputStream.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, len);
+                }
+                outputStream.flush();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 }

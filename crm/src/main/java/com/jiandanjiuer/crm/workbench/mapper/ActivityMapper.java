@@ -93,4 +93,11 @@ public interface ActivityMapper {
      * @return
      */
     int deleteActivityByIds(String[] ids);
+
+    /**
+     * 查询详细的所有市场活动
+     *
+     * @return
+     */
+    List<Activity> selectActivityForDetail();
 }

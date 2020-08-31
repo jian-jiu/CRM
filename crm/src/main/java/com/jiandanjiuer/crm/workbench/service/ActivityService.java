@@ -36,6 +36,13 @@ public interface ActivityService {
     List<Activity> queryActivityForPageByCondition(Map<String, Object> map);
 
     /**
+     * 查询详细的所有市场活动
+     *
+     * @return
+     */
+    List<Activity> findActivityForDetail();
+
+    /**
      * 根据条件查询总条数
      *
      * @param map

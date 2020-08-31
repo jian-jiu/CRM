@@ -8,8 +8,10 @@ import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,13 +70,7 @@ public class ActivityController {
         activity.setId(UUIDUtils.getUUID());
         activity.setCreateTime(DateUtils.formatDateTime(new Date()));
         activity.setCreateBy(user.getId());
-
-        System.out.println(session.getId());
-        System.out.println(user.getId());
-
         try {
-
-
             int i = activityService.saveCreateActivity(activity);
 
             if (i > 0) {
@@ -187,46 +183,95 @@ public class ActivityController {
 
     /**
      * 下载市场活动文件
+     *
      * @param request
      * @param response
      */
     @RequestMapping("/workbench/activity/downloadsActivity")
     public void downloadsActivity(HttpServletRequest request, HttpServletResponse response) {
-        //读取文件
-        //1 设置响应类型
+        //设置响应类型
         response.setContentType("application/octet-stream:charset=UTF-8");
 
         ServletOutputStream outputStream;
-        InputStream inputStream = null;
+//        InputStream inputStream = null;
+        HSSFWorkbook wb = null;
         try {
+            //用来获取浏览器信息进行判断编码格式
             String userAgent = request.getHeader("User-Agent");
             System.out.println(userAgent);
+            //根据编码设置下载文件名字
             String fileName = new String("学生列表".getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
             //设置响应头信息
             response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+            //获取市场活动数据
+            List<Activity> activityList = activityService.findActivityForDetail();
+            //2 获取输出流
+            outputStream = response.getOutputStream();
+            //1 创建对象，对应一个excel对象
+            wb = new HSSFWorkbook();
+            //2 使用wb对象创建一页
+            HSSFSheet sheet = wb.createSheet("市场活动列表");
+            //3 第一行标题
+            HSSFRow row = sheet.createRow(0);
+            //4 设置每列标题内容
+            row.createCell(0).setCellValue("所有者");
+            row.createCell(1).setCellValue("活动名称");
+            row.createCell(2).setCellValue("开始时间");
+            row.createCell(3).setCellValue("结束时间");
+            row.createCell(4).setCellValue("成本");
+            row.createCell(5).setCellValue("描述");
+            row.createCell(6).setCellValue("创建时间");
+            row.createCell(7).setCellValue("创建者");
+            row.createCell(8).setCellValue("修改时间");
+            row.createCell(9).setCellValue("修改者");
+            //设置每行内容
+            if (activityList != null) {
+                for (int i = 0; i < activityList.size(); i++) {
+                    //获取每行对象
+                    HSSFRow rowI = sheet.createRow(i + 1);
+                    //获取每条市场对象
+                    Activity activity = activityList.get(i);
+                    //设置每列内容
+                    rowI.createCell(0).setCellValue(activity.getOwner());
+                    rowI.createCell(1).setCellValue(activity.getName());
+                    rowI.createCell(2).setCellValue(activity.getStartDate());
+                    rowI.createCell(3).setCellValue(activity.getEndDate());
+                    rowI.createCell(4).setCellValue(activity.getCost());
+                    rowI.createCell(5).setCellValue(activity.getDescription());
+                    rowI.createCell(6).setCellValue(activity.getCreateTime());
+                    rowI.createCell(7).setCellValue(activity.getCreateBy());
+                    rowI.createCell(8).setCellValue(activity.getEditTime());
+                    rowI.createCell(9).setCellValue(activity.getEditBy());
+                }
+            }
+            wb.write(outputStream);
 
-            try {
-                //2 获取输出流
-                outputStream = response.getOutputStream();
-
-                //3 读取文件
-                inputStream = new FileInputStream("D:/test/abc.xls");
-
+            //读取文件
+                /*inputStream = new FileInputStream("D:/test/abc.xls");
+                //设置每次读取数据大小
                 byte[] bytes = new byte[1024];
+                //当前读取数据的大小
                 int len = 0;
                 while ((len = inputStream.read(bytes)) != -1) {
+                    //把数据输出到浏览器
                     outputStream.write(bytes, 0, len);
-                }
-                outputStream.flush();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
+                }*/
+            //刷新流
+            outputStream.flush();
+        } catch (
+                IOException e) {
             e.printStackTrace();
         } finally {
-            if (inputStream != null) {
+            /*if (inputStream != null) {
                 try {
                     inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }*/
+            if (wb != null) {
+                try {
+                    wb.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -192,6 +192,7 @@
                 container: '#queryView'
             })
 
+            //设置编辑日期样式
             $(".editDate").datetimepicker({
                 language: 'zh-CN',//语言
                 format: 'yyyy-mm-dd',//日期格式
@@ -314,6 +315,11 @@
                         alert(data.message)
                     }
                 }, 'json')
+            })
+
+            //批量导出市场活动
+            $("#exportActivityAllBtn").click(() => {
+                location = "workbench/activity/downloadsActivity"
             })
         })
     </script>
@@ -500,23 +506,21 @@
 </div>
 <div style="position: relative; top: -20px; left: 0px; width: 100%; height: 100%;">
     <div style="width: 100%; position: absolute;top: 5px; left: 10px;">
+        <%--查询列表--%>
         <div id="queryView" class="btn-toolbar" role="toolbar" style="height: 80px;">
             <form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
-
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">名称</div>
                         <input id="query-name" class="form-control" type="text">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">所有者</div>
                         <input id="query-owner" class="form-control" type="text">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">开始日期</div>
@@ -529,11 +533,10 @@
                         <input class="form-control queryDate" type="text" id="query-endDate" readonly>
                     </div>
                 </div>
-
                 <button id="queryActivityBtn" type="button" class="btn btn-default">查询</button>
-
             </form>
         </div>
+        <%--编辑列表--%>
         <div class="btn-toolbar" role="toolbar"
              style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
             <div class="btn-group" style="position: relative; top: 18%;">
@@ -559,6 +562,7 @@
                 </button>
             </div>
         </div>
+        <%--数据列表--%>
         <div style="position: relative;top: 10px;">
             <table class="table table-hover">
                 <thead>

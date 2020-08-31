@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 获取所有请求
+ * 获取"/"请求
  *
  * @author 简单
  * @date 2020/7/31 19:48
@@ -16,8 +16,8 @@ public class IndexController {
      *
      * @return
      */
-    @RequestMapping("/")
+/*    @RequestMapping("/")
     public String index() {
         return "index";
-    }
+    }*/
 }

@@ -55,6 +55,16 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     /**
+     * 查询详细的所有市场活动
+     *
+     * @return
+     */
+    @Override
+    public List<Activity> findActivityForDetail() {
+        return activityMapper.selectActivityForDetail();
+    }
+
+    /**
      * 根据条件查询总条数
      *
      * @param map
@@ -76,6 +86,12 @@ public class ActivityServiceImpl implements ActivityService {
         return activityMapper.selectByPrimaryKey(id);
     }
 
+    /**
+     * 根据多个id删除数据
+     *
+     * @param ids
+     * @return
+     */
     @Override
     public int removeActivityByIds(String[] ids) {
         return activityMapper.deleteActivityByIds(ids);

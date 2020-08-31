@@ -203,11 +203,6 @@
         where id = #{id,jdbcType=CHAR}
     </update>
 
-    <insert id="insertActivity" parameterType="com.jiandanjiuer.crm.workbench.domain.Activity">
-    insert into
-    tbl_activity(id, owner, name, start_date, end_date, cost, description, create_time, create_by,edit_time,edit_by)
-    values (#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createTime},#{createBy},'a','c')
-  </insert>
     <select id="selectActivityForPageByCondition" parameterType="map" resultMap="BaseResultMap">
         select ta.id,ta.name,tu1.name as owner,ta.start_date,ta.end_date,ta.edit_time,
         ta.cost,ta.description,ta.create_time,tu2.name as create_by,tu3.name as edit_by
@@ -232,7 +227,6 @@
         order by create_time desc
         limit #{beginNo},#{pageSize}
     </select>
-
     <select id="selectCountOActivityByCondition" resultType="long">
         select count(*) as totalRows
         from tbl_activity ta
@@ -254,6 +248,19 @@
             </if>
         </where>
     </select>
+    <select id="selectActivityForDetail" resultMap="BaseResultMap">
+        select tu1.name as owner,ta.name,ta.start_date,ta.end_date,ta.cost,ta.description,ta.create_time,tu2.name as create_by,ta.edit_time,tu3.name
+        from tbl_activity ta
+        join tbl_user tu1 on ta.owner = tu1.id
+        join tbl_user tu2 on ta.create_by = tu2.id
+        join tbl_user tu3 on ta.edit_by = tu3.id
+    </select>
+
+    <insert id="insertActivity" parameterType="com.jiandanjiuer.crm.workbench.domain.Activity">
+    insert into
+    tbl_activity(id, owner, name, start_date, end_date, cost, description, create_time, create_by,edit_time,edit_by)
+    values (#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createTime},#{createBy},'a','c')
+    </insert>
 
     <update id="updateByPrimaryId" parameterType="com.jiandanjiuer.crm.workbench.domain.Activity">
         update tbl_activity

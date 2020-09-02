@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>转发登入界面</title>
+    <title>转发到登入界面</title>
 </head>
 <body>
 <script type="text/javascript">
-    window.location.href = "settings/qx/user/toLogin.do";
+    location.href = "settings/qx/user/toLogin";
 </script>
 </body>
 </html>

@@ -54,50 +54,72 @@ public interface ActivityMapper {
      */
     int updateByPrimaryKey(Activity record);
 
-    /**
-     * 保存创建的市场活动
-     *
-     * @param activity
-     * @return
-     */
-    int insertActivity(Activity activity);
 
     /**
      * 根据条件分页查询数据
      *
-     * @param map
-     * @return
+     * @param map 需要map
+     * @return 返回分页的所有市场活动集合
      */
     List<Activity> selectActivityForPageByCondition(Map<String, Object> map);
 
     /**
+     * 查询详细的所有市场活动
+     *
+     * @return 详细市场活动集合
+     */
+    List<Activity> selectActivityForDetail();
+
+    /**
+     * 根据多个id查询详细的所有市场活动
+     *
+     * @param ids id数组
+     * @return 详细市场活动集合
+     */
+    List<Activity> selectActivityForDetailByIds(String[] ids);
+
+    /**
      * 根据条件查询总条数
      *
-     * @param map
-     * @return
+     * @param map map
+     * @return 总条数
      */
     long selectCountOActivityByCondition(Map<String, Object> map);
 
+
     /**
-     * 效果数据
+     * 保存创建的市场活动
      *
-     * @param record
-     * @return
+     * @param activity 市场活动对象
+     * @return 添加条数
      */
-    int updateByPrimaryId(Activity record);
+    int insertActivity(Activity activity);
+
+    /**
+     * 保存创建的多个市场活动
+     *
+     * @param activity 市场活动对象
+     * @return 添加成功条数
+     */
+    int insertActivityByList(List<Activity> activity);
+
+
+    /**
+     * 修改数据
+     *
+     * @param activity 市场活动对象
+     * @return 修改条数
+     */
+    int updateByPrimaryId(Activity activity);
+
 
     /**
      * 根据多个id删除数据
      *
-     * @param ids
-     * @return
+     * @param ids id数组
+     * @return 删除条数
      */
     int deleteActivityByIds(String[] ids);
 
-    /**
-     * 查询详细的所有市场活动
-     *
-     * @return
-     */
-    List<Activity> selectActivityForDetail();
+
 }

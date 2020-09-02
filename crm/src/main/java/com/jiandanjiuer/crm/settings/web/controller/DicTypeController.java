@@ -60,7 +60,7 @@ public class DicTypeController {
         DicType dicType = dicTypeService.queryDicTypeByCode(code);
         if (dicType != null) {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            returnObject.setMessage("编码已经存在");
+            returnObject.setMsg("编码已经存在");
         }
         return returnObject;
     }
@@ -83,12 +83,12 @@ public class DicTypeController {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
                 //保存失败
-                returnObject.setMessage("数据保存失败");
+                returnObject.setMsg("数据保存失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
             //保存失败
-            returnObject.setMessage("数据保存失败，出现异常");
+            returnObject.setMsg("数据保存失败，出现异常");
         }
         return returnObject;
     }
@@ -108,11 +108,11 @@ public class DicTypeController {
             if (i > 0) {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject.setMessage("删除数据失败");
+                returnObject.setMsg("删除数据失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject.setMessage("删除数据失败，出现异常");
+            returnObject.setMsg("删除数据失败，出现异常");
         }
         return returnObject;
     }
@@ -145,11 +145,11 @@ public class DicTypeController {
             if (i > 0) {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject.setMessage("数据修改失败");
+                returnObject.setMsg("数据修改失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject.setMessage("数据修改失败，出现异常");
+            returnObject.setMsg("数据修改失败，出现异常");
         }
         return returnObject;
     }

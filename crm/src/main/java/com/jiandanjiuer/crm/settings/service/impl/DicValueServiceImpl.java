@@ -3,6 +3,7 @@ package com.jiandanjiuer.crm.settings.service.impl;
 import com.jiandanjiuer.crm.settings.domain.DicValue;
 import com.jiandanjiuer.crm.settings.mapper.DicValueMapper;
 import com.jiandanjiuer.crm.settings.service.DicValueService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +13,11 @@ import java.util.List;
  * @author 简单
  * @date 2020/8/12
  */
-@Service("dicValueService")
+@Service
+@RequiredArgsConstructor
 public class DicValueServiceImpl implements DicValueService {
 
-    @Autowired
-    private DicValueMapper dicValueMapper;
+    private final DicValueMapper dicValueMapper;
 
     /**
      * 查询数据值

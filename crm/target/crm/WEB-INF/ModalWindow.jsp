@@ -91,17 +91,17 @@
             let confirmPwd = $.trim($("#confirmPwd").val())
             //判断参数
             $("#aConfirmPwd").html("")
-            if (oldPwd == "") {
+            if (!oldPwd) {
                 $("#aOldPwd").html("原密码不能为空")
                 return;
             }
             $("#aOldPwd").html("")
-            if (newPwd == "") {
+            if (!newPwd) {
                 $("#aNewPwd").html("新密码不能为空")
                 return;
             }
             $("#aNewPwd").html("")
-            if (confirmPwd == "") {
+            if (!confirmPwd) {
                 $("#aConfirmPwd").html("确认密码不能为空")
                 return;
             }
@@ -111,13 +111,13 @@
                 return
             }
             let id = "${sessionScope.sessionUser.id}"
-            $.post("editUserPassword.do", {id: id, oldPwd: oldPwd, newPwd: newPwd}, (data) => {
+            $.post("settings/qx/user/editUserPassword", {id: id, oldPwd: oldPwd, newPwd: newPwd}, (data) => {
                 if (data.code == "1") {
                     $("#editPwdModal").modal("hide")
                     alert("修改成功,请重新登入")
                     location = ""
                 } else {
-                    alert(data.message)
+                    alert(data.msg)
                 }
             }, "json")
         })
@@ -144,7 +144,21 @@
         </div>
     </div>
 </div>
-
+<script type="text/javascript">
+    $(() => {
+        $("#logoutBtn").click(function () {
+            window.location.href = "settings/qx/user/logout";
+        })
+        //回车事件
+        $(window).keydown(e => {
+            if (e.key == "enter") {
+                if (!$("#exitModal").is(":hidden")) {
+                    $("#logoutBtn").click()
+                }
+            }
+        })
+    })
+</script>
 <!-- 顶部 -->
 <div id="top" style="height: 50px; background-color: #3C3C3C; width: 100%;">
     <div style="position: absolute; top: 5px; left: 0px; font-size: 30px; font-weight: 400; color: white; font-family: 'times new roman'">

@@ -36,7 +36,7 @@
                         if (data.code == "1") {
                             window.location.href = "settings/dictionary/value/index.do"
                         } else {
-                            alert(data.message)
+                            alert(data.msg)
                         }
                     }
                 })

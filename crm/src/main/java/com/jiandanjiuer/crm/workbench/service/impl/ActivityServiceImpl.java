@@ -20,29 +20,6 @@ public class ActivityServiceImpl implements ActivityService {
     private ActivityMapper activityMapper;
 
     /**
-     * 保存创建的市场活动
-     *
-     * @param activity
-     * @return
-     */
-    @Override
-    public int saveCreateActivity(Activity activity) {
-        System.out.println(activity);
-        return activityMapper.insertActivity(activity);
-    }
-
-    /**
-     * 修改市场活动数据
-     *
-     * @param activity
-     * @return
-     */
-    @Override
-    public int modifyActivityById(Activity activity) {
-        return activityMapper.updateByPrimaryId(activity);
-    }
-
-    /**
      * 根据条件分页查询数据
      *
      * @param map
@@ -62,6 +39,17 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> findActivityForDetail() {
         return activityMapper.selectActivityForDetail();
+    }
+
+    /**
+     * 根据多个id查询详细的所有市场活动
+     *
+     * @param ids id数组
+     * @return 详细市场活动集合
+     */
+    @Override
+    public List<Activity> findActivityForDetailByIds(String[] ids) {
+        return activityMapper.selectActivityForDetailByIds(ids);
     }
 
     /**
@@ -85,6 +73,50 @@ public class ActivityServiceImpl implements ActivityService {
     public Activity queryActivityById(String id) {
         return activityMapper.selectByPrimaryKey(id);
     }
+
+
+    /**
+     * 保存创建的市场活动
+     *
+     * @param activity
+     * @return
+     */
+    @Override
+    public int saveCreateActivity(Activity activity) {
+        System.out.println(activity);
+        return activityMapper.insertActivity(activity);
+    }
+
+    /**
+     * 保存创建的多个市场活动
+     *
+     * @param activityList 市场活动对象
+     * @return 添加条数
+     */
+    @Override
+    public int insertActivityList(List<Activity> activityList) {
+        int p = 0;
+        for (Activity activity : activityList) {
+            int i = activityMapper.insertActivity(activity);
+            if (i > 0) {
+                p++;
+            }
+        }
+        return p;
+    }
+
+
+    /**
+     * 修改市场活动数据
+     *
+     * @param activity
+     * @return
+     */
+    @Override
+    public int modifyActivityById(Activity activity) {
+        return activityMapper.updateByPrimaryId(activity);
+    }
+
 
     /**
      * 根据多个id删除数据

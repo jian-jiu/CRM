@@ -2,23 +2,18 @@ package com.jiandanjiuer.crm.settings.web.controller;
 
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
-import com.jiandanjiuer.crm.commons.utils.DateUtils;
-import com.jiandanjiuer.crm.settings.domain.User;
+import com.jiandanjiuer.crm.commons.utils.Md5Util;
 import com.jiandanjiuer.crm.settings.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import com.jiandanjiuer.crm.settings.web.exception.LoginException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 用户操作
@@ -26,145 +21,95 @@ import java.util.Map;
  * @author 简单
  * @date 2020/7/31 21:10
  */
-@Controller
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/settings/qx/user/")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
-    private Cookie cookie;
+    private final UserService userService;
+    private final HttpServletResponse response;
+    private final HttpSession session;
 
     /**
      * 跳转到登入界面
      *
-     * @return
+     * @return 登入视图
      */
-    @RequestMapping("/settings/qx/user/toLogin.do")
-    public String toLogin() {
-        return "settings/qx/user/login";
+    @RequestMapping("toLogin")
+    public ModelAndView toLogin(ModelAndView modelAndView) {
+        modelAndView.setViewName("settings/qx/user/login");
+        return modelAndView;
     }
 
     /**
      * 用户登入
      *
-     * @param loginAct
-     * @param loginPwd
-     * @param isRemPew
-     * @param request
-     * @return
+     * @param loginName 登入名
+     * @param loginPwd  登入密码
+     * @param autoLogin 免登入
+     * @return 结果集
      */
-    @RequestMapping("/settings/qx/user/login.do")
-    public @ResponseBody
-    Object login(String loginAct, String loginPwd, String isRemPew,
-                 HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        ReturnObject returnObject = new ReturnObject();
-        if (loginAct != null && loginPwd != null) {
-            //封装参数
-            Map<String, Object> map = new HashMap<>(2);
-            map.put("loginAct", loginAct);
-            map.put("loginPwd", loginPwd);
-
-            //调用方法，查询用户
-            User user = userService.queryUserByLoginAndPwd(map);
-
-            //根据查询结果,生成响应信息
-            if (user == null) {
-                //用户名或者密码错误,登入失败
-                //code = 0 ,message = "用户名或者密码错误"
-                returnObject.setMessage("用户名或者密码错误");
-            } else {
-                if (DateUtils.formatDateTime(new Date()).compareTo(user.getExpireTime()) > 0) {
-                    //账号已经过期,登入失败
-                    //code = 0 ,message = "账号已经过期"
-                    returnObject.setMessage("账号已经过期");
-
-                } else if ("0".equals(user.getLockState())) {
-                    //账号被锁定，登入失败
-                    //code = 0 ,message = "账号被锁定"
-                    returnObject.setMessage("账号被锁定");
-
-                } else if (!user.getAllowIps().contains(request.getRemoteAddr())) {
-                    //ip受限,登入失败
-                    //code = 0 ,message = "ip受限"
-                    returnObject.setMessage("ip受限");
-
-                } else {
-                    //登入成功
-                    //code = 1
-                    returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-
-                    //把用户信息保存到session中
-                    session.setAttribute(Contents.SESSION_USER, user);
-
-                    if ("true".equals(isRemPew)) {
-                        cookie = new Cookie("loginAct", loginAct);
-                        cookie.setMaxAge(60 * 60 * 24 * 10);
-                        response.addCookie(cookie);
-
-                        cookie = new Cookie("loginPwd", loginPwd);
-                        cookie.setMaxAge(60 * 60 * 24 * 10);
-
-                    } else {
-                        cookie = new Cookie("loginAct", "0");
-                        cookie.setMaxAge(0);
-                        response.addCookie(cookie);
-
-                        cookie = new Cookie("loginPwd", "0");
-                        cookie.setMaxAge(0);
-                    }
-                    response.addCookie(cookie);
-                }
-            }
-        } else {
-            returnObject.setMessage("用户名或者密码错误");
-        }
-        return returnObject;
+    @RequestMapping("login")
+    public Object login(String loginName, String loginPwd, String autoLogin) throws LoginException {
+        //调用方法，查询用户
+        userService.findUserByLogin(loginName, loginPwd, autoLogin);
+        return ReturnObject.getReturnObject();
     }
 
     /**
      * 退出登入
      *
-     * @param response
-     * @param session
-     * @return
+     * @return 登入视图
      */
-    @RequestMapping("/settings/qx/user/logout.do")
-    public String logout(HttpServletResponse response, HttpSession session) {
-        System.out.println("==========================================");
+    @RequestMapping("logout")
+    public ModelAndView logout(ModelAndView modelAndView) {
+        //清空账号
+        Cookie cookie;
         cookie = new Cookie("loginAct", "0");
         cookie.setMaxAge(0);
+        cookie.setPath("/");
         response.addCookie(cookie);
-
+        //清空密码
         cookie = new Cookie("loginPwd", "0");
         cookie.setMaxAge(0);
+        cookie.setPath("/");
         response.addCookie(cookie);
-
+        //使该会话无效
         session.invalidate();
-
-        return "redirect:/";
+        //重定向回根
+        response.encodeRedirectURL("/");
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
     }
 
     /**
      * 修改密码
      *
-     * @param id
-     * @param oldPwd
-     * @param newPwd
-     * @return
+     * @param id     用户id
+     * @param oldPwd 原密码
+     * @param newPwd 新密码
+     * @return 结果集
      */
-    @RequestMapping("/editUserPassword.do")
-    public @ResponseBody
-    Object editUserPassword(@RequestParam() String id, String oldPwd, String newPwd) {
-        ReturnObject returnObject = new ReturnObject();
-        if (oldPwd.equals(userService.findUserPasswordById(id))) {
-            int i = userService.modifyUserPasswordById(id, newPwd);
+    @RequestMapping("/editUserPassword")
+    public Object editUserPassword(@RequestParam() String id, String oldPwd, String newPwd) {
+        Object returnObject;
+        String md5OldPwd = Md5Util.getMd5(oldPwd);
+        if (md5OldPwd.equals(userService.findUserPasswordById(id))) {
+            String md5NewPwd = Md5Util.getMd5(newPwd);
+            int i = userService.modifyUserPasswordById(id, md5NewPwd);
             if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject = ReturnObject.getReturnObject();
+                Cookie cookie = new Cookie("loginPwd", "0");
+                cookie.setMaxAge(0);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                //使该会话无效
+                session.invalidate();
             } else {
-                returnObject.setMessage("修改失败");
+                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "修改失败");
             }
         } else {
-            returnObject.setMessage("原密码不正确");
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "原密码不正确");
         }
         return returnObject;
     }

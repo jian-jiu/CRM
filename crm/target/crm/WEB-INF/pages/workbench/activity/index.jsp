@@ -99,8 +99,8 @@
             queryActivityForPageByCondition(1, 10)
 
             //回车事件
-            $(window).keydown(function (e) {
-                if (e.keyCode == 13) {
+            $(window).keydown(e => {
+                if (e.key == "Enter") {
                     if (!$("#createActivityModal").is(":hidden")) {
                         $("#saveCreateActivityBtn").click()
                     }
@@ -125,15 +125,15 @@
                 let cost = $.trim($("#create-cost").val());
                 let description = $.trim($("#create-description").val());
                 //判断参数
-                if (owner == "") {
+                if (!owner) {
                     alert("所有者不能为空")
                     return
                 }
-                if (name == "") {
+                if (!name) {
                     alert("名称不能为空")
                     return
                 }
-                if (cost == "") {
+                if (!cost) {
                     alert("成本不能为空")
                     return;
                 }
@@ -261,15 +261,15 @@
                 let cost = $.trim($("#edit-cost").val())
                 let description = $.trim($("#edit-describe").val())
                 //判断参数
-                if (owner == "") {
+                if (!owner) {
                     alert("所有者不能为空")
                     return
                 }
-                if (name == "") {
+                if (!name) {
                     alert("名称不能为空")
                     return;
                 }
-                if (cost == "") {
+                if (!cost) {
                     alert("成本不能为空")
                     return;
                 }
@@ -288,7 +288,7 @@
                             queryActivityForPageByCondition($("#demo_pag1").bs_pagination('getOption', 'currentPage'), $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
                             $("#editActivityModal").modal('hide')
                         } else {
-                            alert(data.message)
+                            alert(data.msg)
                         }
                     },
                     'json'
@@ -299,7 +299,7 @@
             $("#deleteActivityBtn").click(() => {
                 let checkId = $("#tBody input[type='checkbox']:checked")
                 if (checkId.size() < 1) {
-                    alert("每次至少删除一个数据")
+                    alert("每次至少删除一条数据")
                     return;
                 }
                 let ids = ""
@@ -312,7 +312,7 @@
                     if (data.code == "1") {
                         queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
                     } else {
-                        alert(data.message)
+                        alert(data.msg)
                     }
                 }, 'json')
             })
@@ -320,6 +320,38 @@
             //批量导出市场活动
             $("#exportActivityAllBtn").click(() => {
                 location = "workbench/activity/downloadsActivity"
+            })
+
+            //选择导出市场活动
+            $("#exportActivityXzBtn").click(() => {
+                let checkId = $("#tBody input[type='checkbox']:checked")
+                if (checkId.size() < 1) {
+                    alert("每次至少登出一条数据")
+                    return;
+                }
+                let ids = ""
+                $.each(checkId, (index, object) => {
+                    ids += "ids=" + object.value + "&"
+                })
+                ids = ids.substr(0, ids.length - 1)
+                location = "workbench/activity/downloadsActivityByIds?" + ids
+            })
+
+            //导入市场活动
+            $("#importActivityBtn").click(() => {
+                alert(1)
+                $.ajax({
+                    url: "workbench/activity/fileupload",
+                    data: $("#activityFile").val(),
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: 'multipart/form-data',
+                    traditional: false,
+                    processData: false,
+                    success(data) {
+
+                    }
+                })
             })
         })
     </script>
@@ -474,7 +506,7 @@
                     请选择要上传的文件：<small style="color: gray;">[仅支持.xls或.xlsx格式]</small>
                 </div>
                 <div style="position: relative;top: 40px; left: 50px;">
-                    <input type="file" id="activityFile">
+                    <input type="file" id="activityFile" name="myFile">
                 </div>
                 <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;">
                     <h3>重要提示</h3>

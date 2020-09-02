@@ -245,6 +245,18 @@
         from tbl_user
         where id = #{id}
     </select>
+    <select id="selectUserByLoginName" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_user
+        where login_act = #{loginName}
+    </select>
+    <select id="selectUserById" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_user
+        where id = #{id}
+    </select>
 
     <update id="updateUserPasswordById" parameterType="string">
         update tbl_user

@@ -15,7 +15,7 @@ import java.util.List;
  * @author 简单
  * @date 2020/8/7 20:04
  */
-@Service("dicTypeService")
+@Service
 public class DicTypeServiceImpl implements DicTypeService {
 
     @Autowired

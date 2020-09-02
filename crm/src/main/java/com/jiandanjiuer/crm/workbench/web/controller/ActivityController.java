@@ -8,6 +8,7 @@ import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,12 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,36 +58,6 @@ public class ActivityController {
     }
 
     /**
-     * 保存创建的参数
-     *
-     * @param activity
-     * @param session
-     * @return
-     */
-    @RequestMapping("/workbench/activity/saveCreateActivity.do")
-    public @ResponseBody
-    Object saveCreateActivity(Activity activity, HttpSession session) {
-        User user = (User) session.getAttribute(Contents.SESSION_USER);
-        //封装参数
-        activity.setId(UUIDUtils.getUUID());
-        activity.setCreateTime(DateUtils.formatDateTime(new Date()));
-        activity.setCreateBy(user.getId());
-        try {
-            int i = activityService.saveCreateActivity(activity);
-
-            if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            } else {
-                returnObject.setMessage("数据保存失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            returnObject.setMessage("数据保存失败，出现异常");
-        }
-        return returnObject;
-    }
-
-    /**
      * 根据数据分页查询数据
      *
      * @param pageNo
@@ -98,9 +70,8 @@ public class ActivityController {
      */
     @RequestMapping("/workbench/activity/queryActivityForPageByCondition.do")
     public @ResponseBody
-    Object queryActivityForPageByCondition(Integer pageNo, Integer pageSize,
-                                           String name, String owner,
-                                           String startDate, String endDate) {
+    Object queryActivityForPageByCondition(Integer pageNo, Integer pageSize, String name,
+                                           String owner, String startDate, String endDate) {
         //封装参数
         Map<String, Object> map = new HashMap();
         map.put("beginNo", (pageNo - 1) * pageSize);
@@ -133,55 +104,6 @@ public class ActivityController {
     }
 
     /**
-     * 修改市场活动数据
-     *
-     * @param request
-     * @param activity
-     * @return
-     */
-    @RequestMapping("/updateActivityById")
-    public @ResponseBody
-    Object updateActivityById(HttpServletRequest request, Activity activity) {
-        //设置修改时间和修改者id
-        activity.setEditTime(DateUtils.formatDateTime(new Date()));
-        User user = (User) request.getSession().getAttribute(Contents.SESSION_USER);
-        activity.setEditBy(user.getId());
-
-        ReturnObject returnObject = new ReturnObject();
-        try {
-            int i = activityService.modifyActivityById(activity);
-            if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            } else {
-                returnObject.setMessage("更新失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            returnObject.setMessage("更新失败，出现异常");
-        }
-        return returnObject;
-    }
-
-    /**
-     * 根据多个id删除数据
-     *
-     * @param ids
-     * @return
-     */
-    @RequestMapping("/removeActivityByIds")
-    private @ResponseBody
-    Object removeActivityByIds(String[] ids) {
-        ReturnObject returnObject = new ReturnObject();
-        int i = activityService.removeActivityByIds(ids);
-        if (i > 0) {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-        } else {
-            returnObject.setMessage("修改失败");
-        }
-        return returnObject;
-    }
-
-    /**
      * 下载市场活动文件
      *
      * @param request
@@ -189,6 +111,13 @@ public class ActivityController {
      */
     @RequestMapping("/workbench/activity/downloadsActivity")
     public void downloadsActivity(HttpServletRequest request, HttpServletResponse response) {
+        //获取市场活动数据
+        List<Activity> activityList = activityService.findActivityForDetail();
+        downloadsActivityUtil(request, response, activityList);
+    }
+
+    //把市场活动数据封装成excel
+    private void downloadsActivityUtil(HttpServletRequest request, HttpServletResponse response, List<Activity> activityList) {
         //设置响应类型
         response.setContentType("application/octet-stream:charset=UTF-8");
 
@@ -203,8 +132,6 @@ public class ActivityController {
             String fileName = new String("学生列表".getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
             //设置响应头信息
             response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
-            //获取市场活动数据
-            List<Activity> activityList = activityService.findActivityForDetail();
             //2 获取输出流
             outputStream = response.getOutputStream();
             //1 创建对象，对应一个excel对象
@@ -231,7 +158,7 @@ public class ActivityController {
                     HSSFRow rowI = sheet.createRow(i + 1);
                     //获取每条市场对象
                     Activity activity = activityList.get(i);
-                    //设置每列内容
+                    //设置每列内容z
                     rowI.createCell(0).setCellValue(activity.getOwner());
                     rowI.createCell(1).setCellValue(activity.getName());
                     rowI.createCell(2).setCellValue(activity.getStartDate());
@@ -277,6 +204,130 @@ public class ActivityController {
                 }
             }
         }
+    }
 
+    /**
+     * 根据多个id下载市场活动文件
+     *
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/workbench/activity/downloadsActivityByIds")
+    public void downloadsActivityByIds(HttpServletRequest request, HttpServletResponse response, String[] ids) {
+        //获取市场活动数据
+        List<Activity> activityList = activityService.findActivityForDetailByIds(ids);
+        downloadsActivityUtil(request, response, activityList);
+    }
+
+    /**
+     * 上传市场活动
+     *
+     * @param myFile
+     * @return json对象
+     * @throws IOException 异常
+     */
+    @RequestMapping("/workbench/activity/fileupload")
+    public @ResponseBody
+    Object fileupload(MultipartFile myFile) throws IOException {
+        HSSFWorkbook sheets = new HSSFWorkbook(myFile.getInputStream());
+
+        return sheets;
+    }
+
+    public static String getCellValue(HSSFCell cell) {
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case BOOLEAN:
+                return cell.getBooleanCellValue() + "";
+            case NUMERIC:
+                return cell.getNumericCellValue() + "";
+            case FORMULA:
+                return cell.getCellFormula();
+            default:
+                return "";
+        }
+    }
+
+
+    /**
+     * 保存创建的参数
+     *
+     * @param activity
+     * @param session
+     * @return
+     */
+    @RequestMapping("/workbench/activity/saveCreateActivity.do")
+    public @ResponseBody
+    Object saveCreateActivity(Activity activity, HttpSession session) {
+        User user = (User) session.getAttribute(Contents.SESSION_USER);
+        //封装参数
+        activity.setId(UUIDUtils.getUUID());
+        activity.setCreateTime(DateUtils.formatDateTime(new Date()));
+        activity.setCreateBy(user.getId());
+        try {
+            int i = activityService.saveCreateActivity(activity);
+
+            if (i > 0) {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setMsg("数据保存失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setMsg("数据保存失败，出现异常");
+        }
+        return returnObject;
+    }
+
+
+    /**
+     * 修改市场活动数据
+     *
+     * @param request
+     * @param activity
+     * @return
+     */
+    @RequestMapping("/updateActivityById")
+    public @ResponseBody
+    Object updateActivityById(HttpServletRequest request, Activity activity) {
+        //设置修改时间和修改者id
+        activity.setEditTime(DateUtils.formatDateTime(new Date()));
+        User user = (User) request.getSession().getAttribute(Contents.SESSION_USER);
+        activity.setEditBy(user.getId());
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            int i = activityService.modifyActivityById(activity);
+            if (i > 0) {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setMsg("更新失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setMsg("更新失败，出现异常");
+        }
+        return returnObject;
+    }
+
+
+    /**
+     * 根据多个id删除数据
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/removeActivityByIds")
+    private @ResponseBody
+    Object removeActivityByIds(String[] ids) {
+        ReturnObject returnObject = new ReturnObject();
+        int i = activityService.removeActivityByIds(ids);
+        if (i > 0) {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        } else {
+            returnObject.setMsg("修改失败");
+        }
+        return returnObject;
     }
 }

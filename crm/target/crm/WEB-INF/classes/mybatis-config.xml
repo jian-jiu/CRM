@@ -6,10 +6,4 @@
     <settings>
         <setting name="logImpl" value="STDOUT_LOGGING"/>
     </settings>
-    <typeAliases>
-        <package name="com.jiandanjiuer.crm.model"/>
-    </typeAliases>
-    <mappers>
-        <package name="com.jiandanjiuer.crm.mapper"/>
-    </mappers>
 </configuration>

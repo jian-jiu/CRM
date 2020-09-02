@@ -17,29 +17,66 @@ import org.springframework.stereotype.Component;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReturnObject {
+public class ReturnObject<T> {
     /**
      * 成功：1
      * 失败：0
      */
-    private String code = Contents.RETURN_OBJECT_CODE_FAIL;
+    private String code = Contents.RETURN_OBJECT_CODE_SUCCESS;
+
     /**
      * 描述信息
      */
-    private String message;
+    private String msg;
     /**
      * 返回对象
      */
-    private Object retData;
+    private T data;
 
     /**
-     * 设置code的时候进行初始化参数
      *
-     * @param code
+     * @return 默认结果集
      */
-    public void setCode(String code) {
-        message = null;
-        retData = null;
+    public static Object getReturnObject() {
+        return new ReturnObject<>();
+    }
+
+    /**
+     *
+     * @param code 结果
+     * @return 自定义结果集
+     */
+    public static Object getReturnObject(String code) {
+        return new ReturnObject<>(code);
+    }
+
+    /**
+     *
+     * @param code 结果
+     * @param msg 结果信息
+     * @return 自定义结果集
+     */
+    public static Object getReturnObject(String code, String msg) {
+        return new ReturnObject<>(code, msg);
+    }
+
+    /**
+     *
+     * @param code 结果
+     * @param msg 结果信息
+     * @param data 结果数据内容
+     * @return 自定义结果集
+     */
+    public static Object getReturnObject(String code, String msg, Object data) {
+        return new ReturnObject<>(code, msg, data);
+    }
+
+    public ReturnObject(String code) {
         this.code = code;
+    }
+
+    public ReturnObject(String code, String msg) {
+        this.code = code;
+        this.msg = msg;
     }
 }

@@ -23,7 +23,7 @@
                         if (data.code == "1") {
                             window.location.href = "settings/dictionary/type/index.do"
                         } else {
-                            alert(data.message)
+                            alert(data.msg)
                         }
                     }
                 })

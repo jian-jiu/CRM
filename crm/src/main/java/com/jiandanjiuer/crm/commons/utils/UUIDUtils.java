@@ -16,6 +16,7 @@ public class UUIDUtils {
      * @return 返回一个32位的UUID字符串
      */
     public static String getUUID() {
+        //对生成的UUID进行字符替换
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

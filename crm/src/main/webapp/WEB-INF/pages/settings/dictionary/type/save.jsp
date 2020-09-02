@@ -27,7 +27,7 @@
                         dataType: 'json',
                         success: function (data) {
                             if (data.code == "0") {
-                                alert(data.message)
+                                alert(data.msg)
                             } else {
                                 window.location.href = "settings/dictionary/type/index.do"
                             }
@@ -56,7 +56,7 @@
                 async: false,
                 success: function (data) {
                     if (data.code == "1") {
-                        $("#codeMsg").text(data.message)
+                        $("#codeMsg").text(data.msg)
                     } else {
                         $("#codeMsg").text("")
                         ret = true

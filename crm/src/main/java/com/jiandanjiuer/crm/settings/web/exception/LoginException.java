@@ -8,9 +8,7 @@ package com.jiandanjiuer.crm.settings.web.exception;
 public class LoginException extends Exception {
 
     public LoginException(String msg) {
-
         super(msg);
-
     }
 
 }

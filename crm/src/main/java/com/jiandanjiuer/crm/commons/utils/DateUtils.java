@@ -1,6 +1,5 @@
 package com.jiandanjiuer.crm.commons.utils;
 
-import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,7 +11,7 @@ import java.util.Date;
  */
 public class DateUtils {
     /**
-     * 时间初始化
+     * 时间初始化格式
      *
      * @param date 需要一个时间对象
      * @return 返回一个初始化格式之后的时间对象

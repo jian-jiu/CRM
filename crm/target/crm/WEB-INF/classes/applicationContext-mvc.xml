@@ -7,15 +7,19 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-    <!-- dispatcherServlet截获所有URL请求 -->
+    <!-- 将所有静态资源请求交给defaultServlet处理 -->
     <mvc:default-servlet-handler/>
+
+    <!-- 设置静态资源访问路径 mapping截获路径 location让他去哪里访问 cache-period缓存时间-->
+<!--    <mvc:resources mapping="/static/**" location="/static/" cache-period="#{60*60*24*10}"/>-->
+
+    <!-- 配置注解驱动 -->
+    <mvc:annotation-driven/>
 
     <!-- spring mvc 扫描包下的controller -->
     <context:component-scan base-package="com.jiandanjiuer.crm.**.controller"/>
     <context:component-scan base-package="com.jiandanjiuer.crm.commons.domain"/>
-
-    <!-- 配置注解驱动 -->
-    <mvc:annotation-driven/>
+    <context:component-scan base-package="com.jiandanjiuer.crm.**.exception"/>
 
     <!-- 配置视图解析器 -->
     <bean id="viewResolver"
@@ -33,15 +37,27 @@
             <mvc:mapping path="/settings/**"/>
             <mvc:mapping path="/workbench/**"/>
             <!--            排除拦截的请求-->
-            <mvc:exclude-mapping path="/settings/qx/user/toLogin.do"/>
-            <mvc:exclude-mapping path="/settings/qx/user/login.do"/>
+            <mvc:exclude-mapping path="/settings/qx/user/toLogin"/>
+            <mvc:exclude-mapping path="/settings/qx/user/login"/>
             <bean class="com.jiandanjiuer.crm.settings.web.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 
-    <!-- 配置文件上传解析器 id:必须是multipartResolver-->
-    <!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="#{1024*1024*80}"/>
+    <!-- 文件上传解析器 id必须是multipartResolver
+    配合依赖
+    <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.3.1</version>
+    </dependency>-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--上传文件的总大小-->
+        <property name="maxUploadSize" value="#{1024*1024*100}"/>
+        <!--默认编码-->
         <property name="defaultEncoding" value="utf-8"/>
-    </bean>-->
+        <!--&lt;!&ndash;缓冲区大小，及保持在内存中的数据大小，超过部分将保持在临时文件夹中&ndash;&gt;-->
+        <!--<property name="maxInMemorySize" value="#{1024*1024*100}" />-->
+        <!--&lt;!&ndash;一次性可以上传多个文件，这里规定每个文件的最大值&ndash;&gt;-->
+        <!--<property name="maxUploadSizePerFile" value="#{1024*1024*10}"/>-->
+    </bean>
 </beans>

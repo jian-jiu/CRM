@@ -3,10 +3,10 @@
 <html style="height: 87%;width: 99%">
 <head>
     <%@include file="../../../HeadPart.jsp" %>
-    <link rel="stylesheet" type="text/css"
+    <link type="text/css" rel="stylesheet"
           href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css"/>
-    <link rel="stylesheet" type="text/css" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
-    <link rel="stylesheet" type="text/css" href="jquery/bootstrap_3.3.0/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
+    <link type="text/css" rel="stylesheet" href="jquery/bootstrap_3.3.0/css/bootstrap.min.css">
 
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
@@ -23,24 +23,20 @@
             let startDate = $("#query-startDate").val();
             let endDate = $("#query-endDate").val();
             //发送请求
-            $.ajax({
-                url: 'workbench/activity/queryActivityForPageByCondition.do',
-                data: {
-                    pageNo: pageNo,
-                    pageSize: pageSize,
-                    name: name,
-                    owner: owner,
-                    startDate: startDate,
-                    endDate: endDate
-                },
-                type: 'post',
-                dataType: 'json',
-                success(data) {
+            $.post("workbench/activity/queryActivityForPageByCondition", {
+                pageNo: pageNo,
+                pageSize: pageSize,
+                name: name,
+                owner: owner,
+                startDate: startDate,
+                endDate: endDate
+            }, (data) => {
+                if (data.code == "1") {
                     //显示总条数，功能被取代
                     // $("#totalRowsB").text(data.totalRows)
                     //遍历activitiesList显示数据
-                    var htmlStr = ""
-                    $.each(data.activitiesList, (index, object) => {
+                    let htmlStr = "";
+                    $.each(data.data.activitiesList, (index, object) => {
                         htmlStr += "<tr class=\"active\">"
                         htmlStr += "<td><input type=\"checkbox\" value=\"" + object.id + "\"/></td>"
                         htmlStr += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + object.name + "</a></td>"
@@ -64,18 +60,16 @@
 
                     $("#checkAll").prop("checked", false)
 
-                    var totalPages = 0
-
-                    if (data.totalRows % pageSize == 0) {
-                        totalPages = data.totalRows / pageSize
+                    let totalPages = 0;
+                    if (data.data.totalRows % pageSize == 0) {
+                        totalPages = data.data.totalRows / pageSize
                     } else {
-                        totalPages = parseInt(data.totalRows / pageSize) + 1
+                        totalPages = parseInt(data.data.totalRows / pageSize) + 1
                     }
-
                     $("#demo_pag1").bs_pagination({
                         currentPage: pageNo,//当前页
                         rowsPerPage: pageSize,//每有显示条数
-                        totalRows: data.totalRows,//总条数
+                        totalRows: data.data.totalRows,//总条数
                         totalPages: totalPages,//总页数
 
                         visiblePageLinks: 5,//显示的翻页卡片数
@@ -87,24 +81,87 @@
                         //每次切换页号对会触发函数，函数那返回切换后的页号和每页显示条数
                         onChangePage: (e, pageObj) => {
                             queryActivityForPageByCondition(pageObj.currentPage, pageObj.rowsPerPage)
-                        },
+                        }
                     })
+                } else {
+                    alert(data.msg)
                 }
-            })
+            }, "json")
         }
 
         //窗口加载完毕
-        $(function () {
+        $(() => {
+            //模态窗口对象
+            let createActivityModal = $("#createActivityModal")
+            let editActivityModal = $("#editActivityModal")
+            let importActivityModal = $("#importActivityModal")
+
+            //分页容器
+            let demo = $("#demo_pag1")
+
+            //确定保存按钮
+            let saveCreateActivityBtn = $("#saveCreateActivityBtn")
+            //确定修改按钮
+            let updateActivityBtn = $("#updateActivityBtn")
+            //查询按钮
+            let queryActivityBtn = $("#queryActivityBtn")
+
             //窗口加载完毕获取数据
             queryActivityForPageByCondition(1, 10)
-
+            //设置创建日期样式
+            $(".upDate").datetimepicker({
+                language: 'zh-CN',//语言
+                format: 'yyyy-mm-dd',//日期格式
+                minView: 'month',//选择器上能选择的最小日期
+                initialDate: new Date(),//设置默认时间
+                autoclose: true,//单击后是否关闭
+                todayBtn: true,//每次打开是否显示当前时间
+                clearBtn: true,//是否显示清空按钮
+                container: '#createActivityModal'
+            })
+            //设置查询日期样式
+            $(".queryDate").datetimepicker({
+                language: 'zh-CN',//语言
+                format: 'yyyy-mm-dd',//日期格式
+                minView: 'month',//选择器上能选择的最小日期
+                initialDate: new Date(),//设置默认时间
+                autoclose: true,//单击后是否关闭
+                todayBtn: true,//每次打开是否显示当前时间
+                clearBtn: true,//是否显示清空按钮
+                container: '#queryView'
+            })
+            //设置编辑日期样式
+            $(".editDate").datetimepicker({
+                language: 'zh-CN',//语言
+                format: 'yyyy-mm-dd',//日期格式
+                minView: 'month',//选择器上能选择的最小日期
+                initialDate: new Date(),//设置默认时间
+                autoclose: true,//单击后是否关闭
+                todayBtn: true,//每次打开是否显示当前时间
+                clearBtn: true,//是否显示清空按钮
+                container: '#editActivityModal'
+            })
             //回车事件
             $(window).keydown(e => {
                 if (e.key == "Enter") {
-                    if (!$("#createActivityModal").is(":hidden")) {
-                        $("#saveCreateActivityBtn").click()
+                    if (!createActivityModal.is(":hidden")) {
+                        saveCreateActivityBtn.click()
+                    } else if (!editActivityModal.is(":hidden")) {
+                        updateActivityBtn.click()
+                    } else {
+                        queryActivityBtn.click()
                     }
                 }
+            })
+
+            //给全选按钮添加事件
+            $("#checkAll").click(() => {
+                $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
+            })
+
+            //给查询按钮添加单击事件
+            queryActivityBtn.click(() => {
+                queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
             })
 
             //给创建按钮添加单击事件
@@ -116,7 +173,7 @@
             })
 
             //给保存按钮添加单击事件
-            $("#saveCreateActivityBtn").click(() => {
+            saveCreateActivityBtn.click(() => {
                 //收集参数
                 let owner = $("#create-marketActivityOwner").val();
                 let name = $.trim($("#create-marketActivityName").val());
@@ -145,74 +202,31 @@
                     }
                 }
                 //发送请求
-                $.ajax({
-                    url: 'workbench/activity/saveCreateActivity.do',
-                    data: {
-                        owner: owner,
-                        name: name,
-                        startDate: startDate,
-                        endDate: endDate,
-                        cost: cost,
-                        description: description
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success(data) {
-                        $("#createActivityModal").modal("hide")
-                        if (data.code == "1") {
-                            queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
-                        } else {
-                            alert(data.success)
-                        }
+                $.post("workbench/activity/saveCreateActivity", {
+                    owner: owner,
+                    name: name,
+                    startDate: startDate,
+                    endDate: endDate,
+                    cost: cost,
+                    description: description
+                }, (data) => {
+                    if (data.code == "1") {
+                        createActivityModal.modal("hide")
+                        queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+                    } else {
+                        alert(data.msg)
                     }
-                })
+                }, "json")
             });
 
-            //设置创建日期样式
-            $(".upDate").datetimepicker({
-                language: 'zh-CN',//语言
-                format: 'yyyy-mm-dd',//日期格式
-                minView: 'month',//选择器上能选择的最小日期
-                initialDate: new Date(),//设置默认时间
-                autoclose: true,//单击后是否关闭
-                todayBtn: true,//每次打开是否显示当前时间
-                clearBtn: true,//是否显示清空按钮
-                container: '#createActivityModal'
-            })
-
-            //设置查询日期样式
-            $(".queryDate").datetimepicker({
-                language: 'zh-CN',//语言
-                format: 'yyyy-mm-dd',//日期格式
-                minView: 'month',//选择器上能选择的最小日期
-                initialDate: new Date(),//设置默认时间
-                autoclose: true,//单击后是否关闭
-                todayBtn: true,//每次打开是否显示当前时间
-                clearBtn: true,//是否显示清空按钮
-                container: '#queryView'
-            })
-
-            //设置编辑日期样式
-            $(".editDate").datetimepicker({
-                language: 'zh-CN',//语言
-                format: 'yyyy-mm-dd',//日期格式
-                minView: 'month',//选择器上能选择的最小日期
-                initialDate: new Date(),//设置默认时间
-                autoclose: true,//单击后是否关闭
-                todayBtn: true,//每次打开是否显示当前时间
-                clearBtn: true,//是否显示清空按钮
-                container: '#editActivityModal'
-            })
-
-            //给查询按钮添加单击事件
-            $("#queryActivityBtn").click(() => {
-                queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
-            })
-
-            //给全选按钮添加事件
-            $("#checkAll").click(() => {
-                $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
-            })
+            //编辑窗口组件对象
+            let editid = $("#edit-id")
+            let editMarketActivityOwner = $("#edit-marketActivityOwner")
+            let editMarketActivityName = $("#edit-marketActivityName")
+            let editStartTime = $("#edit-startTime")
+            let editEndTime = $("#edit-endTime")
+            let editCost = $("#edit-cost")
+            let editDescribe = $("#edit-describe")
 
             //给修改按钮添加单击事件
             $("#editActivityBtn").click(() => {
@@ -227,39 +241,31 @@
                     return
                 }
                 var id = chkedIds[0].value
-                $.ajax({
-                    url: "workbench/activity/editActivity.do",
-                    data: {
-                        id: id
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success(data) {
-                        $("#edit-id").val(data.id)
-                        //给下拉框设置选择的
-                        $("#edit-marketActivityOwner").val(data.owner)
-                        $("#edit-marketActivityName").val(data.name)
-                        $("#edit-startTime").val(data.startDate)
-                        $("#edit-endTime").val(data.endDate)
-                        $("#edit-cost").val(data.cost)
-                        $("#edit-describe").val(data.name)
-
-                        //显示创建市场活动的模态窗口
-                        $("#editActivityModal").modal("show")
-                    }
-                })
+                //发送请求
+                $.post("workbench/activity/editActivity", {id: id}, (data) => {
+                    editid.val(data.id)
+                    //给下拉框设置选择的
+                    editMarketActivityOwner.val(data.owner)
+                    editMarketActivityName.val(data.name)
+                    editStartTime.val(data.startDate)
+                    editEndTime.val(data.endDate)
+                    editCost.val(data.cost)
+                    editDescribe.val(data.name)
+                    //显示创建市场活动的模态窗口
+                    editActivityModal.modal("show")
+                }, "json")
             })
 
-            //确定按钮
-            $("#updateActivityBtn").click(() => {
+            //确定修改按钮
+            updateActivityBtn.click(() => {
                 //收集参数
-                let id = $("#edit-id").val()
-                let owner = $("#edit-marketActivityOwner").val()
-                let name = $.trim($("#edit-marketActivityName").val())
-                let startDate = $("#edit-startTime").val()
-                let endDate = $("#edit-endTime").val()
-                let cost = $.trim($("#edit-cost").val())
-                let description = $.trim($("#edit-describe").val())
+                let id = editid.val()
+                let owner = editMarketActivityOwner.val()
+                let name = $.trim(editMarketActivityName.val())
+                let startDate = editStartTime.val()
+                let endDate = editEndTime.val()
+                let cost = $.trim(editCost.val())
+                let description = $.trim(editDescribe.val())
                 //判断参数
                 if (!owner) {
                     alert("所有者不能为空")
@@ -280,13 +286,13 @@
                         return;
                     }
                 }
-                $.post("updateActivityById", {
+                $.post("workbench/activity/updateActivityById", {
                         id: id, owner: owner, name: name, startDate: startDate,
                         endDate: endDate, cost: cost, description: description
                     }, (data) => {
                         if (data.code == "1") {
                             queryActivityForPageByCondition($("#demo_pag1").bs_pagination('getOption', 'currentPage'), $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
-                            $("#editActivityModal").modal('hide')
+                            editActivityModal.modal('hide')
                         } else {
                             alert(data.msg)
                         }
@@ -308,25 +314,26 @@
                 })
                 ids = ids.substr(0, ids.length - 1)
                 if (!confirm("确认删除吗？")) return
-                $.post("removeActivityByIds", ids, (data) => {
+                $.post("workbench/activity/removeActivityByIds", ids, (data) => {
                     if (data.code == "1") {
-                        queryActivityForPageByCondition(1, $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
+                        queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
                     } else {
                         alert(data.msg)
                     }
                 }, 'json')
             })
 
+
             //批量导出市场活动
             $("#exportActivityAllBtn").click(() => {
-                location = "workbench/activity/downloadsActivity"
+                location.href = "workbench/activity/downloadsActivity"
             })
 
             //选择导出市场活动
             $("#exportActivityXzBtn").click(() => {
                 let checkId = $("#tBody input[type='checkbox']:checked")
                 if (checkId.size() < 1) {
-                    alert("每次至少登出一条数据")
+                    alert("每次至少导出一条数据")
                     return;
                 }
                 let ids = ""
@@ -334,7 +341,7 @@
                     ids += "ids=" + object.value + "&"
                 })
                 ids = ids.substr(0, ids.length - 1)
-                location = "workbench/activity/downloadsActivityByIds?" + ids
+                location.href = "workbench/activity/downloadsActivityByIds?" + ids
             })
 
             //导入市场活动
@@ -349,10 +356,15 @@
                     traditional: false,
                     processData: false,
                     success(data) {
-
+                        if (data.code == "1") {
+                            importActivityModal.modal("hide")
+                        } else {
+                            alert(data.msg)
+                        }
                     }
                 })
             })
+
         })
     </script>
 </head>
@@ -469,7 +481,7 @@
                     <div class="form-group">
                         <label for="edit-cost" class="col-sm-2 control-label">成本</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-cost">
+                            <input type="number" class="form-control" id="edit-cost">
                         </div>
                     </div>
 
@@ -550,7 +562,13 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">所有者</div>
-                        <input id="query-owner" class="form-control" type="text">
+                        <%--                        <input id="query-owner" class="form-control" type="text">--%>
+                        <select class="form-control" id="query-owner" style="width: 196px   ;">
+                            <option></option>
+                            <c:forEach items="${usersList}" var="user">
+                                <option value="${user.name}">${user.name}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">

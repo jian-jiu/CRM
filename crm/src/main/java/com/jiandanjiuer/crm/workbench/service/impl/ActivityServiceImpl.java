@@ -3,7 +3,7 @@ package com.jiandanjiuer.crm.workbench.service.impl;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.mapper.ActivityMapper;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +14,10 @@ import java.util.Map;
  * @date 2020/8/17
  */
 @Service("activityService")
+@RequiredArgsConstructor
 public class ActivityServiceImpl implements ActivityService {
 
-    @Autowired
-    private ActivityMapper activityMapper;
+    private final ActivityMapper activityMapper;
 
     /**
      * 根据条件分页查询数据
@@ -95,14 +95,7 @@ public class ActivityServiceImpl implements ActivityService {
      */
     @Override
     public int insertActivityList(List<Activity> activityList) {
-        int p = 0;
-        for (Activity activity : activityList) {
-            int i = activityMapper.insertActivity(activity);
-            if (i > 0) {
-                p++;
-            }
-        }
-        return p;
+        return activityMapper.insertActivityByList(activityList);
     }
 
 

@@ -8,16 +8,17 @@ import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -34,27 +35,27 @@ import java.util.Map;
  * @author 简单
  * @date 2020/8/16
  */
-@Controller
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/workbench/activity/")
 public class ActivityController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private ReturnObject returnObject;
+    private final UserService userService;
+    private final ActivityService activityService;
 
     /**
-     * 转发到业务主页面
+     * 转发到业务主页面携带用户数据
      *
-     * @param model
-     * @return
+     * @param modelAndView ModelAndView对象
+     * @return 数据以及视图
      */
-    @RequestMapping("/workbench/activity/index.do")
-    public String index(Model model) {
+    @RequestMapping("index")
+    public ModelAndView index(ModelAndView modelAndView) {
+        //获取用户信息
         List<User> usersList = userService.queryAllUsers();
-        model.addAttribute("usersList", usersList);
-        return "workbench/activity/index";
+        modelAndView.addObject("usersList", usersList);
+        modelAndView.setViewName("workbench/activity/index");
+        return modelAndView;
     }
 
     /**
@@ -68,12 +69,12 @@ public class ActivityController {
      * @param endDate
      * @return
      */
-    @RequestMapping("/workbench/activity/queryActivityForPageByCondition.do")
-    public @ResponseBody
-    Object queryActivityForPageByCondition(Integer pageNo, Integer pageSize, String name,
-                                           String owner, String startDate, String endDate) {
+    @PostMapping("queryActivityForPageByCondition")
+    public Object queryActivityForPageByCondition(@RequestParam(defaultValue = "1") Integer pageNo,
+                                                  @RequestParam(defaultValue = "10") Integer pageSize,
+                                                  String name, String owner, String startDate, String endDate) {
         //封装参数
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> map = new HashMap(6);
         map.put("beginNo", (pageNo - 1) * pageSize);
         map.put("pageSize", pageSize);
         map.put("name", name);
@@ -84,11 +85,11 @@ public class ActivityController {
         List<Activity> activitiesList = activityService.queryActivityForPageByCondition(map);
         long totalRows = activityService.queryCountOFActivityByCondition(map);
         //响应信息
-        Map<String, Object> retMap = new HashMap();
-        retMap.put("activitiesList", activitiesList);
-        retMap.put("totalRows", totalRows);
+        map.clear();
+        map.put("activitiesList", activitiesList);
+        map.put("totalRows", totalRows);
+        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功", map);
 
-        return retMap;
     }
 
     /**
@@ -97,11 +98,11 @@ public class ActivityController {
      * @param id
      * @return
      */
-    @RequestMapping("/workbench/activity/editActivity.do")
-    public @ResponseBody
-    Object queryActivity(String id) {
+    @RequestMapping("editActivity")
+    public Object queryActivity(@RequestParam String id) {
         return activityService.queryActivityById(id);
     }
+
 
     /**
      * 下载市场活动文件
@@ -109,14 +110,20 @@ public class ActivityController {
      * @param request
      * @param response
      */
-    @RequestMapping("/workbench/activity/downloadsActivity")
+    @RequestMapping("downloadsActivity")
     public void downloadsActivity(HttpServletRequest request, HttpServletResponse response) {
         //获取市场活动数据
         List<Activity> activityList = activityService.findActivityForDetail();
         downloadsActivityUtil(request, response, activityList);
     }
 
-    //把市场活动数据封装成excel
+    /**
+     * 把市场活动数据封装成excel
+     *
+     * @param request      请求
+     * @param response     响应
+     * @param activityList 市场活动集合
+     */
     private void downloadsActivityUtil(HttpServletRequest request, HttpServletResponse response, List<Activity> activityList) {
         //设置响应类型
         response.setContentType("application/octet-stream:charset=UTF-8");
@@ -212,7 +219,7 @@ public class ActivityController {
      * @param request
      * @param response
      */
-    @RequestMapping("/workbench/activity/downloadsActivityByIds")
+    @RequestMapping("downloadsActivityByIds")
     public void downloadsActivityByIds(HttpServletRequest request, HttpServletResponse response, String[] ids) {
         //获取市场活动数据
         List<Activity> activityList = activityService.findActivityForDetailByIds(ids);
@@ -222,18 +229,21 @@ public class ActivityController {
     /**
      * 上传市场活动
      *
-     * @param myFile
+     * @param activityFile 市场活动文件
      * @return json对象
      * @throws IOException 异常
      */
-    @RequestMapping("/workbench/activity/fileupload")
-    public @ResponseBody
-    Object fileupload(MultipartFile myFile) throws IOException {
-        HSSFWorkbook sheets = new HSSFWorkbook(myFile.getInputStream());
+    @RequestMapping("fileupload")
+    public Object importActivity(MultipartFile activityFile) throws IOException {
+        HSSFWorkbook sheets = new HSSFWorkbook(activityFile.getInputStream());
 
         return sheets;
     }
 
+    /**
+     * @param cell 一行数据对象
+     * @return
+     */
     public static String getCellValue(HSSFCell cell) {
         switch (cell.getCellType()) {
             case STRING:
@@ -257,25 +267,25 @@ public class ActivityController {
      * @param session
      * @return
      */
-    @RequestMapping("/workbench/activity/saveCreateActivity.do")
-    public @ResponseBody
-    Object saveCreateActivity(Activity activity, HttpSession session) {
+    @PostMapping("saveCreateActivity")
+    public Object saveCreateActivity(Activity activity, HttpSession session) {
         User user = (User) session.getAttribute(Contents.SESSION_USER);
         //封装参数
         activity.setId(UUIDUtils.getUUID());
         activity.setCreateTime(DateUtils.formatDateTime(new Date()));
         activity.setCreateBy(user.getId());
+
+        Object returnObject;
         try {
             int i = activityService.saveCreateActivity(activity);
-
             if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject = ReturnObject.getReturnObject();
             } else {
-                returnObject.setMsg("数据保存失败");
+                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject.setMsg("数据保存失败，出现异常");
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败，出现异常");
         }
         return returnObject;
     }
@@ -288,9 +298,8 @@ public class ActivityController {
      * @param activity
      * @return
      */
-    @RequestMapping("/updateActivityById")
-    public @ResponseBody
-    Object updateActivityById(HttpServletRequest request, Activity activity) {
+    @PostMapping("updateActivityById")
+    public Object updateActivityById(HttpServletRequest request, Activity activity) {
         //设置修改时间和修改者id
         activity.setEditTime(DateUtils.formatDateTime(new Date()));
         User user = (User) request.getSession().getAttribute(Contents.SESSION_USER);
@@ -318,15 +327,14 @@ public class ActivityController {
      * @param ids
      * @return
      */
-    @RequestMapping("/removeActivityByIds")
-    private @ResponseBody
-    Object removeActivityByIds(String[] ids) {
-        ReturnObject returnObject = new ReturnObject();
+    @RequestMapping("removeActivityByIds")
+    private Object removeActivityByIds(String[] ids) {
         int i = activityService.removeActivityByIds(ids);
+        Object returnObject;
         if (i > 0) {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            returnObject = ReturnObject.getReturnObject();
         } else {
-            returnObject.setMsg("修改失败");
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "修改失败");
         }
         return returnObject;
     }

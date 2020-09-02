@@ -42,7 +42,7 @@
     <div id="navigation" style="left: 0px; width: 18%; position: relative; height: 100%; overflow:auto;">
 
         <ul id="no1" class="nav nav-pills nav-stacked">
-            <li class="liClass"><a href="workbench/index.do" target="workareaFrame"><span
+            <li class="liClass"><a href="workbench/index" target="workareaFrame"><span
                     class="glyphicon glyphicon-home"></span> 工作台</a></li>
             <%--<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span
                     class="glyphicon glyphicon-tag"></span> 动态</a></li>
@@ -50,7 +50,7 @@
                     class="glyphicon glyphicon-time"></span> 审批</a></li>
             <li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span
                     class="glyphicon glyphicon-user"></span> 客户公海</a></li>--%>
-            <li class="liClass"><a href="workbench/activity/index.do" target="workareaFrame"><span
+            <li class="liClass"><a href="workbench/activity/index" target="workareaFrame"><span
                     class="glyphicon glyphicon-play-circle"></span> 市场活动</a></li>
             <li class="liClass"><a href="clue/index.html" target="workareaFrame"><span
                     class="glyphicon glyphicon-search"></span> 线索（潜在客户）</a></li>

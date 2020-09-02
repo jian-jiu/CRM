@@ -99,7 +99,7 @@ public interface ActivityMapper {
      * 保存创建的多个市场活动
      *
      * @param activity 市场活动对象
-     * @return 添加成功条数
+     * @return 添加条数
      */
     int insertActivityByList(List<Activity> activity);
 

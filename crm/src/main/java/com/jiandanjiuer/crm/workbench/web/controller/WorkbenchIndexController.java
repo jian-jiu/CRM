@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 2020/8/4 16:38
  */
 @Controller
+@RequestMapping("/workbench/")
 public class WorkbenchIndexController {
     /**
      * 跳转到业务主界面
-     * @return
+     * @return 业务主界面
      */
-    @RequestMapping("/workbench/index.do")
+    @RequestMapping("index")
     public String index() {
         return "workbench/index";
     }

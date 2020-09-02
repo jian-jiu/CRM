@@ -174,13 +174,13 @@
                 <ul class="dropdown-menu">
                     <c:if test="${(pageContext.request.requestURL).toString().contains('settings/dictionary/index.jsp') or
                                 (pageContext.request.requestURL).toString().contains('settings/index.jsp')}">
-                        <li><a href="workbench/index.do"><span class="glyphicon glyphicon-home"></span> 工作台</a></li>
+                        <li><a href="workbench/index"><span class="glyphicon glyphicon-home"></span> 工作台</a></li>
                     </c:if>
                     <c:if test="${(pageContext.request.requestURL).toString().endsWith('workbench/index.jsp')}">
-                        <li><a href="settings/index.do"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
+                        <li><a href="settings/index"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
                     </c:if>
                     <c:if test="${(pageContext.request.requestURL).toString().endsWith('settings/dictionary/index.jsp')}">
-                        <li><a href="settings/index.do"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
+                        <li><a href="settings/index"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
                     </c:if>
                     <li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span
                             class="glyphicon glyphicon-file"></span> 我的资料</a></li>

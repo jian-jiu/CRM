@@ -4,13 +4,6 @@
 <head>
     <%@include file="../../HeadPart.jsp" %>
     <title>系统设置</title>
-    <script type="text/javascript">
-        $(function () {
-            $("#logoutBtn").click(function () {
-                window.location.href = "settings/qx/user/logout.do";
-            })
-        })
-    </script>
 </head>
 <body>
 
@@ -27,7 +20,7 @@
         <div >
             数据管理
             <br><br>
-            <a href="settings/dictionary/index.do">数据字典表</a>
+            <a href="settings/dictionary/index">数据字典表</a>
         </div>
         <%--<div style="position: relative; width: 33%; height: 50%;">
             常规

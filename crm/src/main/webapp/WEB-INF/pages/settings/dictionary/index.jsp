@@ -6,7 +6,7 @@
     <title>数据字典</title>
     <script type="text/javascript">
         //页面加载完毕
-        $(function () {
+        $(() => {
             //导航中所有文本颜色为黑色
             $(".liClass > a").css("color", "black");
 
@@ -17,7 +17,7 @@
             $(".liClass:first > a").css("color", "white");
 
             //给所有的菜单项注册鼠标单击事件
-            $(".liClass").click(function () {
+            $(".liClass").click(() => {
                 //移除所有菜单项的激活状态
                 $(".liClass").removeClass("active");
                 //导航中所有文本颜色为黑色
@@ -28,11 +28,7 @@
                 $(this).children("a").css("color", "white");
             });
 
-            window.open("settings/dictionary/type/index.do", "workareaFrame");
-
-            $("#logoutBtn").click(function () {
-                window.location.href = "settings/qx/user/logout.do";
-            })
+            window.open("settings/dictionary/type/index", "workareaFrame");
         });
     </script>
 </head>
@@ -45,9 +41,9 @@
     <div id="navigation" style="left: 0px; width: 18%; position: relative; height: 100%; overflow:auto;">
 
         <ul id="no1" class="nav nav-pills nav-stacked">
-            <li class="liClass"><a href="settings/dictionary/type/index.do" target="workareaFrame"><span
+            <li class="liClass"><a href="settings/dictionary/type/index" target="workareaFrame"><span
                     class="glyphicon glyphicon-book"></span> 字典类型</a></li>
-            <li class="liClass"><a href="settings/dictionary/value/index.do" target="workareaFrame"><span
+            <li class="liClass"><a href="settings/dictionary/value/index" target="workareaFrame"><span
                     class="glyphicon glyphicon-list"></span> 字典值</a></li>
         </ul>
 

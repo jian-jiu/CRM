@@ -4,51 +4,14 @@
 <head>
     <%@include file="../../../../HeadPart.jsp" %>
     <script type="text/javascript">
-        $(function () {
-            //给添加按钮添加事件
-            $("#createDicTypeBtn").click(function () {
-                window.location.href = "settings/dictionary/type/toSave.do"
-            })
-
-            //给删除按钮添加事件
-            $("#deleteDicTypeBtn").click(function () {
-                //收集参数
-                var chkedCodes = $("#tBody input[type='checkbox']:checked")
-                if (chkedCodes.size() == 0) {
-                    alert("请选择要删除的记录")
-                    return
-                }
-                //遍历数组获取coed
-                var coedsStr = ""
-                $.each(chkedCodes, function () {
-                    coedsStr += "code=" + this.value + "&"
-                })
-                coedsStr = coedsStr.substr(0, coedsStr.length - 1)
-                if (window.confirm("确认删除吗？")) {
-                    //发送请求
-                    $.ajax({
-                        url: 'settings/dictionary/type/deleteDicTypeByCodes.do',
-                        data: coedsStr,
-                        type: 'post',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data.code == "1") {
-                                window.location.href = "settings/dictionary/type/index.do"
-                            } else {
-                                alert(data.msg)
-                            }
-                        }
-                    })
-                }
-            })
-
+        $(() => {
             //实现全选和取消全选
-            $("#checkAll").click(function () {
+            $("#checkAll").click(() => {
                 //让列表中所有的复选框属性值和全选按钮的属性值一样
                 $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
             })
             //给所有的复选框添加单击事件
-            $("#tBody input[type='checkbox']").click(function () {
+            $("#tBody input[type='checkbox']").click(() => {
                 //获取总的复选框和选中的复选框进行对比
                 if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
                     $("#checkAll").prop("checked", true)
@@ -57,10 +20,16 @@
                 }
             })
 
+
+            //给添加按钮添加事件
+            $("#createDicTypeBtn").click(function () {
+                location.href = "settings/dictionary/type/toSave"
+            })
+
             //给编辑按钮添加事件
-            $("#editDicTypeBtn").click(function () {
-                var chkedCodes = $("#tBody input[type='checkbox']:checked")
-                if (chkedCodes.size() == 0) {
+            $("#editDicTypeBtn").click(() => {
+                let chkedCodes = $("#tBody input[type='checkbox']:checked");
+                if (!chkedCodes.size()) {
                     alert("请选择要编辑的记录")
                     return
                 }
@@ -68,9 +37,35 @@
                     alert("一次只能修改1条记录")
                     return
                 }
-                var code = chkedCodes[0].value
+                let code = chkedCodes[0].value;
 
-                window.location.href = "settings/dictionary/type/editDIcType.do?code=" + code
+                location.href = "settings/dictionary/type/editDIcType?code=" + code
+            })
+
+            //给删除按钮添加事件
+            $("#deleteDicTypeBtn").click(() => {
+                //收集参数
+                let chkedCodes = $("#tBody input[type='checkbox']:checked");
+                if (!chkedCodes.size()) {
+                    alert("请选择要删除的记录")
+                    return
+                }
+                //遍历数组获取coed
+                let coedsStr = "";
+                $.each(chkedCodes, function () {
+                    coedsStr += "code=" + this.value + "&"
+                })
+                coedsStr = coedsStr.substr(0, coedsStr.length - 1)
+                if (window.confirm("确认删除吗？")) {
+                    //发送请求
+                    $.post("settings/dictionary/type/deleteDicTypeByCodes", coedsStr, (data) => {
+                        if (data.code == "1") {
+                            location.href = "settings/dictionary/type/index"
+                        } else {
+                            alert(data.msg)
+                        }
+                    }, "json")
+                }
             })
         })
     </script>
@@ -108,7 +103,7 @@
         </tr>
         </thead>
         <tbody id="tBody">
-        <c:forEach items="${dicTypesList}" var="dt" varStatus="vs">
+        <c:forEach items="${dicTypeList}" var="dt" varStatus="vs">
             <c:if test="${vs.count%2!=0}">
                 <tr class="active">
             </c:if>

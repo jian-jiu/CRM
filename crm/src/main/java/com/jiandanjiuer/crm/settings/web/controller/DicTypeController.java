@@ -4,37 +4,40 @@ import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.settings.domain.DicType;
 import com.jiandanjiuer.crm.settings.service.DicTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 /**
- * 数据字典控制层
+ * 数据字典类型控制层
  *
  * @author 简单
  * @date 2020/8/7 20:08
  */
-@Controller
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/settings/dictionary/type/")
 public class DicTypeController {
 
-    @Autowired
-    private DicTypeService dicTypeService;
+    private final DicTypeService dicTypeService;
 
     /**
      * 跳转到数据字典工作区
      *
-     * @param model
-     * @return
+     * @param modelAndView ModelAndView对象
+     * @return 视图
      */
-    @RequestMapping("/settings/dictionary/type/index.do")
-    public String index(Model model) {
-        List<DicType> dicTypesList = dicTypeService.queryAllDicTypes();
-        model.addAttribute("dicTypesList", dicTypesList);
-        return "settings/dictionary/type/index";
+    @RequestMapping("index")
+    public ModelAndView index(ModelAndView modelAndView) {
+        //查询所有数据字典类型
+        List<DicType> dicTypeList = dicTypeService.queryAllDicTypes();
+        modelAndView.addObject("dicTypeList", dicTypeList);
+        modelAndView.setViewName("settings/dictionary/type/index");
+        return modelAndView;
     }
 
     /**
@@ -42,9 +45,37 @@ public class DicTypeController {
      *
      * @return
      */
-    @RequestMapping("/settings/dictionary/type/toSave.do")
-    public String toSave() {
-        return "settings/dictionary/type/save";
+    @RequestMapping("toSave")
+    public ModelAndView toSave(ModelAndView modelAndView) {
+        modelAndView.setViewName("settings/dictionary/type/save");
+        return modelAndView;
+    }
+
+    /**
+     * 根据code查询所有数据
+     * 跳转到修改界面
+     *
+     * @param code
+     * @return
+     */
+    @RequestMapping("editDIcType")
+    public ModelAndView editDIcType(String code, ModelAndView modelAndView) {
+        DicType dicType = dicTypeService.queryDicTypeByCode(code);
+        modelAndView.addObject("dicType", dicType);
+        modelAndView.setViewName("settings/dictionary/type/edit");
+        return modelAndView;
+    }
+
+
+    /**
+     * 查询所有数据字典类型
+     *
+     * @return 数据字典类型List集合
+     */
+    @RequestMapping("findDicType")
+    public Object findDicType() {
+        List<DicType> dicTypeList = dicTypeService.queryAllDicTypes();
+        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功", dicTypeList);
     }
 
     /**
@@ -53,14 +84,14 @@ public class DicTypeController {
      * @param code
      * @return
      */
-    @RequestMapping("/settings/dictionary/type/checkCode.do")
-    public @ResponseBody
-    Object checkCode(String code) {
-        ReturnObject returnObject = new ReturnObject();
+    @RequestMapping("checkCode")
+    public Object checkCode(String code) {
+        Object returnObject;
         DicType dicType = dicTypeService.queryDicTypeByCode(code);
-        if (dicType != null) {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            returnObject.setMsg("编码已经存在");
+        if (dicType == null) {
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "");
+        } else {
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "编码已经存在");
         }
         return returnObject;
     }
@@ -71,24 +102,43 @@ public class DicTypeController {
      * @param dicType
      * @return
      */
-    @RequestMapping("/settings/dictionary/type/saveCreateDicType.do")
-    public @ResponseBody
-    Object saveCreateDicType(DicType dicType) {
-        ReturnObject returnObject = new ReturnObject();
+    @PostMapping("saveCreateDicType")
+    public Object saveCreateDicType(DicType dicType) {
+        Object returnObject;
         try {
             //添加数据
             int i = dicTypeService.saveCreateDicType(dicType);
             if (i > 0) {
-                //保存成功
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject = ReturnObject.getReturnObject();
             } else {
-                //保存失败
-                returnObject.setMsg("数据保存失败");
+                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            //保存失败
-            returnObject.setMsg("数据保存失败，出现异常");
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败，出现异常");
+        }
+        return returnObject;
+    }
+
+    /**
+     * 修改数据字典
+     *
+     * @param dicType
+     * @return
+     */
+    @PostMapping("saveEditDicType")
+    public Object saveEditDicType(DicType dicType) {
+        Object returnObject;
+        try {
+            int i = dicTypeService.saveEditDicType(dicType);
+            if (i > 0) {
+                returnObject = ReturnObject.getReturnObject();
+            } else {
+                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据修改失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据修改失败，出现异常");
         }
         return returnObject;
     }
@@ -99,57 +149,19 @@ public class DicTypeController {
      * @param code
      * @return
      */
-    @RequestMapping("/settings/dictionary/type/deleteDicTypeByCodes.do")
-    public @ResponseBody
-    Object deleteDicTypeByCodes(String[] code) {
-        ReturnObject returnObject = new ReturnObject();
+    @PostMapping("deleteDicTypeByCodes")
+    public Object deleteDicTypeByCodes(String[] code) {
+        Object returnObject;
         try {
             int i = dicTypeService.deleteDicTypeByCoeds(code);
             if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+                returnObject = ReturnObject.getReturnObject();
             } else {
-                returnObject.setMsg("删除数据失败");
+                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "删除数据失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject.setMsg("删除数据失败，出现异常");
-        }
-        return returnObject;
-    }
-
-    /**
-     * 根据code查询所有数据
-     * 跳转到修改界面
-     *
-     * @param code
-     * @return
-     */
-    @RequestMapping("/settings/dictionary/type/editDIcType.do")
-    public String editDIcType(String code, Model model) {
-        DicType dicType = dicTypeService.queryDicTypeByCode(code);
-        model.addAttribute("dicType", dicType);
-        return "settings/dictionary/type/edit";
-    }
-
-    /**
-     * 修改数据字典
-     * @param dicType
-     * @return
-     */
-    @RequestMapping("/settings/dictionary/type/saveEditDicType.do")
-    public @ResponseBody
-    Object saveEditDicType(DicType dicType) {
-        ReturnObject returnObject = new ReturnObject();
-        try {
-            int i = dicTypeService.saveEditDicType(dicType);
-            if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            } else {
-                returnObject.setMsg("数据修改失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            returnObject.setMsg("数据修改失败，出现异常");
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "删除数据失败，出现异常");
         }
         return returnObject;
     }

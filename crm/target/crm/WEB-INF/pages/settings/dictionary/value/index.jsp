@@ -4,51 +4,14 @@
 <head>
     <%@include file="../../../../HeadPart.jsp" %>
     <script type="text/javascript">
-        $(function () {
-            //给创建按钮添加事件
-            $("#createDicValueBtn").click(function () {
-                window.location.href = "settings/dictionary/value/toSave.do"
-            })
-
-            //给删除按钮添加事件
-            $("#deleteDicValueBtn").click(function () {
-                //收集参数
-                var chkedIds = $("#tBody input[type='checkbox']:checked")
-                if (chkedIds.size() == 0) {
-                    alert("请选择要删除的记录")
-                    return
-                }
-                //遍历数组获取coed
-                var idsStr = ""
-                $.each(chkedIds, function () {
-                    idsStr += "id=" + this.value + "&"
-                })
-                idsStr = idsStr.substr(0, idsStr.length - 1)
-                if (window.confirm("确认删除吗？")) {
-                    //发送请求
-                    $.ajax({
-                        url: 'settings/dictionary/value/deleteDicValueByIds.do',
-                        data: idsStr,
-                        type: 'post',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data.code == "1") {
-                                window.location.href = "settings/dictionary/value/index.do"
-                            } else {
-                                alert(data.msg)
-                            }
-                        }
-                    })
-                }
-            })
-
+        $(() => {
             //实现全选和取消全选
-            $("#chkedAll").click(function () {
+            $("#chkedAll").click(() => {
                 //让列表中所有的复选框属性值和全选按钮的属性值一样
                 $("#tBody input[type='checkbox']").prop("checked", $("#chkedAll").prop("checked"))
             })
             //给所有的复选框添加单击事件
-            $("#tBody input[type='checkbox']").click(function () {
+            $("#tBody input[type='checkbox']").click(() => {
                 //获取总的复选框和选中的复选框进行对比
                 if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
                     $("#chkedAll").prop("checked", true)
@@ -57,10 +20,16 @@
                 }
             })
 
+
+            //给创建按钮添加事件
+            $("#createDicValueBtn").click(() => {
+                location.href = "settings/dictionary/value/toSave"
+            })
+
             //给编辑按钮添加事件
-            $("#editDicValueBtn").click(function () {
+            $("#editDicValueBtn").click(() => {
                 var chkedIds = $("#tBody input[type='checkbox']:checked")
-                if (chkedIds.size() == 0) {
+                if (!chkedIds.size()) {
                     alert("请选择要编辑的记录")
                     return
                 }
@@ -70,7 +39,33 @@
                 }
                 var id = chkedIds[0].value
 
-                window.location.href = "settings/dictionary/value/editDIcValue.do?id=" + id
+                location.href = "settings/dictionary/value/editDicValue?id=" + id
+            })
+
+            //给删除按钮添加事件
+            $("#deleteDicValueBtn").click(() => {
+                //收集参数
+                let chkedIds = $("#tBody input[type='checkbox']:checked");
+                if (!chkedIds.size()) {
+                    alert("请选择要删除的记录")
+                    return
+                }
+                //遍历数组获取coed
+                let idsStr = "";
+                $.each(chkedIds, () => {
+                    idsStr += "id=" + this.value + "&"
+                })
+                idsStr = idsStr.substr(0, idsStr.length - 1)
+                if (window.confirm("确认删除吗？")) {
+                    //发送请求
+                    $.post("settings/dictionary/value/deleteDicValueByIds", idsStr, (data) => {
+                        if (data.code == "1") {
+                            location.href = "settings/dictionary/value/index"
+                        } else {
+                            alert(data.msg)
+                        }
+                    }, "json")
+                }
             })
         })
     </script>

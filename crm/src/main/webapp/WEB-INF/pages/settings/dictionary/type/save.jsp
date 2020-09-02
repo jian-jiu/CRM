@@ -5,61 +5,55 @@
     <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
           rel="stylesheet"/>
     <script type="text/javascript">
-        $(function () {
+        $(() => {
             $("#create-code").blur(function () {
                 checkCode()
             })
 
-            $("#saveCreateDicTypeBtn").click(function () {
-                var code = $.trim($("#create-code").val())
-                var name = $.trim($("#create-name").val())
-                var description = $.trim($("#create-description").val())
+            $("#saveCreateDicTypeBtn").click(() => {
+                let code = $.trim($("#create-code").val());
+                let name = $.trim($("#create-name").val());
+                let description = $.trim($("#create-description").val());
                 if (checkCode()) {
                     //发送保存数据
-                    $.ajax({
-                        url: "settings/dictionary/type/saveCreateDicType.do",
-                        data: {
-                            code: code,
-                            name: name,
-                            description: description
-                        },
-                        type: 'post',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data.code == "0") {
-                                alert(data.msg)
-                            } else {
-                                window.location.href = "settings/dictionary/type/index.do"
-                            }
+                    $.post("settings/dictionary/type/saveCreateDicType", {
+                        code: code,
+                        name: name,
+                        description: description
+                    }, (data) => {
+                        if (data.code == "1") {
+                            location.href = "settings/dictionary/type/index"
+                        } else {
+                            alert(data.msg)
                         }
-                    })
+                    }, "json")
                 }
             })
         })
 
         function checkCode() {
-            var code = $.trim($("#create-code").val())
-            if (code == "") {
+            let code = $.trim($("#create-code").val());
+            if (!code) {
                 $("#codeMsg").text("编码不能为空")
                 return false
             }
             $("#codeMsg").text("")
             //发送请求
-            var ret = false
+            let ret = false;
             $.ajax({
-                url: 'settings/dictionary/type/checkCode.do',
+                url: "settings/dictionary/type/checkCode",
                 data: {
                     code: code
                 },
                 type: 'post',
                 dataType: 'json',
                 async: false,
-                success: function (data) {
+                success(data) {
                     if (data.code == "1") {
-                        $("#codeMsg").text(data.msg)
-                    } else {
                         $("#codeMsg").text("")
                         ret = true
+                    } else {
+                        $("#codeMsg").text(data.msg)
                     }
                 }
             })

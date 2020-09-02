@@ -16,7 +16,7 @@ public class DictionaryIndexController {
      *
      * @return
      */
-    @RequestMapping("/settings/dictionary/index.do")
+    @RequestMapping("/settings/dictionary/index")
     public String index() {
         return "/settings/dictionary/index";
     }

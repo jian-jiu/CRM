@@ -5,28 +5,22 @@
     <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
           rel="stylesheet"/>
     <script type="text/javascript">
-        $(function () {
-            $("#saveEditDIcTypeBtn").click(function () {
-                var code = $("#create-code").val()
-                var name = $.trim($("#create-name").val())
-                var description = $.trim($("#create-description").val())
-                $.ajax({
-                    url: "settings/dictionary/type/saveEditDicType.do",
-                    data: {
-                        code: code,
-                        name: name,
-                        description: description
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.code == "1") {
-                            window.location.href = "settings/dictionary/type/index.do"
-                        } else {
-                            alert(data.msg)
-                        }
+        $(() => {
+            $("#saveEditDIcTypeBtn").click(() => {
+                let code = $("#create-code").val();
+                let name = $.trim($("#create-name").val());
+                let description = $.trim($("#create-description").val());
+                $.post("settings/dictionary/type/saveEditDicType", {
+                    code: code,
+                    name: name,
+                    description: description
+                }, (data) => {
+                    if (data.code == "1") {
+                        window.location.href = "settings/dictionary/type/index.do"
+                    } else {
+                        alert(data.msg)
                     }
-                })
+                }, "json")
             })
         })
     </script>

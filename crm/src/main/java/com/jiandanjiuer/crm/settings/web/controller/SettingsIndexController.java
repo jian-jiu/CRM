@@ -16,7 +16,7 @@ public class SettingsIndexController {
      *
      * @return
      */
-    @RequestMapping("/settings/index.do")
+    @RequestMapping("/settings/index")
     public String index() {
         return "settings/index";
     }

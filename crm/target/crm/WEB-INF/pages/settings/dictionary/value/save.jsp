@@ -6,41 +6,34 @@
     <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
           rel="stylesheet"/>
     <script type="text/javascript">
-        $(function () {
-            $("#saveCreateDicTypeBtn").click(function () {
+        $(() => {
+            $("#saveCreateDicTypeBtn").click(() => {
                 //收集参数
-                var typeCode = $("#create-dicTypeCode").val()
-                var value = $.trim($("#create-dicValue").val())
-                var text = $.trim($("#create-text").val())
-                var orderNo = $.trim($("#create-orderNo").val())
-
-                if (typeCode == "") {
+                let typeCode = $("#create-dicTypeCode").val();
+                let value = $.trim($("#create-dicValue").val());
+                let text = $.trim($("#create-text").val());
+                let orderNo = $.trim($("#create-orderNo").val());
+                //判断参数
+                if (!typeCode) {
                     alert("类型编码不能为空")
                     return
                 }
-                if (value == "") {
+                if (!value) {
                     alert("字典值不能为空")
                     return;
                 }
-                $.ajax({
-                    url: 'settings/dictionary/value/saveCreateDicValue.do',
-                    data: {
-                        typeCode: typeCode,
-                        value: value,
-                        text: text,
-                        orderNo: orderNo
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.code == "1") {
-                            window.location.href = "settings/dictionary/value/index.do"
-                        } else {
-                            alert(data.msg)
-                        }
+                $.post("settings/dictionary/value/saveCreateDicValue", {
+                    typeCode: typeCode,
+                    value: value,
+                    text: text,
+                    orderNo: orderNo
+                }, (data) => {
+                    if (data.code == "1") {
+                        location.href = "settings/dictionary/value/index"
+                    } else {
+                        alert(data.msg)
                     }
-                })
-
+                }, "json")
             })
         })
     </script>

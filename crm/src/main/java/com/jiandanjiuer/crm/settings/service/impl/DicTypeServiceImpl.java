@@ -4,7 +4,7 @@ import com.jiandanjiuer.crm.settings.domain.DicType;
 import com.jiandanjiuer.crm.settings.mapper.DicTypeMapper;
 import com.jiandanjiuer.crm.settings.mapper.DicValueMapper;
 import com.jiandanjiuer.crm.settings.service.DicTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +16,11 @@ import java.util.List;
  * @date 2020/8/7 20:04
  */
 @Service
+@RequiredArgsConstructor
 public class DicTypeServiceImpl implements DicTypeService {
 
-    @Autowired
-    private DicTypeMapper dicTypeMapper;
-
-    @Autowired
-    private DicValueMapper dicValueMapper;
+    private final DicTypeMapper dicTypeMapper;
+    private final DicValueMapper dicValueMapper;
 
     /**
      * 查询所有数据字典

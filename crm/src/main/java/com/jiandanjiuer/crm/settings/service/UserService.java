@@ -26,7 +26,9 @@ public interface UserService {
      *
      * @param loginName 登入名
      * @param loginPwd  MD5加密密码
+     * @param autoLogin 是否保存用户名和密码
      * @return User对象
+     * @throws LoginException 导入异常
      */
     User findUserByLogin(String loginName, String loginPwd, String autoLogin) throws LoginException;
 

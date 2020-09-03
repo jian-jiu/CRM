@@ -94,7 +94,7 @@ public class ActivityServiceImpl implements ActivityService {
      * @return 添加条数
      */
     @Override
-    public int insertActivityList(List<Activity> activityList) {
+    public int modifyActivityList(List<Activity> activityList) {
         return activityMapper.insertActivityByList(activityList);
     }
 

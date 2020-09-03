@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <%@include file="../../../../HeadPart.jsp" %>
+    <%@include file="../../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
         $(() => {
             //实现全选和取消全选
@@ -28,7 +28,7 @@
 
             //给编辑按钮添加事件
             $("#editDicValueBtn").click(() => {
-                var chkedIds = $("#tBody input[type='checkbox']:checked")
+                let chkedIds = $("#tBody input[type='checkbox']:checked");
                 if (!chkedIds.size()) {
                     alert("请选择要编辑的记录")
                     return
@@ -61,8 +61,6 @@
                     $.post("settings/dictionary/value/deleteDicValueByIds", idsStr, (data) => {
                         if (data.code == "1") {
                             location.href = "settings/dictionary/value/index"
-                        } else {
-                            alert(data.msg)
                         }
                     }, "json")
                 }

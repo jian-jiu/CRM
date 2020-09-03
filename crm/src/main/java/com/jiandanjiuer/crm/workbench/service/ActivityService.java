@@ -65,7 +65,7 @@ public interface ActivityService {
      * @param activityList 市场活动对象
      * @return 添加条数
      */
-    int insertActivityList(List<Activity> activityList);
+    int modifyActivityList(List<Activity> activityList);
 
 
     /**

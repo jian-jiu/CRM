@@ -2,11 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html style="height: 87%;width: 99%">
 <head>
-    <%@include file="../../../HeadPart.jsp" %>
-    <link type="text/css" rel="stylesheet"
-          href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css"/>
+    <%@include file="../../../community/HeadPart.jsp" %>
     <link type="text/css" rel="stylesheet" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
-    <link type="text/css" rel="stylesheet" href="jquery/bootstrap_3.3.0/css/bootstrap.min.css">
 
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
@@ -83,8 +80,6 @@
                             queryActivityForPageByCondition(pageObj.currentPage, pageObj.rowsPerPage)
                         }
                     })
-                } else {
-                    alert(data.msg)
                 }
             }, "json")
         }
@@ -213,8 +208,6 @@
                     if (data.code == "1") {
                         createActivityModal.modal("hide")
                         queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
-                    } else {
-                        alert(data.msg)
                     }
                 }, "json")
             });
@@ -243,16 +236,18 @@
                 var id = chkedIds[0].value
                 //发送请求
                 $.post("workbench/activity/editActivity", {id: id}, (data) => {
-                    editid.val(data.id)
-                    //给下拉框设置选择的
-                    editMarketActivityOwner.val(data.owner)
-                    editMarketActivityName.val(data.name)
-                    editStartTime.val(data.startDate)
-                    editEndTime.val(data.endDate)
-                    editCost.val(data.cost)
-                    editDescribe.val(data.name)
-                    //显示创建市场活动的模态窗口
-                    editActivityModal.modal("show")
+                    if (data.code == "1") {
+                        editid.val(data.id)
+                        //给下拉框设置选择的
+                        editMarketActivityOwner.val(data.owner)
+                        editMarketActivityName.val(data.name)
+                        editStartTime.val(data.startDate)
+                        editEndTime.val(data.endDate)
+                        editCost.val(data.cost)
+                        editDescribe.val(data.name)
+                        //显示创建市场活动的模态窗口
+                        editActivityModal.modal("show")
+                    }
                 }, "json")
             })
 
@@ -293,8 +288,6 @@
                         if (data.code == "1") {
                             queryActivityForPageByCondition($("#demo_pag1").bs_pagination('getOption', 'currentPage'), $("#demo_pag1").bs_pagination('getOption', 'rowsPerPage'))
                             editActivityModal.modal('hide')
-                        } else {
-                            alert(data.msg)
                         }
                     },
                     'json'
@@ -317,8 +310,6 @@
                 $.post("workbench/activity/removeActivityByIds", ids, (data) => {
                     if (data.code == "1") {
                         queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
-                    } else {
-                        alert(data.msg)
                     }
                 }, 'json')
             })
@@ -344,22 +335,34 @@
                 location.href = "workbench/activity/downloadsActivityByIds?" + ids
             })
 
+            $("#importActivityModal").click(() => {
+                //清空选中文件
+                $("#activityFile")[0].value = ""
+                importActivityModal.modal("show")
+            })
+
             //导入市场活动
             $("#importActivityBtn").click(() => {
-                alert(1)
+                // alert($("#activityFile")[0])
+                let activityFile = $("#activityFile")[0].files[0]
+                if (activityFile.size > 1024 * 1024 * 5) {
+                    alert("文件大小不能超过5MB")
+                    return
+                }
+                let formData = new FormData()
+                formData.append("activityFile", activityFile)
                 $.ajax({
                     url: "workbench/activity/fileupload",
-                    data: $("#activityFile").val(),
+                    data: formData,
                     type: 'post',
                     dataType: 'json',
-                    contentType: 'multipart/form-data',
-                    traditional: false,
+                    contentType: false,
                     processData: false,
                     success(data) {
                         if (data.code == "1") {
                             importActivityModal.modal("hide")
-                        } else {
-                            alert(data.msg)
+                            queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+                            alert("成功导入" + data.data + "条数据")
                         }
                     }
                 })
@@ -369,11 +372,14 @@
 
         //判断文件后缀
         function filterFile(fileObj) {
-            let allowExtention = ".xls,.xlsx"; //允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;
+            //允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;
+            let allowExtention = ".xls,.xlsx";
+
             let extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
+
             let browserVersion = window.navigator.userAgent.toUpperCase();
-            if (allowExtention.indexOf(extention) > -1) {
-            } else {
+
+            if (!(allowExtention.indexOf(extention) > -1)) {
                 alert("仅支持" + allowExtention + "为后缀名的文件!");
                 fileObj.value = ""; //清空选中文件
                 if (browserVersion.indexOf("MSIE") > -1) {
@@ -535,7 +541,7 @@
                     请选择要上传的文件：<small style="color: gray;">[仅支持.xls或.xlsx格式]</small>
                 </div>
                 <div style="position: relative;top: 40px; left: 50px;">
-                    <input type="file" id="activityFile" name="myFile" onchange="filterFile(this)">
+                    <input id="activityFile" type="file" name="myFile" onchange="filterFile(this)">
                 </div>
                 <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;">
                     <h3>重要提示</h3>
@@ -551,7 +557,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="closeActivityBtn" type="button" class="btn btn-default">关闭</button>
                 <button id="importActivityBtn" type="button" class="btn btn-primary">导入</button>
             </div>
         </div>

@@ -1,9 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <%@include file="../../../../HeadPart.jsp" %>
-    <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
-          rel="stylesheet"/>
+    <%@include file="../../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
         $(() => {
             $("#create-code").blur(function () {
@@ -23,21 +21,21 @@
                     }, (data) => {
                         if (data.code == "1") {
                             location.href = "settings/dictionary/type/index"
-                        } else {
-                            alert(data.msg)
                         }
                     }, "json")
                 }
             })
         })
 
+        //重新编码是否符合要求
         function checkCode() {
+            let codeMsg = $("#codeMsg")
             let code = $.trim($("#create-code").val());
             if (!code) {
-                $("#codeMsg").text("编码不能为空")
+                codeMsg.text("编码不能为空")
                 return false
             }
-            $("#codeMsg").text("")
+            codeMsg.text("")
             //发送请求
             let ret = false;
             $.ajax({
@@ -48,12 +46,13 @@
                 type: 'post',
                 dataType: 'json',
                 async: false,
+                complete: false,
                 success(data) {
                     if (data.code == "1") {
-                        $("#codeMsg").text("")
+                        codeMsg.text("")
                         ret = true
                     } else {
-                        $("#codeMsg").text(data.msg)
+                        codeMsg.text(data.msg)
                     }
                 }
             })

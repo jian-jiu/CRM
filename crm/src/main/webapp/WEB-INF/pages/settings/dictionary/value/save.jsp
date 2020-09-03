@@ -2,9 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <%@include file="../../../../HeadPart.jsp" %>
-    <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
-          rel="stylesheet"/>
+    <%@include file="../../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
         $(() => {
             $("#saveCreateDicTypeBtn").click(() => {
@@ -30,8 +28,6 @@
                 }, (data) => {
                     if (data.code == "1") {
                         location.href = "settings/dictionary/value/index"
-                    } else {
-                        alert(data.msg)
                     }
                 }, "json")
             })

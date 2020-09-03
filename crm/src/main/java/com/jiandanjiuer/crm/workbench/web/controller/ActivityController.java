@@ -248,6 +248,7 @@ public class ActivityController {
      */
     @RequestMapping("fileupload")
     public Object importActivity(MultipartFile activityFile, HttpSession session) throws IOException {
+//        System.out.println("================");
         //获取文件对象
         HSSFWorkbook wb = new HSSFWorkbook(activityFile.getInputStream());
         //获取页对象
@@ -269,12 +270,12 @@ public class ActivityController {
             String endDate = getCellValue(row.getCell(3));
             if ("".equals(startDate) && !"".equals(endDate)) {
                 //日期比较结果
-                System.out.println("开始: " + startDate + "结束: " + endDate + "   " + startDate.compareTo(endDate));
+//                System.out.println("开始: " + startDate + "结束: " + endDate + "   " + startDate.compareTo(endDate));
                 if (startDate.compareTo(endDate) < 0) {
                     continue;
                 }
             }
-
+//            System.out.println("+++++++++++++++++++++++");
             //创建对象
             Activity activity = new Activity();
             activity.setId(UUIDUtils.getUUID());
@@ -329,10 +330,10 @@ public class ActivityController {
                         break;
                 }
             }
-            System.out.println("activity:  " + activity);
+//            System.out.println("activity=====:  " + activity);
             activityList.add(activity);
         }
-        int i = activityService.insertActivityList(activityList);
+        int i = activityService.modifyActivityList(activityList);
         return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功添加条数", i);
     }
 

@@ -52,7 +52,7 @@ public class GetHtmlContentUtils {
             BufferedReader reader = new BufferedReader(new InputStreamReader(url1.openStream()));
             String line = "";
             while ((line = reader.readLine()) != null) {
-                System.out.println("网页内容：" + line);
+//                System.out.println("网页内容：" + line);
                 //前面的文本
                 String left = "\"dst\":\"";
                 //后面的文本

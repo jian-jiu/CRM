@@ -1,6 +1,7 @@
 package com.jiandanjiuer.crm.settings.service.impl;
 
 import com.jiandanjiuer.crm.commons.contants.Contents;
+import com.jiandanjiuer.crm.commons.utils.CookieUtils;
 import com.jiandanjiuer.crm.commons.utils.DateUtils;
 import com.jiandanjiuer.crm.commons.utils.IpUtils;
 import com.jiandanjiuer.crm.commons.utils.Md5Util;
@@ -30,6 +31,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final HttpSession session;
@@ -42,8 +44,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User queryUserByLoginAndPwd(Map<String, Object> map) {
-        User user = userMapper.selectUserByLoginActAndPwd(map);
-        return user;
+        return userMapper.selectUserByLoginActAndPwd(map);
     }
 
     /**
@@ -51,13 +52,12 @@ public class UserServiceImpl implements UserService {
      *
      * @param loginName 登入名
      * @param loginPwd  MD5加密密码
+     * @param autoLogin 是否保存用户名和密码
      * @return User对象
+     * @throws LoginException 登入异常
      */
     @Override
     public User findUserByLogin(String loginName, String loginPwd, String autoLogin) throws LoginException {
-        if (loginName == null) {
-            throw new LoginException("用户名不能为空");
-        }
         //查询用户
         User user = userMapper.selectUserByLoginName(loginName);
         if (user == null) {
@@ -98,16 +98,8 @@ public class UserServiceImpl implements UserService {
             cookie.setPath("/");
             response.addCookie(cookie);
         } else {
-            //设置登入名
-            cookie = new Cookie("loginAct", "0");
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            //设置登入密码
-            cookie = new Cookie("loginPwd", "0");
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
-            response.addCookie(cookie);
+            //清空cookie
+            CookieUtils.closeCookie(response);
         }
         return user;
     }

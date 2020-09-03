@@ -2,6 +2,7 @@ package com.jiandanjiuer.crm.settings.web.controller;
 
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
+import com.jiandanjiuer.crm.commons.utils.CookieUtils;
 import com.jiandanjiuer.crm.commons.utils.Md5Util;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.settings.web.exception.LoginException;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpSession;
 public class UserController {
 
     private final UserService userService;
+
     private final HttpServletResponse response;
     private final HttpSession session;
 
@@ -50,7 +52,7 @@ public class UserController {
      * @return 结果集
      */
     @RequestMapping("login")
-    public Object login(String loginName, String loginPwd, String autoLogin) throws LoginException {
+    public Object login(@RequestParam() String loginName, String loginPwd, String autoLogin) throws LoginException {
         //调用方法，查询用户
         userService.findUserByLogin(loginName, loginPwd, autoLogin);
         return ReturnObject.getReturnObject();
@@ -63,21 +65,10 @@ public class UserController {
      */
     @RequestMapping("logout")
     public ModelAndView logout(ModelAndView modelAndView) {
-        //清空账号
-        Cookie cookie;
-        cookie = new Cookie("loginAct", "0");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-        //清空密码
-        cookie = new Cookie("loginPwd", "0");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        //清空cookie
+        CookieUtils.closeCookie(response);
         //使该会话无效
         session.invalidate();
-        //重定向回根
-        response.encodeRedirectURL("/");
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }

@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <%@include file="../../HeadPart.jsp" %>
+    <%@include file="../../community/HeadPart.jsp" %>
     <title>简九</title>
     <script type="text/javascript">
         //页面加载完毕
@@ -33,7 +33,7 @@
 </head>
 <body>
 
-<%@ include file="../../ModalWindow.jsp" %>
+<%@ include file="../../community/ModalWindow.jsp" %>
 
 <!-- 中间 -->
 <div id="center" style="position: absolute;top: 50px; bottom: 30px; left: 0px; right: 0px;">

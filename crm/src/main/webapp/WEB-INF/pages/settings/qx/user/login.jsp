@@ -2,9 +2,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <%@include file="../../../../HeadPart.jsp" %>
+    <%@include file="../../../../community/HeadPart.jsp" %>
     <title>登入账号</title>
     <script type="text/javascript">
+        if (window.parent.window != window) {
+            window.top.location.href = '';
+        }
         //窗口加载完毕
         $(() => {
             //登入按钮
@@ -47,15 +50,27 @@
                 //设置提示信息
                 msgObj.text("正在验证...");
                 //发送请求
-                $.post("settings/qx/user/login", {
-                    loginName: loginNameVal, loginPwd: loginPwdVal, autoLogin: autoLogin
-                }, (data) => {
-                    if (data.code == "1") {
-                        location.href = "workbench/index.do";
-                    } else {
-                        msgObj.text(data.msg);
-                    }
+                $.post("settings/qx/user/login", {}, (data) => {
+
                 }, 'json')
+                $.ajax({
+                    url: "settings/qx/user/login",
+                    data: {
+                        loginName: loginNameVal,
+                        loginPwd: loginPwdVal,
+                        autoLogin: autoLogin
+                    },
+                    type: 'post',
+                    dataType: "json",
+                    complete: false,
+                    success(data) {
+                        if (data.code == "1") {
+                            location.href = "workbench/index";
+                        } else {
+                            msgObj.text(data.msg);
+                        }
+                    }
+                })
             })
         })
     </script>

@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <%@include file="../../../../HeadPart.jsp" %>
+    <%@include file="../../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
         $(() => {
             //实现全选和取消全选
@@ -61,8 +61,6 @@
                     $.post("settings/dictionary/type/deleteDicTypeByCodes", coedsStr, (data) => {
                         if (data.code == "1") {
                             location.href = "settings/dictionary/type/index"
-                        } else {
-                            alert(data.msg)
                         }
                     }, "json")
                 }

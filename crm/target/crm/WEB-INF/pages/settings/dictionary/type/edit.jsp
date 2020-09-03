@@ -1,9 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <%@include file="../../../../HeadPart.jsp" %>
-    <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
-          rel="stylesheet"/>
+    <%@include file="../../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
         $(() => {
             $("#saveEditDIcTypeBtn").click(() => {
@@ -16,9 +14,7 @@
                     description: description
                 }, (data) => {
                     if (data.code == "1") {
-                        window.location.href = "settings/dictionary/type/index.do"
-                    } else {
-                        alert(data.msg)
+                        location.href = "settings/dictionary/type/index.do"
                     }
                 }, "json")
             })

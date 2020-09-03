@@ -1,17 +1,17 @@
 package com.jiandanjiuer.crm.web.exception.resolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.commons.utils.GetHtmlContentUtils;
 import com.jiandanjiuer.crm.settings.web.exception.LoginException;
-import com.jiandanjiuer.crm.web.exception.AjaxRequestException;
-import com.jiandanjiuer.crm.web.exception.InterceptorException;
-import com.jiandanjiuer.crm.web.exception.TraditionRequestException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 对controller进行增强，统一的异常处理
@@ -32,44 +32,31 @@ public class MyExceptionResolver {
         return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, e.getMessage());
     }
 
-    @ExceptionHandler(value = InterceptorException.class)
-    public String interceptorExceptionResolver(Exception e) {
-
-        System.out.println("处理没登陆");
-
-        e.printStackTrace();
-
-        return "redirect:/settings/user/toLogin.do";
-
-    }
-
-    @ExceptionHandler(value = AjaxRequestException.class)
-    public Object ajaxRequestExceptionResolver(Exception e) {
-        e.printStackTrace();
-        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "请求失败");
-
-    }
-
-    @ExceptionHandler(value = TraditionRequestException.class)
-    public String traditionRequestExceptionResolver(Exception e) {
-
-        e.printStackTrace();
-
-        return "redirect:/fail.jsp";
-
-    }
-
     @ExceptionHandler(value = Exception.class)
-    public String exceptionResolver(HttpServletRequest request, Exception e) {
+    public String exceptionResolver(HttpServletRequest request, HttpServletResponse response, Exception e) {
         e.printStackTrace();
         String translateResult = "";
         try {
+            //翻译功能
             translateResult = GetHtmlContentUtils.getTranslateResult(e.getMessage());
-            request.setAttribute("msgZh", translateResult);
-            request.setAttribute("msgEn", e.getMessage());
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        //判断是否是ajax请求
+        if (request.getHeader("X-Requested-With") != null) {
+            Object returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, translateResult);
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                String s = objectMapper.writeValueAsString(returnObject);
+                response.getWriter().write(s);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            return null;
+        }
+        //转发到失败界面
+        request.setAttribute("msgZh", translateResult);
+        request.setAttribute("msgEn", e.getMessage());
         return "error";
     }
 }

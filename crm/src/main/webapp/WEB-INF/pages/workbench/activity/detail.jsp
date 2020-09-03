@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <%@include file="../../../HeadPart.jsp" %>
+    <%@include file="../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
 
         //默认情况下取消和保存按钮是隐藏的

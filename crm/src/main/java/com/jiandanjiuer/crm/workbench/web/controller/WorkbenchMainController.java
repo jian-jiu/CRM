@@ -15,7 +15,7 @@ public class WorkbenchMainController {
      * 跳转到业务工作区
      * @return
      */
-    @RequestMapping("/workbench/main/index.do")
+    @RequestMapping("/workbench/main/index")
     public String index() {
         return "workbench/main/index";
     }

@@ -138,35 +138,38 @@
         from tbl_dic_value
         order by type_code,cast(order_no as signed integer)
     </select>
-    <insert id="insertDicValue" parameterType="com.jiandanjiuer.crm.settings.domain.DicValue">
-        insert into
-        tbl_dic_value(id,value,text,order_no,type_code)
-        values (#{id},#{value},#{text},#{orderNo},#{typeCode})
-    </insert>
-    <delete id="deleteDicValueByIds" parameterType="string">
-        delete from tbl_dic_value
-        where id in
-        <foreach collection="array" item="id" open="(" close=")" separator=",">
-            #{id}
-        </foreach>
-    </delete>
     <select id="selectDicValueById" parameterType="string" resultMap="BaseResultMap">
         select tdv.id,tdt.name as type_code,tdv.value,tdv.text,tdv.order_no
         from tbl_dic_value tdv
         join tbl_dic_type tdt on tdv.type_code=tdt.code
         where tdv.id=#{id}
     </select>
+
+    <insert id="insertDicValue" parameterType="com.jiandanjiuer.crm.settings.domain.DicValue">
+        insert into
+        tbl_dic_value(id,value,text,order_no,type_code)
+        values (#{id},#{value},#{text},#{orderNo},#{typeCode})
+    </insert>
+
     <update id="updateDicValue" parameterType="com.jiandanjiuer.crm.settings.domain.DicValue">
         update tbl_dic_value
         set value=#{value},text=#{text},order_no=#{orderNo}
         where id=#{id}
     </update>
+
     <delete id="deleteDicValueByTypeCodes" parameterType="string">
         delete
         from tbl_dic_value
         where type_code in
         <foreach collection="array" item="typeCode" open="(" close=")" separator=",">
-        #{typeCode}
+            #{typeCode}
+        </foreach>
+    </delete>
+    <delete id="deleteDicValueByIds" parameterType="string">
+        delete from tbl_dic_value
+        where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
         </foreach>
     </delete>
 

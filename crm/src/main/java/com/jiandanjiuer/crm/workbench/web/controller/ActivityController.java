@@ -26,10 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 简单
@@ -227,6 +224,22 @@ public class ActivityController {
     }
 
     /**
+     * 查询传过来的用户id
+     *
+     * @param users    用户list集合
+     * @param username 查询用户
+     * @return 用户id
+     */
+    public String getUserId(List<User> users, String username) {
+        for (User user : users) {
+            if (username.equals(user.getName())) {
+                return user.getId();
+            }
+        }
+        return null;
+    }
+
+    /**
      * 上传市场活动
      *
      * @param activityFile 市场活动文件
@@ -234,15 +247,100 @@ public class ActivityController {
      * @throws IOException 异常
      */
     @RequestMapping("fileupload")
-    public Object importActivity(MultipartFile activityFile) throws IOException {
-        HSSFWorkbook sheets = new HSSFWorkbook(activityFile.getInputStream());
+    public Object importActivity(MultipartFile activityFile, HttpSession session) throws IOException {
+        //获取文件对象
+        HSSFWorkbook wb = new HSSFWorkbook(activityFile.getInputStream());
+        //获取页对象
+        HSSFSheet sheetAt = wb.getSheetAt(0);
+        //获取所有用户数据
+        List<User> users = userService.queryAllUsers();
+        //获取当前导入用户
+        User user = (User) session.getAttribute(Contents.SESSION_USER);
+        //行
+        HSSFRow row;
+        //id
+        String userId;
+        List<Activity> activityList = new ArrayList<>();
+        //获取行
+        for (int i = 1; i <= sheetAt.getLastRowNum(); i++) {
+            row = sheetAt.getRow(i);
+            //判断日期
+            String startDate = getCellValue(row.getCell(2));
+            String endDate = getCellValue(row.getCell(3));
+            if ("".equals(startDate) && !"".equals(endDate)) {
+                //日期比较结果
+                System.out.println("开始: " + startDate + "结束: " + endDate + "   " + startDate.compareTo(endDate));
+                if (startDate.compareTo(endDate) < 0) {
+                    continue;
+                }
+            }
 
-        return sheets;
+            //创建对象
+            Activity activity = new Activity();
+            activity.setId(UUIDUtils.getUUID());
+            //获取每行数据
+            for (int j = 0; j < row.getLastCellNum(); j++) {
+                String cellValue = getCellValue(row.getCell(j));
+                switch (j) {
+                    case 0:
+                        userId = getUserId(users, cellValue);
+                        if (userId == null) {
+                            activity.setOwner(user.getId());
+                        } else {
+                            activity.setOwner(userId);
+                        }
+                        break;
+                    case 1:
+                        activity.setName(cellValue);
+                        break;
+                    case 2:
+                        activity.setStartDate(cellValue);
+                        break;
+                    case 3:
+                        activity.setEndDate(cellValue);
+                        break;
+                    case 4:
+                        activity.setCost(cellValue);
+                        break;
+                    case 5:
+                        activity.setDescription(cellValue);
+                        break;
+                    case 6:
+                        activity.setCreateTime(cellValue);
+                        break;
+                    case 7:
+                        userId = getUserId(users, cellValue);
+                        if (userId == null) {
+                            activity.setCreateBy(user.getId());
+                        } else {
+                            activity.setCreateBy(userId);
+                        }
+                        break;
+                    case 8:
+                        activity.setEditTime(cellValue);
+                        break;
+                    case 9:
+                        userId = getUserId(users, cellValue);
+                        if (userId == null) {
+                            activity.setEditBy(user.getId());
+                        } else {
+                            activity.setEditBy(userId);
+                        }
+                        break;
+                }
+            }
+            System.out.println("activity:  " + activity);
+            activityList.add(activity);
+        }
+        int i = activityService.insertActivityList(activityList);
+        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功添加条数", i);
     }
 
     /**
+     * 转换每个单元格数据为字符串
+     *
      * @param cell 一行数据对象
-     * @return
+     * @return 字符串
      */
     public static String getCellValue(HSSFCell cell) {
         switch (cell.getCellType()) {

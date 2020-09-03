@@ -27,7 +27,7 @@
                 //当前项目颜色变成白色
                 $(this).children("a").css("color", "white");
             });
-            window.open("workbench/main/index.do", "workareaFrame");
+            window.open("workbench/main/index", "workareaFrame");
         });
     </script>
 </head>

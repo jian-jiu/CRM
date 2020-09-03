@@ -59,6 +59,7 @@ public class GetHtmlContentUtils {
                 String right = "\"}]}";
                 String subString = StringOperating.getSubString(line, left, right);
                 s = Unicode.unicodeDecode(subString);
+                System.out.println("翻译后内容：" + s);
             }
             reader.close();
         } catch (IOException e) {

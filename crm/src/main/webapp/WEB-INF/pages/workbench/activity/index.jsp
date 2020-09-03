@@ -366,6 +366,23 @@
             })
 
         })
+
+        //判断文件后缀
+        function filterFile(fileObj) {
+            let allowExtention = ".xls,.xlsx"; //允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;
+            let extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
+            let browserVersion = window.navigator.userAgent.toUpperCase();
+            if (allowExtention.indexOf(extention) > -1) {
+            } else {
+                alert("仅支持" + allowExtention + "为后缀名的文件!");
+                fileObj.value = ""; //清空选中文件
+                if (browserVersion.indexOf("MSIE") > -1) {
+                    fileObj.select();
+                    document.selection.clear();
+                }
+                fileObj.outerHTML = fileObj.outerHTML;
+            }
+        }
     </script>
 </head>
 <body>
@@ -518,7 +535,7 @@
                     请选择要上传的文件：<small style="color: gray;">[仅支持.xls或.xlsx格式]</small>
                 </div>
                 <div style="position: relative;top: 40px; left: 50px;">
-                    <input type="file" id="activityFile" name="myFile">
+                    <input type="file" id="activityFile" name="myFile" onchange="filterFile(this)">
                 </div>
                 <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;">
                     <h3>重要提示</h3>

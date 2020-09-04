@@ -50,9 +50,6 @@
                 //设置提示信息
                 msgObj.text("正在验证...");
                 //发送请求
-                $.post("settings/qx/user/login", {}, (data) => {
-
-                }, 'json')
                 $.ajax({
                     url: "settings/qx/user/login",
                     data: {
@@ -89,7 +86,7 @@
 <div style="position: absolute; top: 30%; right: 100px;width:450px;height:400px;border:1px solid #D5D5D5">
     <div style="position: absolute; top: 0px; right: 60px;">
         <div class="page-header">
-            <h1>登录</h1>
+            <h1 title="${requestScope.ip}">登录</h1>
         </div>
         <form class="form-horizontal" action="workbench/index.html" role="form" autocomplete="off">
             <div class="form-group form-group-lg">

@@ -1,5 +1,6 @@
 package com.jiandanjiuer.crm.workbench.service.impl;
 
+import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.mapper.ActivityMapper;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
@@ -50,6 +51,14 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> findActivityForDetailByIds(String[] ids) {
         return activityMapper.selectActivityForDetailByIds(ids);
+    }
+
+    @Override
+    public Activity findActivityForDetailById(String id) {
+        String[] ids = new String[1];
+        ids[0] = id;
+        List<Activity> activityList = activityMapper.selectActivityForDetailByIds(ids);
+        return activityList.get(0);
     }
 
     /**
@@ -120,5 +129,21 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public int removeActivityByIds(String[] ids) {
         return activityMapper.deleteActivityByIds(ids);
+    }
+
+    /**
+     * 查询传过来的用户id
+     *
+     * @param users    用户list集合
+     * @param username 查询用户
+     * @return 用户id
+     */
+    public static String getUserId(List<User> users, String username) {
+        for (User user : users) {
+            if (username.equals(user.getName())) {
+                return user.getId();
+            }
+        }
+        return null;
     }
 }

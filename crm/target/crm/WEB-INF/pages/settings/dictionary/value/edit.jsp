@@ -66,7 +66,7 @@
     <div class="form-group">
         <label for="edit-orderNo" class="col-sm-2 control-label">排序号</label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="number" class="form-control" id="edit-orderNo" style="width: 200%;"
+            <input type="number" class="form-control" oninput="value=value.replace(/[^\d]/g,'')" id="edit-orderNo" style="width: 200%;"
                    value="${dicValue.orderNo}">
         </div>
     </div>

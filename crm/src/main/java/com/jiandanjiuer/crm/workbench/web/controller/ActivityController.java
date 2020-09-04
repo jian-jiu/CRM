@@ -2,14 +2,15 @@ package com.jiandanjiuer.crm.workbench.web.controller;
 
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
+import com.jiandanjiuer.crm.commons.utils.ActivityFileUtils;
 import com.jiandanjiuer.crm.commons.utils.DateUtils;
 import com.jiandanjiuer.crm.commons.utils.UUIDUtils;
 import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
+import com.jiandanjiuer.crm.workbench.service.impl.ActivityServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,12 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -92,122 +91,48 @@ public class ActivityController {
     /**
      * 根据id查询数据
      *
-     * @param id
-     * @return
+     * @param id 市场活动id
+     * @return 结果集
      */
     @RequestMapping("editActivity")
     public Object queryActivity(@RequestParam String id) {
-        return activityService.queryActivityById(id);
+        Activity activity = activityService.queryActivityById(id);
+        Object returnObject;
+        if (activity != null) {
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "查询成功", activity);
+        } else {
+            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "查询失败");
+        }
+        return returnObject;
     }
 
+    /**
+     * 根据id查询详细数据信息
+     *
+     * @param id 市场活动id
+     * @return 数据以及视图
+     */
+    @RequestMapping("queryActivityToDataIl")
+    public ModelAndView queryActivityToDataIl(ModelAndView modelAndView, @RequestParam String id) {
+        //查询数据
+        Activity activity = activityService.findActivityForDetailById(id);
+        //封装数据
+        modelAndView.addObject("activity", activity);
+        modelAndView.setViewName("workbench/activity/detail");
+        return modelAndView;
+    }
 
     /**
      * 下载市场活动文件
      *
-     * @param request
-     * @param response
+     * @param request  请求
+     * @param response 响应
      */
     @RequestMapping("downloadsActivity")
     public void downloadsActivity(HttpServletRequest request, HttpServletResponse response) {
         //获取市场活动数据
         List<Activity> activityList = activityService.findActivityForDetail();
-        downloadsActivityUtil(request, response, activityList);
-    }
-
-    /**
-     * 把市场活动数据封装成excel
-     *
-     * @param request      请求
-     * @param response     响应
-     * @param activityList 市场活动集合
-     */
-    private void downloadsActivityUtil(HttpServletRequest request, HttpServletResponse response, List<Activity> activityList) {
-        //设置响应类型
-        response.setContentType("application/octet-stream:charset=UTF-8");
-
-        ServletOutputStream outputStream;
-//        InputStream inputStream = null;
-        HSSFWorkbook wb = null;
-        try {
-            //用来获取浏览器信息进行判断编码格式
-            String userAgent = request.getHeader("User-Agent");
-            System.out.println(userAgent);
-            //根据编码设置下载文件名字
-            String fileName = new String("学生列表".getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-            //设置响应头信息
-            response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
-            //2 获取输出流
-            outputStream = response.getOutputStream();
-            //1 创建对象，对应一个excel对象
-            wb = new HSSFWorkbook();
-            //2 使用wb对象创建一页
-            HSSFSheet sheet = wb.createSheet("市场活动列表");
-            //3 第一行标题
-            HSSFRow row = sheet.createRow(0);
-            //4 设置每列标题内容
-            row.createCell(0).setCellValue("所有者");
-            row.createCell(1).setCellValue("活动名称");
-            row.createCell(2).setCellValue("开始时间");
-            row.createCell(3).setCellValue("结束时间");
-            row.createCell(4).setCellValue("成本");
-            row.createCell(5).setCellValue("描述");
-            row.createCell(6).setCellValue("创建时间");
-            row.createCell(7).setCellValue("创建者");
-            row.createCell(8).setCellValue("修改时间");
-            row.createCell(9).setCellValue("修改者");
-            //设置每行内容
-            if (activityList != null) {
-                for (int i = 0; i < activityList.size(); i++) {
-                    //获取每行对象
-                    HSSFRow rowI = sheet.createRow(i + 1);
-                    //获取每条市场对象
-                    Activity activity = activityList.get(i);
-                    //设置每列内容z
-                    rowI.createCell(0).setCellValue(activity.getOwner());
-                    rowI.createCell(1).setCellValue(activity.getName());
-                    rowI.createCell(2).setCellValue(activity.getStartDate());
-                    rowI.createCell(3).setCellValue(activity.getEndDate());
-                    rowI.createCell(4).setCellValue(activity.getCost());
-                    rowI.createCell(5).setCellValue(activity.getDescription());
-                    rowI.createCell(6).setCellValue(activity.getCreateTime());
-                    rowI.createCell(7).setCellValue(activity.getCreateBy());
-                    rowI.createCell(8).setCellValue(activity.getEditTime());
-                    rowI.createCell(9).setCellValue(activity.getEditBy());
-                }
-            }
-            wb.write(outputStream);
-
-            //读取文件
-                /*inputStream = new FileInputStream("D:/test/abc.xls");
-                //设置每次读取数据大小
-                byte[] bytes = new byte[1024];
-                //当前读取数据的大小
-                int len = 0;
-                while ((len = inputStream.read(bytes)) != -1) {
-                    //把数据输出到浏览器
-                    outputStream.write(bytes, 0, len);
-                }*/
-            //刷新流
-            outputStream.flush();
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-        } finally {
-            /*if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }*/
-            if (wb != null) {
-                try {
-                    wb.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        ActivityFileUtils.downloadsActivityUtil(request, response, activityList);
     }
 
     /**
@@ -220,35 +145,19 @@ public class ActivityController {
     public void downloadsActivityByIds(HttpServletRequest request, HttpServletResponse response, String[] ids) {
         //获取市场活动数据
         List<Activity> activityList = activityService.findActivityForDetailByIds(ids);
-        downloadsActivityUtil(request, response, activityList);
-    }
-
-    /**
-     * 查询传过来的用户id
-     *
-     * @param users    用户list集合
-     * @param username 查询用户
-     * @return 用户id
-     */
-    public String getUserId(List<User> users, String username) {
-        for (User user : users) {
-            if (username.equals(user.getName())) {
-                return user.getId();
-            }
-        }
-        return null;
+        ActivityFileUtils.downloadsActivityUtil(request, response, activityList);
     }
 
     /**
      * 上传市场活动
      *
      * @param activityFile 市场活动文件
-     * @return json对象
+     * @param session      会话
+     * @return 结果集
      * @throws IOException 异常
      */
     @RequestMapping("fileupload")
     public Object importActivity(MultipartFile activityFile, HttpSession session) throws IOException {
-//        System.out.println("================");
         //获取文件对象
         HSSFWorkbook wb = new HSSFWorkbook(activityFile.getInputStream());
         //获取页对象
@@ -266,25 +175,23 @@ public class ActivityController {
         for (int i = 1; i <= sheetAt.getLastRowNum(); i++) {
             row = sheetAt.getRow(i);
             //判断日期
-            String startDate = getCellValue(row.getCell(2));
-            String endDate = getCellValue(row.getCell(3));
+            String startDate = ActivityFileUtils.getCellValue(row.getCell(2));
+            String endDate = ActivityFileUtils.getCellValue(row.getCell(3));
             if ("".equals(startDate) && !"".equals(endDate)) {
                 //日期比较结果
-//                System.out.println("开始: " + startDate + "结束: " + endDate + "   " + startDate.compareTo(endDate));
                 if (startDate.compareTo(endDate) < 0) {
                     continue;
                 }
             }
-//            System.out.println("+++++++++++++++++++++++");
             //创建对象
             Activity activity = new Activity();
             activity.setId(UUIDUtils.getUUID());
             //获取每行数据
             for (int j = 0; j < row.getLastCellNum(); j++) {
-                String cellValue = getCellValue(row.getCell(j));
+                String cellValue = ActivityFileUtils.getCellValue(row.getCell(j));
                 switch (j) {
                     case 0:
-                        userId = getUserId(users, cellValue);
+                        userId = ActivityServiceImpl.getUserId(users, cellValue);
                         if (userId == null) {
                             activity.setOwner(user.getId());
                         } else {
@@ -310,7 +217,7 @@ public class ActivityController {
                         activity.setCreateTime(cellValue);
                         break;
                     case 7:
-                        userId = getUserId(users, cellValue);
+                        userId = ActivityServiceImpl.getUserId(users, cellValue);
                         if (userId == null) {
                             activity.setCreateBy(user.getId());
                         } else {
@@ -321,7 +228,7 @@ public class ActivityController {
                         activity.setEditTime(cellValue);
                         break;
                     case 9:
-                        userId = getUserId(users, cellValue);
+                        userId = ActivityServiceImpl.getUserId(users, cellValue);
                         if (userId == null) {
                             activity.setEditBy(user.getId());
                         } else {
@@ -330,34 +237,11 @@ public class ActivityController {
                         break;
                 }
             }
-//            System.out.println("activity=====:  " + activity);
             activityList.add(activity);
         }
         int i = activityService.modifyActivityList(activityList);
         return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功添加条数", i);
     }
-
-    /**
-     * 转换每个单元格数据为字符串
-     *
-     * @param cell 一行数据对象
-     * @return 字符串
-     */
-    public static String getCellValue(HSSFCell cell) {
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case BOOLEAN:
-                return cell.getBooleanCellValue() + "";
-            case NUMERIC:
-                return cell.getNumericCellValue() + "";
-            case FORMULA:
-                return cell.getCellFormula();
-            default:
-                return "";
-        }
-    }
-
 
     /**
      * 保存创建的参数

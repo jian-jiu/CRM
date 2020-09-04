@@ -83,7 +83,6 @@
 </div>
 <script type="text/javascript">
     $(() => {
-
         $("#updateUserPassword").click(() => {
             //收集参数
             let oldPwd = $.trim($("#oldPwd").val())
@@ -116,10 +115,16 @@
                     $("#editPwdModal").modal("hide")
                     alert("修改成功,请重新登入")
                     location = ""
-                } else {
-                    alert(data.msg)
                 }
             }, "json")
+        })
+        //回车事件
+        $(window).keydown(e => {
+            if (e.key == "Enter") {
+                if (!$("#editPwdModal").is(":hidden")) {
+                    $("#updateUserPassword").click()
+                }
+            }
         })
     })
 </script>
@@ -151,7 +156,7 @@
         })
         //回车事件
         $(window).keydown(e => {
-            if (e.key == "enter") {
+            if (e.key == "Enter") {
                 if (!$("#exitModal").is(":hidden")) {
                     $("#logoutBtn").click()
                 }

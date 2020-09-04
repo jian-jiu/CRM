@@ -74,11 +74,14 @@ public class UserServiceImpl implements UserService {
                 throw new LoginException("密码错误");
             }
         }
+        System.out.println("====" + user.getAllowIps().contains("*"));
         //判断用户
         if (DateUtils.formatDateTime(new Date()).compareTo(user.getExpireTime()) > 0) {
             throw new LoginException("账号已经过期");
         } else if ("0".equals(user.getLockState())) {
             throw new LoginException("账号被锁定");
+        } else if (user.getAllowIps().contains("*")) {
+
         } else if (!user.getAllowIps().contains(IpUtils.getIpAddress(request))) {
             throw new LoginException("ip受限");
         }

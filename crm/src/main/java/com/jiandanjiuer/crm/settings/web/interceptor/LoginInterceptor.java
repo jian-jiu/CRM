@@ -7,6 +7,7 @@ import com.jiandanjiuer.crm.commons.utils.DateUtils;
 import com.jiandanjiuer.crm.commons.utils.IpUtils;
 import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
+import com.jiandanjiuer.crm.settings.web.exception.LoginException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,7 +39,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (sessionUser == null) {
             //判断是否是ajax请求
             if (httpServletRequest.getHeader("X-Requested-With") != null) {
-                Object returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "登入超时,请重新登入",1);
+                Object returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "登入超时,请重新登入", 1);
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
                     String s = objectMapper.writeValueAsString(returnObject);
@@ -60,8 +61,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new Exception("账号已经过期");
         } else if ("0".equals(user.getLockState())) {
             throw new Exception("账号被锁定");
+        } else if (user.getAllowIps().contains("*")) {
+
         } else if (!user.getAllowIps().contains(IpUtils.getIpAddress(httpServletRequest))) {
-            throw new Exception("ip受限");
+            throw new LoginException("ip受限");
         }
         return true;
     }

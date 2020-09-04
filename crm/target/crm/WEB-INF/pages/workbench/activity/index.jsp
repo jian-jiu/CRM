@@ -36,7 +36,8 @@
                     $.each(data.data.activitiesList, (index, object) => {
                         htmlStr += "<tr class=\"active\">"
                         htmlStr += "<td><input type=\"checkbox\" value=\"" + object.id + "\"/></td>"
-                        htmlStr += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + object.name + "</a></td>"
+                        htmlStr += "<td><a style='text-decoration: none; cursor: pointer;'"
+                        htmlStr += "onclick=\"window.location.href='workbench/activity/queryActivityToDataIl?id=" + object.id + "'\">" + object.name + "</a></td>"
                         htmlStr += "<td>" + object.owner + "</td>"
                         htmlStr += "<td>" + object.startDate + "</td>"
                         htmlStr += "<td>" + object.endDate + "</td>"
@@ -44,16 +45,6 @@
                     })
                     //把htmlStr追加在tbody
                     $("#tBody").html(htmlStr)
-
-                    //给所有的复选框添加单击事件
-                    $("#tBody input[type='checkbox']").click(() => {
-                        //获取总的复选框和选中的复选框进行对比
-                        if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
-                            $("#checkAll").prop("checked", true)
-                        } else {
-                            $("#checkAll").prop("checked", false)
-                        }
-                    })
 
                     $("#checkAll").prop("checked", false)
 
@@ -154,6 +145,25 @@
                 $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
             })
 
+            $("#tBody").on("click", "input[type='checkbox']", () => {
+                //获取总的复选框和选中的复选框进行对比
+                if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
+                    $("#checkAll").prop("checked", true)
+                } else {
+                    $("#checkAll").prop("checked", false)
+                }
+            })
+
+            //给所有的复选框添加单击事件
+            // $("#tBody input[type='checkbox']").click(() => {
+            //     //获取总的复选框和选中的复选框进行对比
+            //     if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
+            //         $("#checkAll").prop("checked", true)
+            //     } else {
+            //         $("#checkAll").prop("checked", false)
+            //     }
+            // })
+
             //给查询按钮添加单击事件
             queryActivityBtn.click(() => {
                 queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
@@ -237,14 +247,14 @@
                 //发送请求
                 $.post("workbench/activity/editActivity", {id: id}, (data) => {
                     if (data.code == "1") {
-                        editid.val(data.id)
+                        editid.val(data.data.id)
                         //给下拉框设置选择的
-                        editMarketActivityOwner.val(data.owner)
-                        editMarketActivityName.val(data.name)
-                        editStartTime.val(data.startDate)
-                        editEndTime.val(data.endDate)
-                        editCost.val(data.cost)
-                        editDescribe.val(data.name)
+                        editMarketActivityOwner.val(data.data.owner)
+                        editMarketActivityName.val(data.data.name)
+                        editStartTime.val(data.data.startDate)
+                        editEndTime.val(data.data.endDate)
+                        editCost.val(data.data.cost)
+                        editDescribe.val(data.data.name)
                         //显示创建市场活动的模态窗口
                         editActivityModal.modal("show")
                     }
@@ -314,7 +324,6 @@
                 }, 'json')
             })
 
-
             //批量导出市场活动
             $("#exportActivityAllBtn").click(() => {
                 location.href = "workbench/activity/downloadsActivity"
@@ -362,7 +371,7 @@
                         if (data.code == "1") {
                             importActivityModal.modal("hide")
                             queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
-                            alert("成功导入" + data.data + "条数据")
+                            alert("成功导入" + data.data + "条记录")
                         }
                     }
                 })

@@ -3,6 +3,7 @@ package com.jiandanjiuer.crm.settings.web.controller;
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.commons.utils.CookieUtils;
+import com.jiandanjiuer.crm.commons.utils.IpUtils;
 import com.jiandanjiuer.crm.commons.utils.Md5Util;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.settings.web.exception.LoginException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -38,8 +40,10 @@ public class UserController {
      * @return 登入视图
      */
     @RequestMapping("toLogin")
-    public ModelAndView toLogin(ModelAndView modelAndView) {
+    public ModelAndView toLogin(ModelAndView modelAndView, HttpServletRequest request) {
         modelAndView.setViewName("settings/qx/user/login");
+        String ipAddress = IpUtils.getIpAddress(request);
+        modelAndView.addObject("ip", ipAddress);
         return modelAndView;
     }
 

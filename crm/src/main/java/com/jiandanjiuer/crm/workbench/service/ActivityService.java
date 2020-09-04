@@ -35,6 +35,14 @@ public interface ActivityService {
     List<Activity> findActivityForDetailByIds(String[] ids);
 
     /**
+     * 根据id查询详细的市场活动
+     *
+     * @param id 市场活动id
+     * @return 详细市场活动集合
+     */
+    Activity findActivityForDetailById(String id);
+
+    /**
      * 根据条件查询总条数
      *
      * @param map

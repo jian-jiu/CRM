@@ -10,7 +10,7 @@
 
     <!--注册自定义监听器-->
     <listener>
-        <listener-class>com.jiandanjiuer.crm.web.contexlistener.MyContextListener</listener-class>
+        <listener-class>com.jiandanjiuer.crm.web.contextlistener.MyContextListener</listener-class>
     </listener>
 
     <!--    注册ContextLoaderListener监听器-->

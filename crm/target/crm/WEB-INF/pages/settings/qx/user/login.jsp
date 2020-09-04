@@ -8,6 +8,7 @@
         if (window.parent.window != window) {
             window.top.location.href = '';
         }
+
         //窗口加载完毕
         $(() => {
             //登入按钮

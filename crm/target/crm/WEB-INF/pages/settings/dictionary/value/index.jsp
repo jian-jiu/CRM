@@ -52,10 +52,11 @@
                 }
                 //遍历数组获取coed
                 let idsStr = "";
-                $.each(chkedIds, () => {
-                    idsStr += "id=" + this.value + "&"
+                $.each(chkedIds, (index,object) => {
+                    idsStr += "id=" + object.value + "&"
                 })
                 idsStr = idsStr.substr(0, idsStr.length - 1)
+                // alert(idsStr)
                 if (window.confirm("确认删除吗？")) {
                     //发送请求
                     $.post("settings/dictionary/value/deleteDicValueByIds", idsStr, (data) => {

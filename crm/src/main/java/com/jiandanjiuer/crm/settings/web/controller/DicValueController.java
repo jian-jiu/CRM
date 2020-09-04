@@ -2,7 +2,7 @@ package com.jiandanjiuer.crm.settings.web.controller;
 
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
-import com.jiandanjiuer.crm.commons.utils.UUIDUtils;
+import com.jiandanjiuer.crm.commons.utils.otherutil.UUIDUtils;
 import com.jiandanjiuer.crm.settings.domain.DicType;
 import com.jiandanjiuer.crm.settings.domain.DicValue;
 import com.jiandanjiuer.crm.settings.service.DicTypeService;

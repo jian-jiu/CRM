@@ -2,14 +2,16 @@ package com.jiandanjiuer.crm.workbench.web.controller;
 
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
-import com.jiandanjiuer.crm.commons.utils.ActivityFileUtils;
-import com.jiandanjiuer.crm.commons.utils.DateUtils;
-import com.jiandanjiuer.crm.commons.utils.UUIDUtils;
+import com.jiandanjiuer.crm.commons.utils.otherutil.DateUtils;
+import com.jiandanjiuer.crm.commons.utils.otherutil.UUIDUtils;
+import com.jiandanjiuer.crm.commons.utils.settingsutil.UserUtil;
+import com.jiandanjiuer.crm.commons.utils.workbenchutil.ActivityFileUtils;
 import com.jiandanjiuer.crm.settings.domain.User;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.workbench.domain.Activity;
+import com.jiandanjiuer.crm.workbench.domain.ActivityRemark;
+import com.jiandanjiuer.crm.workbench.service.ActivityRemarkService;
 import com.jiandanjiuer.crm.workbench.service.ActivityService;
-import com.jiandanjiuer.crm.workbench.service.impl.ActivityServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -38,6 +40,7 @@ public class ActivityController {
 
     private final UserService userService;
     private final ActivityService activityService;
+    private final ActivityRemarkService activityRemarkService;
 
     /**
      * 转发到业务主页面携带用户数据
@@ -116,8 +119,10 @@ public class ActivityController {
     public ModelAndView queryActivityToDataIl(ModelAndView modelAndView, @RequestParam String id) {
         //查询数据
         Activity activity = activityService.findActivityForDetailById(id);
+        List<ActivityRemark> activityRemarkList = activityRemarkService.findActivityRemarkByActivityId(activity.getId());
         //封装数据
         modelAndView.addObject("activity", activity);
+        modelAndView.addObject("activityRemarkList", activityRemarkList);
         modelAndView.setViewName("workbench/activity/detail");
         return modelAndView;
     }
@@ -191,7 +196,7 @@ public class ActivityController {
                 String cellValue = ActivityFileUtils.getCellValue(row.getCell(j));
                 switch (j) {
                     case 0:
-                        userId = ActivityServiceImpl.getUserId(users, cellValue);
+                        userId = UserUtil.getUserId(users, cellValue);
                         if (userId == null) {
                             activity.setOwner(user.getId());
                         } else {
@@ -217,7 +222,7 @@ public class ActivityController {
                         activity.setCreateTime(cellValue);
                         break;
                     case 7:
-                        userId = ActivityServiceImpl.getUserId(users, cellValue);
+                        userId = UserUtil.getUserId(users, cellValue);
                         if (userId == null) {
                             activity.setCreateBy(user.getId());
                         } else {
@@ -228,7 +233,7 @@ public class ActivityController {
                         activity.setEditTime(cellValue);
                         break;
                     case 9:
-                        userId = ActivityServiceImpl.getUserId(users, cellValue);
+                        userId = UserUtil.getUserId(users, cellValue);
                         if (userId == null) {
                             activity.setEditBy(user.getId());
                         } else {

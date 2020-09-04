@@ -2,9 +2,9 @@ package com.jiandanjiuer.crm.settings.web.controller;
 
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
-import com.jiandanjiuer.crm.commons.utils.CookieUtils;
-import com.jiandanjiuer.crm.commons.utils.IpUtils;
-import com.jiandanjiuer.crm.commons.utils.Md5Util;
+import com.jiandanjiuer.crm.commons.utils.webutil.CookieUtils;
+import com.jiandanjiuer.crm.commons.utils.otherutil.IpUtils;
+import com.jiandanjiuer.crm.commons.utils.otherutil.Md5Util;
 import com.jiandanjiuer.crm.settings.service.UserService;
 import com.jiandanjiuer.crm.settings.web.exception.LoginException;
 import lombok.RequiredArgsConstructor;

@@ -13,6 +13,11 @@
 <head>
     <base href="<%=basePath%>">
     <title>崩溃啦！！！</title>
+    <script type="text/javascript">
+        if (window.parent.window != window) {
+            window.top.location.href = '';
+        }
+    </script>
 </head>
 <body>
 <div align="center">

@@ -2,6 +2,7 @@ package com.jiandanjiuer.crm.workbench.service;
 
 import com.jiandanjiuer.crm.workbench.domain.Activity;
 import com.jiandanjiuer.crm.workbench.mapper.ActivityMapper;
+import com.jiandanjiuer.crm.workbench.mapper.ActivityRemarkMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 public class ActivityServiceImpl implements ActivityService {
 
     private final ActivityMapper activityMapper;
+    private final ActivityRemarkMapper activityRemarkMapper;
 
     /**
      * 根据条件分页查询数据
@@ -126,6 +128,7 @@ public class ActivityServiceImpl implements ActivityService {
      */
     @Override
     public int removeActivityByIds(String[] ids) {
+        activityRemarkMapper.deleteActivityRemarkByActivityIds(ids);
         return activityMapper.deleteActivityByIds(ids);
     }
 }

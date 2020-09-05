@@ -82,19 +82,21 @@ public class DicValueController {
      */
     @RequestMapping("saveCreateDicValue")
     public Object saveCreateDicValue(DicValue dicValue) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         dicValue.setId(UUIDUtils.getUUID());
         try {
             //添加数据
             int i = dicValueService.saveCreateDicValue(dicValue);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("数据保存失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("数据保存失败,出现异常");
         }
         return returnObject;
     }
@@ -107,17 +109,19 @@ public class DicValueController {
      */
     @RequestMapping("deleteDicValueByIds")
     public Object deleteDicValueByIds(String[] id) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         try {
             int i = dicValueService.deleteDicValueByIds(id);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "删除数据失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("删除数据失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "删除数据失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("删除数据失败,出现异常");
         }
         return returnObject;
     }
@@ -130,17 +134,19 @@ public class DicValueController {
      */
     @RequestMapping("saveEditDicValue")
     public Object saveEditDicValue(DicValue dicValue) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         try {
             int i = dicValueService.saveEditDicValue(dicValue);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据修改失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("数据修改失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据修改失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("数据修改失败,出现异常");
         }
         return returnObject;
     }

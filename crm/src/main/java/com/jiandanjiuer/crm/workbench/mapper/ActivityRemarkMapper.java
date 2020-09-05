@@ -65,4 +65,24 @@ public interface ActivityRemarkMapper {
      * @return 市场活动备注list集合
      */
     List<ActivityRemark> selectActivityRemarkForDetailByActivityId(String id);
+
+
+    /**
+     * 修改市场活动备注
+     *
+     * @param activityRemark 市场活动备注对象
+     * @return 修改条数
+     */
+    int updateActivityRemarkById(ActivityRemark activityRemark);
+
+
+    /**
+     * 根据多个市场活动id删除市场活动备注
+     *
+     * @param ids 市场活动ids
+     * @return 删除添数
+     */
+    int deleteActivityRemarkByActivityIds(String[] ids);
+
+
 }

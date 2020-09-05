@@ -87,7 +87,12 @@ public class ActivityController {
         map.clear();
         map.put("activitiesList", activitiesList);
         map.put("totalRows", totalRows);
-        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功", map);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setMessage("成功");
+        returnObject.setData(map);
+        return returnObject;
 
     }
 
@@ -100,11 +105,14 @@ public class ActivityController {
     @RequestMapping("editActivity")
     public Object queryActivity(@RequestParam String id) {
         Activity activity = activityService.queryActivityById(id);
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         if (activity != null) {
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "查询成功", activity);
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            returnObject.setMessage("查询成功");
+            returnObject.setData(activity);
         } else {
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "查询失败");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            returnObject.setMessage("查询失败");
         }
         return returnObject;
     }
@@ -126,6 +134,7 @@ public class ActivityController {
         modelAndView.setViewName("workbench/activity/detail");
         return modelAndView;
     }
+
 
     /**
      * 下载市场活动文件
@@ -245,8 +254,14 @@ public class ActivityController {
             activityList.add(activity);
         }
         int i = activityService.modifyActivityList(activityList);
-        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功添加条数", i);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setMessage("成功添加条数");
+        returnObject.setData(i);
+        return returnObject;
     }
+
 
     /**
      * 保存创建的参数
@@ -263,17 +278,19 @@ public class ActivityController {
         activity.setCreateTime(DateUtils.formatDateTime(new Date()));
         activity.setCreateBy(user.getId());
 
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         try {
             int i = activityService.saveCreateActivity(activity);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("数据保存失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("数据保存失败,出现异常");
         }
         return returnObject;
     }
@@ -299,11 +316,13 @@ public class ActivityController {
             if (i > 0) {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject.setMsg("更新失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("更新失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject.setMsg("更新失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("更新失败，出现异常");
         }
         return returnObject;
     }
@@ -318,11 +337,12 @@ public class ActivityController {
     @RequestMapping("removeActivityByIds")
     private Object removeActivityByIds(String[] ids) {
         int i = activityService.removeActivityByIds(ids);
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         if (i > 0) {
-            returnObject = ReturnObject.getReturnObject();
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
         } else {
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "修改失败");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("修改失败");
         }
         return returnObject;
     }

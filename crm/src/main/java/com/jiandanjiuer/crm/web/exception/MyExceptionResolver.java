@@ -27,9 +27,12 @@ public class MyExceptionResolver {
     @ExceptionHandler(value = LoginException.class)
     @ResponseBody
     public Object loginExceptionResolver(Exception e) {
+        ReturnObject returnObject = new ReturnObject();
         e.printStackTrace();
         //返回登入失败信息
-        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, e.getMessage());
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+        returnObject.setMessage(e.getMessage());
+        return returnObject;
     }
 
     @ExceptionHandler(value = Exception.class)
@@ -44,9 +47,11 @@ public class MyExceptionResolver {
         }
         //判断是否是ajax请求
         if (request.getHeader("X-Requested-With") != null) {
-            Object returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, translateResult);
+            ReturnObject returnObject = new ReturnObject();
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage(translateResult);
+            ObjectMapper objectMapper = new ObjectMapper();
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
                 String s = objectMapper.writeValueAsString(returnObject);
                 response.getWriter().write(s);
             } catch (IOException ioException) {

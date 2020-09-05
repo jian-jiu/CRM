@@ -12,7 +12,7 @@
     <context:component-scan base-package="com.jiandanjiuer.crm.**.service"/>
 
     <context:component-scan base-package="com.jiandanjiuer.crm.**.exception"/>
-    <context:component-scan base-package="com.jiandanjiuer.crm.commons.domain"/>
+<!--    <context:component-scan base-package="com.jiandanjiuer.crm.commons.domain"/>-->
 
     <!-- 配置注解驱动 -->
     <mvc:annotation-driven/>

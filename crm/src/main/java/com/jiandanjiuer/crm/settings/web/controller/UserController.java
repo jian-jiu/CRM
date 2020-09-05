@@ -57,9 +57,11 @@ public class UserController {
      */
     @RequestMapping("login")
     public Object login(@RequestParam() String loginName, String loginPwd, String autoLogin) throws LoginException {
+        ReturnObject returnObject = new ReturnObject();
         //调用方法，查询用户
         userService.findUserByLogin(loginName, loginPwd, autoLogin);
-        return ReturnObject.getReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        return returnObject;
     }
 
     /**
@@ -87,24 +89,28 @@ public class UserController {
      */
     @RequestMapping("/editUserPassword")
     public Object editUserPassword(@RequestParam() String id, String oldPwd, String newPwd) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
+
         String md5OldPwd = Md5Util.getMd5(oldPwd);
         if (md5OldPwd.equals(userService.findUserPasswordById(id))) {
             String md5NewPwd = Md5Util.getMd5(newPwd);
             int i = userService.modifyUserPasswordById(id, md5NewPwd);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
                 Cookie cookie = new Cookie("loginPwd", "0");
                 cookie.setMaxAge(0);
                 cookie.setPath("/");
                 response.addCookie(cookie);
                 //使该会话无效
                 session.invalidate();
+
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "修改失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("修改失败");
             }
         } else {
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "原密码不正确");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("原密码不正确");
         }
         return returnObject;
     }

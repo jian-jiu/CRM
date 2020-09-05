@@ -38,7 +38,10 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (sessionUser == null) {
             //判断是否是ajax请求
             if (httpServletRequest.getHeader("X-Requested-With") != null) {
-                Object returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "登入超时,请重新登入", 1);
+                ReturnObject returnObject = new ReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("登入超时,请重新登入");
+                returnObject.setData("转发到登入界面");
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
                     String s = objectMapper.writeValueAsString(returnObject);

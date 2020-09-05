@@ -8,12 +8,16 @@ package com.jiandanjiuer.crm.commons.contants;
  */
 public class Contents {
     /**
-     * 返回结果信息
+     * 成功
      */
     public static final String RETURN_OBJECT_CODE_SUCCESS = "1";
-    public static final String RETURN_OBJECT_CODE_FAIL = "0";
     /**
-     * 用户名称
+     * 失败
+     */
+    public static final String RETURN_OBJECT_CODE_FAIL = "0";
+
+    /**
+     * 用户session名称
      */
     public static final String SESSION_USER = "sessionUser";
 }

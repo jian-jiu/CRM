@@ -48,7 +48,7 @@
                 async: false,
                 complete: false,
                 success(data) {
-                    if (data.code == "1") {
+                    if (data.code == "0") {
                         codeMsg.text("")
                         ret = true
                     } else {

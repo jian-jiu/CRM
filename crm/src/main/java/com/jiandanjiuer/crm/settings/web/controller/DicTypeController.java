@@ -72,10 +72,9 @@ public class DicTypeController {
      *
      * @return 数据字典类型List集合
      */
-    @RequestMapping("findDicType")
-    public Object findDicType() {
-        List<DicType> dicTypeList = dicTypeService.queryAllDicTypes();
-        return ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "成功", dicTypeList);
+    @RequestMapping("findAllDicType")
+    public Object findAllDicType() {
+        return dicTypeService.queryAllDicTypes();
     }
 
     /**
@@ -86,12 +85,13 @@ public class DicTypeController {
      */
     @RequestMapping("checkCode")
     public Object checkCode(String code) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         DicType dicType = dicTypeService.queryDicTypeByCode(code);
         if (dicType == null) {
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_SUCCESS, "");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
         } else {
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "编码已经存在");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            returnObject.setMessage("编码已经存在");
         }
         return returnObject;
     }
@@ -104,18 +104,20 @@ public class DicTypeController {
      */
     @PostMapping("saveCreateDicType")
     public Object saveCreateDicType(DicType dicType) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         try {
             //添加数据
             int i = dicTypeService.saveCreateDicType(dicType);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("数据保存失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据保存失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("数据保存失败,出现异常");
         }
         return returnObject;
     }
@@ -128,17 +130,19 @@ public class DicTypeController {
      */
     @PostMapping("saveEditDicType")
     public Object saveEditDicType(DicType dicType) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         try {
             int i = dicTypeService.saveEditDicType(dicType);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据修改失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("数据修改失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "数据修改失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("数据修改失败,出现异常");
         }
         return returnObject;
     }
@@ -151,17 +155,19 @@ public class DicTypeController {
      */
     @PostMapping("deleteDicTypeByCodes")
     public Object deleteDicTypeByCodes(String[] code) {
-        Object returnObject;
+        ReturnObject returnObject = new ReturnObject();
         try {
             int i = dicTypeService.deleteDicTypeByCoeds(code);
             if (i > 0) {
-                returnObject = ReturnObject.getReturnObject();
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
             } else {
-                returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "删除数据失败");
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("删除数据失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            returnObject = ReturnObject.getReturnObject(Contents.RETURN_OBJECT_CODE_FAIL, "删除数据失败，出现异常");
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("删除数据失败,出现异常");
         }
         return returnObject;
     }

@@ -175,5 +175,19 @@
         ORDER By create_time DESC
     </select>
 
+    <update id="updateActivityRemarkById" parameterType="com.jiandanjiuer.crm.workbench.domain.ActivityRemark">
+        update tbl_activity_remark
+        set note_content = #{noteContent},edit_time = #{editTime},edit_by = #{editBy},edit_flag = 1
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActivityRemarkByActivityIds" parameterType="string">
+        delete from tbl_activity_remark
+        where activity_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 
 </mapper>

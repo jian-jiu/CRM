@@ -32,7 +32,7 @@
                     //显示总条数，功能被取代
                     // $("#totalRowsB").text(data.totalRows)
                     //遍历activitiesList显示数据
-                    let htmlStr = "";
+                    let htmlStr = [];
                     $.each(data.data.activitiesList, (index, object) => {
                         htmlStr += "<tr class=\"active\">"
                         htmlStr += "<td><input type=\"checkbox\" value=\"" + object.id + "\"/></td>"

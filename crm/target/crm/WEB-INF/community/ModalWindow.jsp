@@ -19,7 +19,7 @@
             <div class="modal-body">
                 <div style="position: relative; left: 40px;">
                     姓名：<b>${sessionScope.sessionUser.name}</b><br><br>
-                    登录帐号：<b>${sessionScope.sessionUser.name}</b><br><br>
+                    登录帐号：<b>${sessionScope.sessionUser.loginAct}</b><br><br>
                     组织机构：<b>${sessionScope.sessionUser.deptNo}</b><br><br>
                     邮箱：<b>${sessionScope.sessionUser.email}</b><br><br>
                     失效时间：<b>${sessionScope.sessionUser.expireTime}</b><br><br>

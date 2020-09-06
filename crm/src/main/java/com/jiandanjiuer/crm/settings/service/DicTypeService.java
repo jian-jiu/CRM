@@ -25,6 +25,7 @@ public interface DicTypeService {
      */
     DicType queryDicTypeByCode(String code);
 
+
     /**
      * 添加数据字典
      *
@@ -34,17 +35,18 @@ public interface DicTypeService {
     int saveCreateDicType(DicType dicType);
 
     /**
+     * 修改数据字典
+     * @param dicType
+     * @return
+     */
+    int saveEditDicType(DicType dicType);
+
+
+    /**
      * 按照codes删除数据
      *
      * @param codes
      * @return
      */
     int deleteDicTypeByCoeds(String[] codes);
-
-    /**
-     * 修改数据字典
-     * @param dicType
-     * @return
-     */
-    int saveEditDicType(DicType dicType);
 }

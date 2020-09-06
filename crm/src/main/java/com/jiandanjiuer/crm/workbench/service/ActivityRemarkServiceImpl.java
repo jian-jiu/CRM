@@ -26,8 +26,13 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
      * @return 市场活动备注list集合
      */
     @Override
-    public List<ActivityRemark> findActivityRemarkByActivityId(String id) {
+    public List<ActivityRemark> findActivityRemarkForDetailByActivityId(String id) {
         return activityRemarkMapper.selectActivityRemarkForDetailByActivityId(id);
+    }
+
+    @Override
+    public ActivityRemark findActivityRemarkForDetailById(String id) {
+        return activityRemarkMapper.selectActivityRemarkForDetailById(id);
     }
 
     /**

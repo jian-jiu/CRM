@@ -26,38 +26,7 @@ import java.util.Date;
 public class ActivityRemarkController {
 
     private final ActivityRemarkService activityRemarkService;
-
     public final HttpSession session;
-
-    @RequestMapping("addActivityRemark")
-    public Object addActivityRemark(ActivityRemark activityRemark) {
-        //设置参数
-        activityRemark.setId(UUIDUtils.getUUID());
-        //设置创建时间
-        activityRemark.setCreateTime(DateUtils.formatDateTime(new Date()));
-        //获取当前用户
-        User user = (User) session.getAttribute(Contents.SESSION_USER);
-        activityRemark.setCreateBy(user.getId());
-        activityRemark.setEditFlag("0");
-
-        //添加市场活动备注
-        ReturnObject returnObject = new ReturnObject();
-        try {
-            int i = activityRemarkService.addActivityRemark(activityRemark);
-            if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            } else {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-                returnObject.setMessage("添加失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-            returnObject.setMessage("添加失败,出现异常");
-        }
-        return returnObject;
-    }
-
 
     /**
      * 根据id查询市场活动备注
@@ -75,6 +44,44 @@ public class ActivityRemarkController {
     }
 
     /**
+     * 添加市场活动
+     *
+     * @param activityRemark 市场活动
+     * @return 结果集
+     */
+    @RequestMapping("addActivityRemark")
+    public Object addActivityRemark(ActivityRemark activityRemark) {
+        //设置参数
+        activityRemark.setId(UUIDUtils.getUUID());
+        //设置创建时间
+        activityRemark.setCreateTime(DateUtils.formatDateTime(new Date()));
+        //获取当前用户
+        User user = (User) session.getAttribute(Contents.SESSION_USER);
+        activityRemark.setCreateBy(user.getId());
+        activityRemark.setEditFlag("0");
+
+        //添加市场活动备注
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            int i = activityRemarkService.addActivityRemark(activityRemark);
+            if (i > 0) {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+                activityRemark = activityRemarkService.findActivityRemarkForDetailById(activityRemark.getId());
+                returnObject.setData(activityRemark);
+            } else {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("添加失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("添加失败,出现异常");
+        }
+        return returnObject;
+    }
+
+
+    /**
      * 修改市场活动备注
      *
      * @param activityRemark 市场活动备注对象
@@ -86,12 +93,14 @@ public class ActivityRemarkController {
 
         User user = (User) session.getAttribute(Contents.SESSION_USER);
         activityRemark.setEditBy(user.getId());
-        
+
         ReturnObject returnObject = new ReturnObject();
         try {
             int i = activityRemarkService.updateActivityRemarkById(activityRemark);
             if (i > 0) {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+                activityRemark = activityRemarkService.findActivityRemarkForDetailById(activityRemark.getId());
+                returnObject.setData(activityRemark);
             } else {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
                 returnObject.setMessage("修改失败");
@@ -103,6 +112,7 @@ public class ActivityRemarkController {
         }
         return returnObject;
     }
+
 
     /**
      * 根据id删除市场活动备注
@@ -118,7 +128,7 @@ public class ActivityRemarkController {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
         } else {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-            returnObject.setMessage("添加失败,出现异常");
+            returnObject.setMessage("删除失败,出现异常");
         }
         return returnObject;
     }

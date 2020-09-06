@@ -4,74 +4,102 @@
 <head>
     <%@include file="../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
-
         //默认情况下取消和保存按钮是隐藏的
-        var cancelAndSaveBtnDefault = true;
+        let cancelAndSaveBtnDefault = true;
 
-        $(function () {
-            $("#remark").focus(function () {
+        $(() => {
+            //备注输入框
+            let remark = $("#remark")
+            //备注输入框div
+            let remarkDiv = $("#remarkDiv")
+
+            remark.focus(() => {
                 if (cancelAndSaveBtnDefault) {
                     //设置remarkDiv的高度为130px
-                    $("#remarkDiv").css("height", "130px");
+                    remarkDiv.css("height", "130px");
                     //显示
                     $("#cancelAndSaveBtn").show("2000");
                     cancelAndSaveBtnDefault = false;
                 }
             });
 
-            $("#cancelBtn").click(function () {
+            $("#cancelBtn").click(() => {
                 //显示
                 $("#cancelAndSaveBtn").hide();
                 //设置remarkDiv的高度为130px
-                $("#remarkDiv").css("height", "90px");
+                remarkDiv.css("height", "90px");
                 cancelAndSaveBtnDefault = true;
             });
 
-            $(".remarkDiv").mouseover(function () {
+            $("#ActivityRemarkTopDiv").on("mouseover", ".remarkDiv", function () {
                 $(this).children("div").children("div").show();
-            });
-
-            $(".remarkDiv").mouseout(function () {
+            }).on("mouseout", ".remarkDiv", function () {
                 $(this).children("div").children("div").hide();
-            });
-
-            $(".myHref").mouseover(function () {
+            }).on("mouseover", ".myHref", function () {
                 $(this).children("span").css("color", "red");
-            });
-
-            $(".myHref").mouseout(function () {
+            }).on("mouseout", ".myHref", function () {
                 $(this).children("span").css("color", "#E6E6E6");
-            });
+            })
+
             //确定更新按钮
             let updateRemarkBtn = $("#updateRemarkBtn")
             //修改窗口
             let editRemarkModal = $("#editRemarkModal")
+            //添加备注按钮
+            let addActivityRemarkBtn = $("#addActivityRemarkBtn")
 
             //回车事件
-            /*$(window).keydown(e => {
+            $(window).keydown(e => {
                 if (e.key == "Enter") {
                     if (!editRemarkModal.is(":hidden")) {
-                        updateRemarkBtn.click()
+                        if (!($("#noteContent")[0] == document.activeElement)) {
+                            updateRemarkBtn.click()
+                        }
+                    } else {
+                        if (!$("#cancelAndSaveBtn").is(":hidden")) {
+                            addActivityRemarkBtn.click()
+                        }
                     }
                 }
-            })*/
+            })
 
             let activityId = $("#id")
 
             //添加市场活动备注按钮单击事件
-            $("#addActivityRemarkBtn").click(() => {
-                let noteContent = $("#remark").val()
+            addActivityRemarkBtn.click(() => {
+                let noteContent = remark.val()
                 let id = activityId.val()
+                if (!noteContent) {
+                    alert("备注消息不能为空!!!")
+                    return
+                }
                 $.post("workbench/activity/addActivityRemark", {activityId: id, noteContent: noteContent}, (data) => {
                     if (data.code == "1") {
-                        location.href = "workbench/activity/queryActivityToDataIl?id=" + id
+                        remarkDiv.before(
+                            '<div id="div_' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
+                            <img title="${sessionScope.sessionUser.name}" src="image/QQ.jpg" style="width: 30px; height:30px;">\
+                                <div style="position: relative; top: -40px; left: 40px;">\
+                                <h5>' + noteContent + '</h5>\
+                                <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
+                                <small style="color: gray;">\
+                                ' + data.data.createTime + ' 由 ${sessionScope.sessionUser.name} 创建</small>\
+                                    <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                    <a class="myHref" onclick="editActivityRemark(\'' + data.data.id + '\')">\
+                                        <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    &nbsp;&nbsp;&nbsp;&nbsp;\
+                                    <a class="myHref" onclick="removeActivityRemark(\'' + data.data.id + '\')">\
+                                        <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    </div>\
+                                </div>\
+                            </div>')
+                        //设置备注输入框的值
+                        remark.val("")
                     }
                 }, "json")
             })
 
             //单击确定修改按钮
             updateRemarkBtn.click(() => {
-                let id = activityId.val()
                 let editId = $("#editId").val()
                 let noteContent = $.trim($("#noteContent").val())
                 $.post("workbench/activity/updateActivityRemarkById", {
@@ -79,7 +107,24 @@
                     noteContent: noteContent
                 }, (data) => {
                     if (data.code == "1") {
-                        location.href = "workbench/activity/queryActivityToDataIl?id=" + id
+                        console.log(data.data)
+                        let editIdDiv = $("#div_" + editId + "")
+                        editIdDiv.empty()
+                        editIdDiv.append(
+                            '<img title="div_' + data.data.editBy + '" src="image/QQ.jpg" style="width: 30px; height:30px;">\
+                            <div style="position: relative; top: -40px; left: 40px;">\
+                            <h5>' + data.data.noteContent + '</h5>\
+                            <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
+                            <small style="color: gray;">' + data.data.editTime + ' 由 ' + data.data.editBy + ' 修改</small>\
+                                <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                <a class="myHref" onclick="editActivityRemark(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                &nbsp;&nbsp;&nbsp;&nbsp;\
+                                <a class="myHref" onclick="removeActivityRemark(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                </div>\
+                            </div>')
+                        //关闭修改窗口
                         editRemarkModal.modal("hide")
                     }
                 }, "json")
@@ -88,20 +133,17 @@
 
         //编辑函数
         function editActivityRemark(id) {
-            $.post("workbench/activity/findActivityRemarkById", {id: id}, (data) => {
-                if (data.code == "1") {
-                    $("#editId").val(data.data.id)
-                    $("#noteContent").val(data.data.noteContent)
-                    $("#editRemarkModal").modal("show")
-                }
-            }, "json")
+            let noteContent = $("#div_" + id + " h5").html()
+            $("#editId").val(id)
+            $("#noteContent").val(noteContent)
+            $("#editRemarkModal").modal("show")
         }
 
         //删除函数
         function removeActivityRemark(id) {
             $.post("workbench/activity/removeActivityRemark", {id: id}, (data) => {
                 if (data.code == "1") {
-                    location.href = "workbench/activity/queryActivityToDataIl?id=" + $("#id").val()
+                    $("#div_" + id + "").remove()
                 }
             }, "json")
         }
@@ -113,7 +155,7 @@
 <!-- 修改市场活动备注的模态窗口 -->
 <div class="modal fade" id="editRemarkModal" role="dialog">
     <%-- 备注的id --%>
-    <input type="hidden" id="remarkId">
+    <input type="hidden" id="editId">
     <div class="modal-dialog" role="document" style="width: 40%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -125,9 +167,8 @@
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">内容</label>
+                        <label class="col-sm-2 control-label">内容</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <input type="hidden" id="editId">
                             <textarea class="form-control" rows="3" id="noteContent"></textarea>
                         </div>
                     </div>
@@ -144,8 +185,8 @@
 
 <!-- 返回按钮 -->
 <div style="position: relative; top: 35px; left: 10px;">
-    <a href="javascript:void(0);" onclick="window.history.back();"><span class="glyphicon glyphicon-arrow-left"
-                                                                         style="font-size: 20px; color: #DDDDDD"></span></a>
+    <a href="javascript:void(0);" onclick="window.history.back();">
+        <span class="glyphicon glyphicon-arrow-left" style="font-size: 20px; color: #DDDDDD"></span></a>
 </div>
 
 <!-- 大标题 -->
@@ -177,10 +218,10 @@
 
     <div style="position: relative; left: 40px; height: 30px; top: 10px;">
         <div style="width: 300px; color: gray;">开始日期</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.startDate}</b>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${not empty activity.startDate && !(activity.startDate eq null)?activity.startDate:"未设置"}</b>
         </div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">结束日期</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${activity.endDate}</b>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${not empty activity.endDate && !(activity.endDate eq null)?activity.startDate:"未设置"}</b>
         </div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
@@ -217,13 +258,14 @@
 </div>
 
 <!-- 备注 -->
-<div style="position: relative; top: 30px; left: 40px;">
+<div id="ActivityRemarkTopDiv" style="position: relative; top: 10px; left: 40px;">
     <div class="page-header">
         <h4>备注</h4>
     </div>
+    <div id="ActivityRemarkDiv"></div>
     <c:forEach items="${activityRemarkList}" var="activityRemark">
-        <div class="remarkDiv" style="height: 60px;">
-            <img title="zhangsan" src="image/QQ.jpg" style="width: 30px; height:30px;">
+        <div id="div_${activityRemark.id}" class="remarkDiv" style="height: 60px;">
+            <img title="${activityRemark.createBy}" src="image/QQ.jpg" style="width: 30px; height:30px;">
             <div style="position: relative; top: -40px; left: 40px;">
                 <h5>${activityRemark.noteContent}</h5>
                 <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small

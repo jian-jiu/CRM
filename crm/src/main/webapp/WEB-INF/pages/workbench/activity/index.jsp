@@ -34,7 +34,7 @@
                     //遍历activitiesList显示数据
                     let htmlStr = [];
                     $.each(data.data.activitiesList, (index, object) => {
-                        htmlStr += "<tr class=\"active\">"
+                        htmlStr += "<tr class=" + (index % 2 == 0 ? "active" : "") + " > "
                         htmlStr += "<td><input type=\"checkbox\" value=\"" + object.id + "\"/></td>"
                         htmlStr += "<td><a style='text-decoration: none; cursor: pointer;'"
                         htmlStr += "onclick=\"window.location.href='workbench/activity/queryActivityToDataIl?id=" + object.id + "'\">" + object.name + "</a></td>"
@@ -144,7 +144,7 @@
             $("#checkAll").click(() => {
                 $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
             })
-
+            //给其他复选框添加事件
             $("#tBody").on("click", "input[type='checkbox']", () => {
                 //获取总的复选框和选中的复选框进行对比
                 if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
@@ -153,16 +153,6 @@
                     $("#checkAll").prop("checked", false)
                 }
             })
-
-            //给所有的复选框添加单击事件
-            // $("#tBody input[type='checkbox']").click(() => {
-            //     //获取总的复选框和选中的复选框进行对比
-            //     if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
-            //         $("#checkAll").prop("checked", true)
-            //     } else {
-            //         $("#checkAll").prop("checked", false)
-            //     }
-            // })
 
             //给查询按钮添加单击事件
             queryActivityBtn.click(() => {
@@ -173,8 +163,10 @@
             $("#createActivityBtn").click(() => {
                 //重置表单
                 $("#activityForm")[0].reset()
+                $("#create-marketActivityOwner").val("${sessionScope.sessionUser.id}")
                 //显示创建市场活动的模态窗口
                 $("#createActivityModal").modal("show")
+
             })
 
             //给保存按钮添加单击事件
@@ -223,7 +215,7 @@
             });
 
             //编辑窗口组件对象
-            let editid = $("#edit-id")
+            let editId = $("#edit-id")
             let editMarketActivityOwner = $("#edit-marketActivityOwner")
             let editMarketActivityName = $("#edit-marketActivityName")
             let editStartTime = $("#edit-startTime")
@@ -247,7 +239,7 @@
                 //发送请求
                 $.post("workbench/activity/editActivity", {id: id}, (data) => {
                     if (data.code == "1") {
-                        editid.val(data.data.id)
+                        editId.val(data.data.id)
                         //给下拉框设置选择的
                         editMarketActivityOwner.val(data.data.owner)
                         editMarketActivityName.val(data.data.name)
@@ -264,7 +256,7 @@
             //确定修改按钮
             updateActivityBtn.click(() => {
                 //收集参数
-                let id = editid.val()
+                let id = editId.val()
                 let owner = editMarketActivityOwner.val()
                 let name = $.trim(editMarketActivityName.val())
                 let startDate = editStartTime.val()
@@ -435,11 +427,13 @@
                     <div class="form-group">
                         <label for="create-startDate" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control upDate" id="create-startDate" readonly>
+                            <input type="text" class="form-control upDate" id="create-startDate" readonly
+                                   style="background-color: #ffffff">
                         </div>
                         <label for="create-endDate" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control upDate" id="create-endDate" readonly>
+                            <input type="text" class="form-control upDate" id="create-endDate" readonly
+                                   style="background-color: #ffffff">
                         </div>
                     </div>
                     <div class="form-group">
@@ -502,11 +496,13 @@
                     <div class="form-group">
                         <label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control editDate" id="edit-startTime" readonly>
+                            <input type="text" class="form-control editDate" id="edit-startTime" readonly
+                                   style="background-color: #ffffff">
                         </div>
                         <label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control editDate" id="edit-endTime" readonly>
+                            <input type="text" class="form-control editDate" id="edit-endTime" readonly
+                                   style="background-color: #ffffff">
                         </div>
                     </div>
 
@@ -606,13 +602,15 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">开始日期</div>
-                        <input class="form-control queryDate" type="text" id="query-startDate" readonly/>
+                        <input class="form-control queryDate" type="text" id="query-startDate" readonly
+                               style="background-color: #ffffff">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">结束日期</div>
-                        <input class="form-control queryDate" type="text" id="query-endDate" readonly>
+                        <input class="form-control queryDate" type="text" id="query-endDate" readonly
+                               style="background-color: #ffffff">
                     </div>
                 </div>
                 <button id="queryActivityBtn" type="button" class="btn btn-default">查询</button>

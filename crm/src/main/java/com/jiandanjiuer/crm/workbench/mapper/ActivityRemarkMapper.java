@@ -66,6 +66,13 @@ public interface ActivityRemarkMapper {
      */
     List<ActivityRemark> selectActivityRemarkForDetailByActivityId(String id);
 
+    /**
+     * 根据市场活动备注id查询详细的市场活动
+     * @param id id
+     * @return 市场活动备注对象
+     */
+    ActivityRemark selectActivityRemarkForDetailById(String id);
+
 
     /**
      * 修改市场活动备注

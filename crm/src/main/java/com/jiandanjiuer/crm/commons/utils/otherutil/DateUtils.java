@@ -17,7 +17,7 @@ public class DateUtils {
      * @return 返回一个初始化格式之后的时间对象
      */
     public static String formatDateTime(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
     }
 }

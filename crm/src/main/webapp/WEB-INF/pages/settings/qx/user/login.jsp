@@ -65,7 +65,7 @@
                         if (data.code == "1") {
                             location.href = "workbench/index";
                         } else {
-                            msgObj.text(data.msg);
+                            msgObj.text(data.message);
                         }
                     }
                 })

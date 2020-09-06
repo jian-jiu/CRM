@@ -18,7 +18,14 @@ public interface ActivityRemarkService {
      * @param id 市场活动id
      * @return 市场活动备注list集合
      */
-    List<ActivityRemark> findActivityRemarkByActivityId(String id);
+    List<ActivityRemark> findActivityRemarkForDetailByActivityId(String id);
+
+    /**
+     * 根据市场活动备注id查询详细的市场活动
+     * @param id id
+     * @return 市场活动备注对象
+     */
+    ActivityRemark findActivityRemarkForDetailById(String id);
 
     /**
      * 根据id查询市场活动备注
@@ -27,6 +34,8 @@ public interface ActivityRemarkService {
      * @return 市场活动备注
      */
     ActivityRemark findActivityRemarkById(String id);
+
+
 
 
     /**

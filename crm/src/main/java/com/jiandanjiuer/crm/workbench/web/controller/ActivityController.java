@@ -127,7 +127,7 @@ public class ActivityController {
     public ModelAndView queryActivityToDataIl(ModelAndView modelAndView, @RequestParam String id) {
         //查询数据
         Activity activity = activityService.findActivityForDetailById(id);
-        List<ActivityRemark> activityRemarkList = activityRemarkService.findActivityRemarkByActivityId(activity.getId());
+        List<ActivityRemark> activityRemarkList = activityRemarkService.findActivityRemarkForDetailByActivityId(activity.getId());
         //封装数据
         modelAndView.addObject("activity", activity);
         modelAndView.addObject("activityRemarkList", activityRemarkList);

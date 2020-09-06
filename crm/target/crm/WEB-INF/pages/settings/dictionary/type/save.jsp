@@ -52,7 +52,7 @@
                         codeMsg.text("")
                         ret = true
                     } else {
-                        codeMsg.text(data.msg)
+                        codeMsg.text(data.message)
                     }
                 }
             })

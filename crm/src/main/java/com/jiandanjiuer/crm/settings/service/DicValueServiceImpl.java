@@ -28,28 +28,6 @@ public class DicValueServiceImpl implements DicValueService {
     }
 
     /**
-     * 添加数据值
-     *
-     * @param dicValue
-     * @return
-     */
-    @Override
-    public int saveCreateDicValue(DicValue dicValue) {
-        return dicValueMapper.insertDicValue(dicValue);
-    }
-
-    /**
-     * 根据ids删除数据
-     *
-     * @param codes
-     * @return
-     */
-    @Override
-    public int deleteDicValueByIds(String[] codes) {
-        return dicValueMapper.deleteDicValueByIds(codes);
-    }
-
-    /**
      * 根据id查询数据
      *
      * @param id
@@ -59,6 +37,18 @@ public class DicValueServiceImpl implements DicValueService {
     public DicValue queryDicValueById(String id) {
         return dicValueMapper.selectDicValueById(id);
     }
+
+    /**
+     * 根据数据字典类型查询数据值
+     *
+     * @param typeCode 数据字典类型
+     * @return 数据值list集合
+     */
+    @Override
+    public List<DicValue> findDicValueByDicType(String typeCode) {
+        return dicValueMapper.selectDicValueByDicType(typeCode);
+    }
+
 
     /**
      * 修改数据值
@@ -71,4 +61,26 @@ public class DicValueServiceImpl implements DicValueService {
         return dicValueMapper.updateDicValue(dicValue);
     }
 
+    /**
+     * 添加数据值
+     *
+     * @param dicValue
+     * @return
+     */
+    @Override
+    public int saveCreateDicValue(DicValue dicValue) {
+        return dicValueMapper.insertDicValue(dicValue);
+    }
+
+
+    /**
+     * 根据ids删除数据
+     *
+     * @param codes
+     * @return
+     */
+    @Override
+    public int deleteDicValueByIds(String[] codes) {
+        return dicValueMapper.deleteDicValueByIds(codes);
+    }
 }

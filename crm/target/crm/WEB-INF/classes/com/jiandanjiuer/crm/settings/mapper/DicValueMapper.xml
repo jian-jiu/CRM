@@ -145,6 +145,13 @@
         join tbl_dic_type tdt on tdv.type_code=tdt.code
         where tdv.id=#{id}
     </select>
+    <select id="selectDicValueByDicType" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_dic_value
+        where type_code = #{code}
+        order by cast(order_no as signed integer)
+    </select>
 
     <insert id="insertDicValue" parameterType="com.jiandanjiuer.crm.settings.domain.DicValue">
         insert into

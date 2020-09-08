@@ -90,7 +90,6 @@ public class ActivityController {
 
         ReturnObject returnObject = new ReturnObject();
         returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-        returnObject.setMessage("成功");
         returnObject.setData(map);
         return returnObject;
 

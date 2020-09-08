@@ -204,9 +204,7 @@
         where id = #{id,jdbcType=CHAR}
     </update>
 
-    <select id="selectActivityForPageByCondition" parameterType="map" resultMap="BaseResultMap">
-        select ta.id,ta.name,tu1.name as owner,ta.start_date,ta.end_date,ta.edit_time,
-        ta.cost,ta.description,ta.create_time,tu2.name as create_by,tu3.name as edit_by
+    <sql id="selectActivityByConditionSql">
         from tbl_activity ta
         join tbl_user tu1 on ta.owner = tu1.id
         join tbl_user tu2 on ta.create_by = tu2.id
@@ -225,29 +223,17 @@
                 and ta.end_date &lt;= #{endDate}
             </if>
         </where>
+    </sql>
+    <select id="selectActivityForPageByCondition" parameterType="map" resultMap="BaseResultMap">
+        select ta.id,ta.name,tu1.name as owner,ta.start_date,ta.end_date,ta.edit_time,
+        ta.cost,ta.description,ta.create_time,tu2.name as create_by,tu3.name as edit_by
+        <include refid="selectActivityByConditionSql"/>
         order by create_time desc
         limit #{beginNo},#{pageSize}
     </select>
     <select id="selectCountOActivityByCondition" resultType="long">
         select count(*) as totalRows
-        from tbl_activity ta
-        join tbl_user tu1 on ta.owner = tu1.id
-        join tbl_user tu2 on ta.create_by = tu2.id
-        left join tbl_user tu3 on ta.edit_by = tu3.id
-        <where>
-            <if test="name != null and name != ''">
-                and ta.name like '%' #{name} '%'
-            </if>
-            <if test="owner != null and owner != ''">
-                and tu1.name like '%' #{owner} '%'
-            </if>
-            <if test="startDate != null and startDate != ''">
-                and ta.start_date >= #{startDate}
-            </if>
-            <if test="endDate != null and endDate != ''">
-                and ta.end_date &lt;= #{endDate}
-            </if>
-        </where>
+        <include refid="selectActivityByConditionSql"/>
     </select>
     <select id="selectActivityForDetail" resultMap="BaseResultMap">
         select ta.id,tu1.name as owner,ta.name,ta.start_date,ta.end_date,ta.cost,ta.description,

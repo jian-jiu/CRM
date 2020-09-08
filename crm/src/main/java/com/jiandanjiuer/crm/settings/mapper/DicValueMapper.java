@@ -58,28 +58,13 @@ public interface DicValueMapper {
      */
     int updateByPrimaryKey(DicValue record);
 
+
     /**
      * 查询所有数据值
      *
      * @return
      */
     List<DicValue> selectAllDicValues();
-
-    /**
-     * 保存创建的数据值
-     *
-     * @param dicValue
-     * @return
-     */
-    int insertDicValue(DicValue dicValue);
-
-    /**
-     * 根据ids删除数据
-     *
-     * @param ids
-     * @return
-     */
-    int deleteDicValueByIds(String[] ids);
 
     /**
      * 根据id查找数据
@@ -90,12 +75,39 @@ public interface DicValueMapper {
     DicValue selectDicValueById(String id);
 
     /**
+     * 根据数据字典类型查询数据值
+     *
+     * @param typeCode 数据字典类型
+     * @return 数据值list集合
+     */
+    List<DicValue> selectDicValueByDicType(String typeCode);
+
+
+    /**
+     * 保存创建的数据值
+     *
+     * @param dicValue
+     * @return
+     */
+    int insertDicValue(DicValue dicValue);
+
+
+    /**
      * 修改数据值
      *
      * @param dicValue
      * @return
      */
     int updateDicValue(DicValue dicValue);
+
+
+    /**
+     * 根据ids删除数据
+     *
+     * @param ids
+     * @return
+     */
+    int deleteDicValueByIds(String[] ids);
 
     /**
      * 根据TypeCodes删除这些类型下的所有数据字典值

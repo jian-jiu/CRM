@@ -3,14 +3,6 @@
 <html style="height: 87%;width: 99%">
 <head>
     <%@include file="../../../community/HeadPart.jsp" %>
-    <link type="text/css" rel="stylesheet" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
-
-    <script type="text/javascript"
-            src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript"
-            src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
-    <script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
-    <script type="text/javascript" src="jquery/bs_pagination-master/localization/en.min.js"></script>
     <script type="text/javascript">
         //分页查询
         function queryActivityForPageByCondition(pageNo, pageSize) {
@@ -77,21 +69,6 @@
 
         //窗口加载完毕
         $(() => {
-            //模态窗口对象
-            let createActivityModal = $("#createActivityModal")
-            let editActivityModal = $("#editActivityModal")
-            let importActivityModal = $("#importActivityModal")
-
-            //分页容器
-            let demo = $("#demo_pag1")
-
-            //确定保存按钮
-            let saveCreateActivityBtn = $("#saveCreateActivityBtn")
-            //确定修改按钮
-            let updateActivityBtn = $("#updateActivityBtn")
-            //查询按钮
-            let queryActivityBtn = $("#queryActivityBtn")
-
             //窗口加载完毕获取数据
             queryActivityForPageByCondition(1, 10)
             //设置创建日期样式
@@ -127,9 +104,47 @@
                 clearBtn: true,//是否显示清空按钮
                 container: '#editActivityModal'
             })
+
+            //全选按钮
+            let checkAll = $("#checkAll")
+            //给全选按钮添加事件
+            checkAll.click(() => {
+                $("#tBody input[type='checkbox']").prop("checked", checkAll.prop("checked"))
+            })
+            //给其他复选框添加事件
+            $("#tBody").on("click", "input[type='checkbox']", () => {
+                //获取总的复选框和选中的复选框进行对比
+                if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
+                    checkAll.prop("checked", true)
+                } else {
+                    checkAll.prop("checked", false)
+                }
+            })
+
+            //分页容器
+            let demo = $("#demo_pag1")
+
+            //模态窗口对象
+            let createActivityModal = $("#createActivityModal")
+            let editActivityModal = $("#editActivityModal")
+            let importActivityModal = $("#importActivityModal")
+
+            //确定保存按钮
+            let saveCreateActivityBtn = $("#saveCreateActivityBtn")
+            //确定修改按钮
+            let updateActivityBtn = $("#updateActivityBtn")
+            //查询按钮
+            let queryActivityBtn = $("#queryActivityBtn")
+
+            //给查询按钮添加单击事件
+            queryActivityBtn.click(() => {
+                queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+            })
+
             //回车事件
             $(window).keydown(e => {
                 if (e.key == "Enter") {
+                    //判断是否在创建市场活动界面
                     if (!createActivityModal.is(":hidden")) {
                         saveCreateActivityBtn.click()
                     } else if (!editActivityModal.is(":hidden")) {
@@ -140,39 +155,20 @@
                 }
             })
 
-            //给全选按钮添加事件
-            $("#checkAll").click(() => {
-                $("#tBody input[type='checkbox']").prop("checked", $("#checkAll").prop("checked"))
-            })
-            //给其他复选框添加事件
-            $("#tBody").on("click", "input[type='checkbox']", () => {
-                //获取总的复选框和选中的复选框进行对比
-                if ($("#tBody input[type='checkbox']").size() == $("#tBody input[type='checkbox']:checked").size()) {
-                    $("#checkAll").prop("checked", true)
-                } else {
-                    $("#checkAll").prop("checked", false)
-                }
-            })
-
-            //给查询按钮添加单击事件
-            queryActivityBtn.click(() => {
-                queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
-            })
-
+            //创建_所有者
+            let marketActivityOwner = $("#create-marketActivityOwner")
             //给创建按钮添加单击事件
             $("#createActivityBtn").click(() => {
                 //重置表单
                 $("#activityForm")[0].reset()
-                $("#create-marketActivityOwner").val("${sessionScope.sessionUser.id}")
+                marketActivityOwner.val("${sessionScope.sessionUser.id}")
                 //显示创建市场活动的模态窗口
                 $("#createActivityModal").modal("show")
-
             })
-
             //给保存按钮添加单击事件
             saveCreateActivityBtn.click(() => {
                 //收集参数
-                let owner = $("#create-marketActivityOwner").val();
+                let owner = marketActivityOwner.val();
                 let name = $.trim($("#create-marketActivityName").val());
                 let startDate = $("#create-startDate").val();
                 let endDate = $("#create-endDate").val();
@@ -247,12 +243,11 @@
                         editEndTime.val(data.data.endDate)
                         editCost.val(data.data.cost)
                         editDescribe.val(data.data.name)
-                        //显示创建市场活动的模态窗口
+                        //显示修改市场活动的模态窗口
                         editActivityModal.modal("show")
                     }
                 }, "json")
             })
-
             //确定修改按钮
             updateActivityBtn.click(() => {
                 //收集参数
@@ -320,7 +315,6 @@
             $("#exportActivityAllBtn").click(() => {
                 location.href = "workbench/activity/downloadsActivity"
             })
-
             //选择导出市场活动
             $("#exportActivityXzBtn").click(() => {
                 let checkId = $("#tBody input[type='checkbox']:checked")
@@ -335,13 +329,12 @@
                 ids = ids.substr(0, ids.length - 1)
                 location.href = "workbench/activity/downloadsActivityByIds?" + ids
             })
-
-            $("#importActivityModal").click(() => {
+            //点击导出市场活动
+            $("#importActivityBtnView").click(() => {
                 //清空选中文件
                 $("#activityFile")[0].value = ""
                 importActivityModal.modal("show")
             })
-
             //导入市场活动
             $("#importActivityBtn").click(() => {
                 // alert($("#activityFile")[0])
@@ -368,7 +361,6 @@
                     }
                 })
             })
-
         })
 
         //判断文件后缀
@@ -461,7 +453,6 @@
         </div>
     </div>
 </div>
-
 <!-- 修改市场活动的模态窗口 -->
 <div class="modal fade" id="editActivityModal" role="dialog">
     <div class="modal-dialog" role="document" style="width: 85%;">
@@ -530,7 +521,6 @@
         </div>
     </div>
 </div>
-
 <!-- 导入市场活动的模态窗口 -->
 <div class="modal fade" id="importActivityModal" role="dialog">
     <div class="modal-dialog" role="document" style="width: 85%;">
@@ -568,7 +558,7 @@
         </div>
     </div>
 </div>
-
+<%--标题--%>
 <div>
     <div style="position: relative; left: 10px; top: -10px;">
         <div class="page-header">
@@ -576,9 +566,10 @@
         </div>
     </div>
 </div>
+<%-- 数据区--%>
 <div style="position: relative; top: -20px; left: 0px; width: 100%; height: 100%;">
     <div style="width: 100%; position: absolute;top: 5px; left: 10px;">
-        <%--查询列表--%>
+        <%-- 查询列表--%>
         <div id="queryView" class="btn-toolbar" role="toolbar" style="height: 80px;">
             <form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
                 <div class="form-group">
@@ -613,10 +604,11 @@
                                style="background-color: #ffffff">
                     </div>
                 </div>
-                <button id="queryActivityBtn" type="button" class="btn btn-default">查询</button>
+                <button id="queryActivityBtn" type="button" class="btn btn-default" style="background-color: #74a4ce;">
+                    <span style="color: #ffffff">查询</span></button>
             </form>
         </div>
-        <%--编辑列表--%>
+        <%-- 编辑列表--%>
         <div class="btn-toolbar" role="toolbar"
              style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
             <div class="btn-group" style="position: relative; top: 18%;">
@@ -631,7 +623,7 @@
                 </button>
             </div>
             <div class="btn-group" style="position: relative; top: 18%;">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal">
+                <button id="importActivityBtnView" type="button" class="btn btn-default">
                     <span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）
                 </button>
                 <button id="exportActivityAllBtn" type="button" class="btn btn-default"><span
@@ -642,7 +634,7 @@
                 </button>
             </div>
         </div>
-        <%--数据列表--%>
+        <%-- 数据列表--%>
         <div style="position: relative;top: 10px;">
             <table class="table table-hover">
                 <thead>

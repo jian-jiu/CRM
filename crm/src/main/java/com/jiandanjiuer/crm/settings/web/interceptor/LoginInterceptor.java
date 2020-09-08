@@ -40,6 +40,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             if (httpServletRequest.getHeader("X-Requested-With") != null) {
                 ReturnObject returnObject = new ReturnObject();
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+//                httpServletRequest.setCharacterEncoding("utf-8");
+                httpServletResponse.setContentType("application/json;charset=UTF-8");
                 returnObject.setMessage("登入超时,请重新登入");
                 returnObject.setData("转发到登入界面");
                 try {

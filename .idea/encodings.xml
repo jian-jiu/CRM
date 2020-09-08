@@ -3,9 +3,9 @@
   <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/crm/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/crm/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/crm/src/main/webapp/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/crm/src/main/webapp/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/crm/src/main/webapp/jquery/bs_pagination-master/localization/en.min.js" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/crm/src/main/webapp/static/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/crm/src/main/webapp/static/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/crm/src/main/webapp/static/jquery/bs_pagination-master/localization/en.min.js" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

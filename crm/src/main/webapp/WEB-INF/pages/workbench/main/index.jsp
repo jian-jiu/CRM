@@ -8,6 +8,6 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<img src="image/home.png" height="100%" width="100%" style="position: relative;top: -10px; left: -10px;"/>
+<img src="static/image/home.png" height="100%" width="100%" style="position: relative;top: -10px; left: -10px;"/>
 </body>
 </html>

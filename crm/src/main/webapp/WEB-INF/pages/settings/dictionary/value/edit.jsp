@@ -59,7 +59,7 @@
     <div class="form-group">
         <label for="edit-text" class="col-sm-2 control-label">文本</label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="edit-text" style="width: 200%;" value="${dicValue.value}">
+            <input type="text" class="form-control" id="edit-text" style="width: 200%;" value="${dicValue.text}">
         </div>
     </div>
 

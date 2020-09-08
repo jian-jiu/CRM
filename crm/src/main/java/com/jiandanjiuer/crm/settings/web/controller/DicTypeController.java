@@ -3,7 +3,7 @@ package com.jiandanjiuer.crm.settings.web.controller;
 import com.jiandanjiuer.crm.commons.contants.Contents;
 import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.settings.domain.DicType;
-import com.jiandanjiuer.crm.settings.service.DicTypeService;
+import com.jiandanjiuer.crm.settings.service.dictype.DicTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,6 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <%@include file="../../../community/HeadPart.jsp" %>
@@ -33,12 +32,13 @@
                 success(data) {
                     if (data.code == "1") {
                         // console.log(data.data)
+                        //更新列表线索
                         let clueHtml = []
                         $.each(data.data.clueList, (index, object) => {
-                            clueHtml.push('<tr>\
+                            clueHtml.push('<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
                             <td><input value="' + object.id + '" type="checkbox" /></td>\
-                                <td><a style="text-decoration: none; cursor: pointer;" \
-                                onclick="location.href=\'detail.html\';">' + object.fullName + '</a></td>\
+                                <td><a style="text-decoration: none; cursor: pointer;" onclick="location.href=\
+                                \'workbench/clue/findClueForDetailById?id=' + object.id + '\';">' + object.fullName + '</a></td>\
                             <td>' + object.company + '</td>\
                             <td>' + object.phone + '</td>\
                             <td>' + object.cellPhone + '</td>\
@@ -52,6 +52,7 @@
                         //设置全选择按钮不选中
                         $("#allCheckbox").prop("checked", false)
 
+                        //分页插件
                         let totalPages = 0;
                         if (data.data.totalRows % pageSize == 0) {
                             totalPages = data.data.totalRows / pageSize
@@ -80,6 +81,7 @@
             })
         }
 
+        //窗口加载完毕
         $(() => {
             //分页查询线索
             queryClue(1, 10)
@@ -159,8 +161,6 @@
             let contactSummary = $("#edit-contactSummary")
             let nextContactTime = $("#edit-nextContactTime")
             let address = $("#edit-address")
-
-
             //点击修改线索按钮
             $("#modifyClueBtnView").click(() => {
                 let checkedCheckbox = $("#clueTbody input[type='checkbox']:checked")
@@ -465,9 +465,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-call">
                                 <option></option>
-                                <C:forEach items="${dicValueOnAppellation}" var="dicValue">
+                                <c:forEach items="${dicValueOnAppellation}" var="dicValue">
                                     <option value="${dicValue.id}">${dicValue.value}</option>
-                                </C:forEach>
+                                </c:forEach>
                             </select>
                         </div>
                         <label for="create-surname" class="col-sm-2 control-label">姓名<span
@@ -508,9 +508,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-status">
                                 <option></option>
-                                <C:forEach items="${dicValueOnClueState}" var="dicValue">
+                                <c:forEach items="${dicValueOnClueState}" var="dicValue">
                                     <option value="${dicValue.id}">${dicValue.value}</option>
-                                </C:forEach>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -520,9 +520,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-source">
                                 <option></option>
-                                <C:forEach items="${dicValueOnSource}" var="dicValue">
+                                <c:forEach items="${dicValueOnSource}" var="dicValue">
                                     <option value="${dicValue.id}">${dicValue.value}</option>
-                                </C:forEach>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -609,9 +609,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-call">
                                 <option></option>
-                                <C:forEach items="${dicValueOnAppellation}" var="dicValue">
+                                <c:forEach items="${dicValueOnAppellation}" var="dicValue">
                                     <option value="${dicValue.id}">${dicValue.value}</option>
-                                </C:forEach>
+                                </c:forEach>
                             </select>
                         </div>
                         <label for="edit-surname" class="col-sm-2 control-label">姓名<span
@@ -653,9 +653,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-status">
                                 <option></option>
-                                <C:forEach items="${dicValueOnClueState}" var="dicValue">
+                                <c:forEach items="${dicValueOnClueState}" var="dicValue">
                                     <option value="${dicValue.id}">${dicValue.value}</option>
-                                </C:forEach>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -665,9 +665,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-source">
                                 <option></option>
-                                <C:forEach items="${dicValueOnSource}" var="dicValue">
+                                <c:forEach items="${dicValueOnSource}" var="dicValue">
                                     <option value="${dicValue.id}">${dicValue.value}</option>
-                                </C:forEach>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -757,9 +757,9 @@
                         <div class="input-group-addon">线索来源</div>
                         <select id="querySource" class="form-control">
                             <option></option>
-                            <C:forEach items="${dicValueOnSource}" var="dicValue">
+                            <c:forEach items="${dicValueOnSource}" var="dicValue">
                                 <option value="${dicValue.id}">${dicValue.value}</option>
-                            </C:forEach>
+                            </c:forEach>
                         </select>
                     </div>
                 </div>
@@ -772,9 +772,9 @@
                         <%--                        <input id="" class="form-control" type="text">--%>
                         <select id="queryOwner" class="form-control" style="width: 196px;">
                             <option></option>
-                            <C:forEach items="${userList}" var="user">
+                            <c:forEach items="${userList}" var="user">
                                 <option value="${user.id}">${user.name}</option>
-                            </C:forEach>
+                            </c:forEach>
                         </select>
                     </div>
                 </div>
@@ -792,9 +792,9 @@
                         <div class="input-group-addon">线索状态</div>
                         <select id="queryState" class="form-control" style="width: 196px;">
                             <option></option>
-                            <C:forEach items="${dicValueOnClueState}" var="dicValue">
+                            <c:forEach items="${dicValueOnClueState}" var="dicValue">
                                 <option value="${dicValue.id}">${dicValue.value}</option>
-                            </C:forEach>
+                            </c:forEach>
                         </select>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 package com.jiandanjiuer.crm.commons.utils.workbenchutil;
 
-import com.jiandanjiuer.crm.workbench.domain.Activity;
+import com.jiandanjiuer.crm.workbench.domain.activity.Activity;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;

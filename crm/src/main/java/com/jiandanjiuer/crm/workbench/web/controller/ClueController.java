@@ -6,10 +6,10 @@ import com.jiandanjiuer.crm.commons.utils.otherutil.DateUtils;
 import com.jiandanjiuer.crm.commons.utils.otherutil.UUIDUtils;
 import com.jiandanjiuer.crm.settings.domain.DicValue;
 import com.jiandanjiuer.crm.settings.domain.User;
-import com.jiandanjiuer.crm.settings.service.DicValueService;
-import com.jiandanjiuer.crm.settings.service.UserService;
-import com.jiandanjiuer.crm.workbench.domain.Clue;
-import com.jiandanjiuer.crm.workbench.service.ClueService;
+import com.jiandanjiuer.crm.settings.service.dicvalue.DicValueService;
+import com.jiandanjiuer.crm.settings.service.user.UserService;
+import com.jiandanjiuer.crm.workbench.domain.clue.Clue;
+import com.jiandanjiuer.crm.workbench.service.clue.ClueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,7 +77,7 @@ public class ClueController {
         Integer beginNo = (pageNo - 1) * pageSize;
 
         List<Clue> clueList = clueService.findPagingForDetailClue(clue, beginNo, pageSize);
-        long totalRows = clueService.findCountPagingForDetailClue(clue, beginNo, pageSize);
+        long totalRows = clueService.findCountPagingClue(clue);
         Map<String, Object> map = new HashMap<>();
         map.put("clueList", clueList);
         map.put("totalRows", totalRows);
@@ -101,6 +101,21 @@ public class ClueController {
         returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
         returnObject.setData(clue);
         return returnObject;
+    }
+
+    /**
+     * 根据线索id查询信息的线索
+     *
+     * @param id           线索id
+     * @param modelAndView 数据以及视图
+     * @return 数据以及视图
+     */
+    @RequestMapping("findClueForDetailById")
+    public ModelAndView findClueForDetailById(String id, ModelAndView modelAndView) {
+        Clue clue = clueService.findClueForDetailById(id);
+        modelAndView.addObject("clue", clue);
+        modelAndView.setViewName("workbench/clue/detail");
+        return modelAndView;
     }
 
     /**

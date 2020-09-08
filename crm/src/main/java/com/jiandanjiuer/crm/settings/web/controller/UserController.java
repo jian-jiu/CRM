@@ -5,7 +5,7 @@ import com.jiandanjiuer.crm.commons.domain.ReturnObject;
 import com.jiandanjiuer.crm.commons.utils.webutil.CookieUtils;
 import com.jiandanjiuer.crm.commons.utils.otherutil.IpUtils;
 import com.jiandanjiuer.crm.commons.utils.otherutil.Md5Util;
-import com.jiandanjiuer.crm.settings.service.UserService;
+import com.jiandanjiuer.crm.settings.service.user.UserService;
 import com.jiandanjiuer.crm.settings.web.exception.LoginException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;

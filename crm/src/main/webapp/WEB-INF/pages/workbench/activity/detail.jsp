@@ -77,7 +77,7 @@
                     if (data.code == "1") {
                         remarkDiv.before(
                             '<div id="div_' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
-                            <img title="${sessionScope.sessionUser.name}" src="image/QQ.jpg" style="width: 30px; height:30px;">\
+                            <img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
                                 <div style="position: relative; top: -40px; left: 40px;">\
                                 <h5>' + noteContent + '</h5>\
                                 <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
@@ -111,7 +111,7 @@
                         let editIdDiv = $("#div_" + editId + "")
                         editIdDiv.empty()
                         editIdDiv.append(
-                            '<img title="div_' + data.data.editBy + '" src="image/QQ.jpg" style="width: 30px; height:30px;">\
+                            '<img title="div_' + data.data.editBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
                             <div style="position: relative; top: -40px; left: 40px;">\
                             <h5>' + data.data.noteContent + '</h5>\
                             <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
@@ -265,7 +265,7 @@
     <div id="ActivityRemarkDiv"></div>
     <c:forEach items="${activityRemarkList}" var="activityRemark">
         <div id="div_${activityRemark.id}" class="remarkDiv" style="height: 60px;">
-            <img title="${activityRemark.createBy}" src="image/QQ.jpg" style="width: 30px; height:30px;">
+            <img title="${activityRemark.createBy}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">
             <div style="position: relative; top: -40px; left: 40px;">
                 <h5>${activityRemark.noteContent}</h5>
                 <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small

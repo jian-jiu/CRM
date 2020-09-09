@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class WorkbenchMainController {
     /**
      * 跳转到业务工作区
-     * @return
+     *
+     * @return 工作区主页面
      */
     @RequestMapping("/workbench/main/index")
     public String index() {

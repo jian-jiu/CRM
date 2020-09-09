@@ -2,6 +2,8 @@ package com.simple.crm.workbench.mapper.clue;
 
 import com.simple.crm.workbench.domain.clue.ClueRemark;
 
+import java.util.List;
+
 /**
  * 线索备注
  *
@@ -55,4 +57,20 @@ public interface ClueRemarkMapper {
      * @return 修改条数
      */
     int updateByPrimaryKey(ClueRemark record);
+
+    /**
+     * 根据id查询详细的线索备注
+     *
+     * @param id id
+     * @return 线索备注
+     */
+    ClueRemark selectClueRemarkForDetailById(String id);
+
+    /**
+     * 根据线索id查询详细的线索备注
+     *
+     * @param id id
+     * @return 线索备注
+     */
+    List<ClueRemark> selectClueRemarkForDetailByClueId(String id);
 }

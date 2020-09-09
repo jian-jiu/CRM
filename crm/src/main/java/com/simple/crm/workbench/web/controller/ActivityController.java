@@ -73,7 +73,7 @@ public class ActivityController {
                                                   @RequestParam(defaultValue = "10") Integer pageSize,
                                                   String name, String owner, String startDate, String endDate) {
         //封装参数
-        Map<String, Object> map = new HashMap(6);
+        Map<String, Object> map = new HashMap<>(6);
         map.put("beginNo", (pageNo - 1) * pageSize);
         map.put("pageSize", pageSize);
         map.put("name", name);
@@ -110,7 +110,7 @@ public class ActivityController {
             returnObject.setMessage("查询成功");
             returnObject.setData(activity);
         } else {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("查询失败");
         }
         return returnObject;
@@ -151,8 +151,8 @@ public class ActivityController {
     /**
      * 根据多个id下载市场活动文件
      *
-     * @param request
-     * @param response
+     * @param request 请求
+     * @param response 响应
      */
     @RequestMapping("downloadsActivityByIds")
     public void downloadsActivityByIds(HttpServletRequest request, HttpServletResponse response, String[] ids) {

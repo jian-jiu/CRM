@@ -101,7 +101,7 @@ public class ActivityController {
         map.put("endDate", endDate);
         //查询数据
         List<Activity> activitiesList = activityService.queryActivityForPageByCondition(map);
-        long totalRows = activityService.queryCountFActivityByCondition(map);
+        long totalRows = activityService.queryCountActivityByCondition(map);
         //响应信息
         map.clear();
         map.put("activitiesList", activitiesList);
@@ -142,8 +142,12 @@ public class ActivityController {
      * @return 市场活动list集合
      */
     @RequestMapping("findActivityForDetailSelectiveByName")
-    public Object findActivityForDetailSelectiveByName(String name) {
-        List<Activity> activityList = activityService.findActivityForDetailSelectiveByName(name);
+    public Object findActivityForDetailSelectiveByName(String name, String clueId) {
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("name", name);
+        map.put("clueId", clueId);
+        List<Activity> activityList = activityService.findActivityForDetailByOptionalNameAndClueId(map);
+
         ReturnObject returnObject = new ReturnObject();
         returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
         returnObject.setData(activityList);

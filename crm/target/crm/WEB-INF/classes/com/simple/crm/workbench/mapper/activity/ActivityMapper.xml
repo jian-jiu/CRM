@@ -257,18 +257,21 @@
         left join tbl_user tu3 on ta.edit_by = tu3.id
         order by ta.create_time desc
     </select>
-    <select id="selectActivityForDetailSelectiveByName" parameterType="string" resultMap="BaseResultMap">
+    <select id="selectActivityForDetailByOptionalNameAndClueId" parameterType="map" resultMap="BaseResultMap" useCache="false">
         select ta.id,ta.name,tu1.name as owner,ta.start_date,ta.end_date,ta.edit_time,
         ta.cost,ta.description,ta.create_time,tu2.name as create_by,tu3.name as edit_by
         from tbl_activity ta
         join tbl_user tu1 on ta.owner = tu1.id
         join tbl_user tu2 on ta.create_by = tu2.id
         left join tbl_user tu3 on ta.edit_by = tu3.id
-        <where>
-            <if test="name != null and name != ''">
-                and ta.name like '%' #{name} '%'
-            </if>
-        </where>
+        where ta.id not in (
+            select activity_id
+            from tbl_clue_activity_relation
+            where clue_id = #{clueId}
+        )
+        <if test="name != null and name != ''">
+            and ta.name like '%' #{name} '%'
+        </if>
     </select>
     <select id="selectActivityByClueId" parameterType="string" resultMap="BaseResultMap" useCache="false">
         select tcar.id,ta.name,tu1.name as owner,ta.start_date,ta.end_date,ta.edit_time,

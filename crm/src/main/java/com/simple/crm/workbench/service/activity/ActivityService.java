@@ -48,7 +48,7 @@ public interface ActivityService {
      * @param map
      * @return
      */
-    long queryCountFActivityByCondition(Map<String, Object> map);
+    long queryCountActivityByCondition(Map<String, Object> map);
 
     /**
      * 根据id查询数据
@@ -59,12 +59,12 @@ public interface ActivityService {
     Activity queryActivityById(String id);
 
     /**
-     * 选择性根据name查询详细的市场活动
+     * 根据name查询详细的市场活动
      *
-     * @param name 名称
-     * @return 市场活动list集合
+     * @param map 封装参数后的map
+     * @return 未关联此线索id的市场活动list集合
      */
-    List<Activity> findActivityForDetailSelectiveByName(String name);
+    List<Activity> findActivityForDetailByOptionalNameAndClueId(Map<String, Object> map);
 
     /**
      * 根据线索id查询关联的市场活动

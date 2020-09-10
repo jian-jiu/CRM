@@ -1,10 +1,11 @@
 package com.simple.crm.workbench.service.clue;
 
-import com.simple.crm.commons.utils.otherutil.UUIDUtils;
 import com.simple.crm.workbench.domain.clue.ClueActivityRelation;
 import com.simple.crm.workbench.mapper.clue.ClueActivityRelationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author 简单
@@ -28,30 +29,13 @@ public class ClueActivityRelationServiceImpl implements ClueActivityRelationServ
     }
 
     /**
-     * 添加线索市场活动关系
+     * 根据list线索关系对象添加数据
      *
-     * @param clueId      线索id
-     * @param activityIds 市场活动id
+     * @param clueActivityRelationList 线索关系list对象
      * @return 添加条数
      */
     @Override
-    public int addClueActivityRelation(String clueId, String[] activityIds) {
-        ClueActivityRelation clueActivityRelation = new ClueActivityRelation();
-        clueActivityRelation.setClueId(clueId);
-        int i = 0;
-        for (String activityId : activityIds) {
-            ClueActivityRelation clueActivityRelation1 = clueActivityRelationMapper.selectClueActivityRelationByActivity(activityId);
-            System.out.println("=====================");
-            System.out.println(clueActivityRelation1);
-            if (clueActivityRelation1 == null) {
-                clueActivityRelation.setId(UUIDUtils.getUUID());
-                clueActivityRelation.setActivityId(activityId);
-                int insert = clueActivityRelationMapper.insert(clueActivityRelation);
-                if (insert == 1) {
-                    i++;
-                }
-            }
-        }
-        return i;
+    public int addClueActivityRelation(List<ClueActivityRelation> clueActivityRelationList) {
+        return clueActivityRelationMapper.insertClueActivityRelationList(clueActivityRelationList);
     }
 }

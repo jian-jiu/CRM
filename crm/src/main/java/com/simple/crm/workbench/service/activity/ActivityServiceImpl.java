@@ -68,7 +68,7 @@ public class ActivityServiceImpl implements ActivityService {
      * @return
      */
     @Override
-    public long queryCountFActivityByCondition(Map<String, Object> map) {
+    public long queryCountActivityByCondition(Map<String, Object> map) {
         return activityMapper.selectCountActivityByCondition(map);
     }
 
@@ -84,14 +84,14 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     /**
-     * 选择性根据name查询详细的市场活动
+     * 根据name查询详细的市场活动
      *
-     * @param name 名称
-     * @return 市场活动list集合
+     * @param map 封装参数后的map
+     * @return 未关联此线索id的市场活动list集合
      */
     @Override
-    public List<Activity> findActivityForDetailSelectiveByName(String name) {
-        return activityMapper.selectActivityForDetailSelectiveByName(name);
+    public List<Activity> findActivityForDetailByOptionalNameAndClueId(Map<String, Object> map) {
+        return activityMapper.selectActivityForDetailByOptionalNameAndClueId(map);
     }
 
     /**
@@ -118,6 +118,7 @@ public class ActivityServiceImpl implements ActivityService {
         return activityMapper.insertActivity(activity);
     }
 
+
     /**
      * 保存创建的多个市场活动
      *
@@ -128,7 +129,6 @@ public class ActivityServiceImpl implements ActivityService {
     public int modifyActivityList(List<Activity> activityList) {
         return activityMapper.insertActivityByList(activityList);
     }
-
 
     /**
      * 修改市场活动数据

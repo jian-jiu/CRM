@@ -50,6 +50,7 @@ public class MyExceptionResolver {
             ReturnObject returnObject = new ReturnObject();
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage(translateResult);
+            response.setContentType("application/json;charset=UTF-8");
             ObjectMapper objectMapper = new ObjectMapper();
             try {
                 String s = objectMapper.writeValueAsString(returnObject);

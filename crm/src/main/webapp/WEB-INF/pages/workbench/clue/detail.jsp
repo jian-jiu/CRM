@@ -156,6 +156,9 @@
                 relatedAllCheckbox.prop("checked", false)
                 $.ajax({
                     url: "workbench/activity/findActivityForDetailSelectiveByName",
+                    data: {
+                        clueId: clueId.val()
+                    },
                     type: "post",
                     datatype: "json",
                     success(data) {
@@ -184,23 +187,23 @@
                     alert("请选择一条需要关联的市场活动")
                     return
                 }
-                let activityId = []
+                let activityIds = []
                 $.each(checkedCheckbox, function () {
-                    activityId.push(this.value)
+                    activityIds.push(this.value)
                 })
-                // console.log(activityId)
+                // console.log(activityIds)
                 $.ajax({
                     url: "workbench/activity/addClueActivityRelation",
                     data: {
                         clueId: clueId.val(),
-                        activityId: activityId
+                        activityIds: activityIds
                     },
                     type: "post",
                     datatype: "json",
                     traditional: true,
                     success(data) {
                         if (data.code == "1") {
-                            alert("成功关联" + data.message + "条数据")
+                            alert(data.message)
                             ActivityTbody.empty()
                             console.log(data.data)
                             $.each(data.data, function () {
@@ -222,11 +225,12 @@
 
             //查询市场活动
             $("#relatedInputName").keyup(() => {
-                let name = $("#relatedInputName").val()
+                let name = this.value
                 $.ajax({
                     url: "workbench/activity/findActivityForDetailSelectiveByName",
                     data: {
-                        name: name
+                        name: name,
+                        clueId: clueId.val()
                     },
                     type: "post",
                     datatype: "json",

@@ -2,6 +2,8 @@ package com.simple.crm.workbench.mapper.clue;
 
 import com.simple.crm.workbench.domain.clue.ClueActivityRelation;
 
+import java.util.List;
+
 /**
  * 线索市场活动关系
  *
@@ -9,12 +11,21 @@ import com.simple.crm.workbench.domain.clue.ClueActivityRelation;
  */
 public interface ClueActivityRelationMapper {
     /**
-     * 根据id删除数据
+     * 根据市场活动id查询数据
+     *
+     * @param activityId 市场活动id
+     * @return 查询条数
+     */
+    ClueActivityRelation selectClueActivityRelationByActivity(String activityId);
+
+    /**
+     * 根据id查询线索市场活动关系
      *
      * @param id id
-     * @return 市场条数
+     * @return 线索市场活动关系对象
      */
-    int deleteByPrimaryKey(String id);
+    ClueActivityRelation selectByPrimaryKey(String id);
+
 
     /**
      * 添加一条线索市场活动关系
@@ -33,12 +44,13 @@ public interface ClueActivityRelationMapper {
     int insertSelective(ClueActivityRelation record);
 
     /**
-     * 根据id查询线索市场活动关系
+     * 根据list线索关系对象添加数据
      *
-     * @param id id
-     * @return 线索市场活动关系对象
+     * @param clueActivityRelationList 线索关系list对象
+     * @return 添加条数
      */
-    ClueActivityRelation selectByPrimaryKey(String id);
+    int insertClueActivityRelationList(List<ClueActivityRelation> clueActivityRelationList);
+
 
     /**
      * 根据id选择性修改线索市场活动关系数据
@@ -56,11 +68,12 @@ public interface ClueActivityRelationMapper {
      */
     int updateByPrimaryKey(ClueActivityRelation record);
 
+
     /**
-     * 根据市场活动id查询数据
+     * 根据id删除数据
      *
-     * @param activityId 市场活动id
-     * @return 查询条数
+     * @param id id
+     * @return 市场条数
      */
-    ClueActivityRelation selectClueActivityRelationByActivity(String activityId);
+    int deleteByPrimaryKey(String id);
 }

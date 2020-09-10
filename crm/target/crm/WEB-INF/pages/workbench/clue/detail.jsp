@@ -8,7 +8,11 @@
         let cancelAndSaveBtnDefault = true;
         //窗口加载完毕
         $(() => {
-            $("#remark").focus(() => {
+
+            //线索备注输入框
+            let remark = $("#remark")
+
+            remark.focus(() => {
                 if (cancelAndSaveBtnDefault) {
                     //设置remarkDiv的高度为130px
                     $("#remarkDiv").css("height", "130px");
@@ -40,10 +44,29 @@
 
             //添加线索备注按钮
             let addClueRemarkBtn = $("#addClueRemarkBtn")
+            //确认修改按钮点击事件
+            let updateRemarkBtn = $("#updateRemarkBtn")
+            //确认关联市场活动
+            let relatedActivity = $("#relatedActivity")
+
+            //修改线索备注模态窗口
+            let editRemarkModal = $("#editRemarkModal")
+            //关联市场活动模态窗口
+            let relatedActivityModal = $("#relatedActivityModal")
+
+            //关联市场活动数据
+            let relatedActivityTbody = $("#relatedActivityTbody")
+            //关联市场活动全选按钮
+            let relatedAllCheckbox = $("#relatedAllCheckbox")
+
+            //市场活动数据
+            let ActivityTbody = $("#ActivityTbody")
+
+            //添加线索备注点击按钮
             addClueRemarkBtn.click(() => {
-                let remark = $("#remark").val()
+                let noteContent = remark.val()
                 let id = clueId.val()
-                if (!remark) {
+                if (!noteContent) {
                     alert("备注信息不能为空")
                     return
                 }
@@ -51,7 +74,7 @@
                     url: "workbench/clue/addClueRemark",
                     data: {
                         clueId: id,
-                        noteContent: remark,
+                        noteContent: noteContent,
                         createBy: '${sessionScope.sessionUser.id}'
                     },
                     type: "post",
@@ -62,29 +85,25 @@
                                 '<div id="' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
                                 <img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
                                     <div style="position: relative; top: -40px; left: 40px;">\
-                                    <h5>' + remark + '</h5>\
+                                    <h5>' + noteContent + '</h5>\
                                     <font color="gray">线索</font> <font color="gray">-</font> <b>' + data.data.createBy + '-${clue.company}</b>\
                                     <small style="color: gray;">' + data.data.createTime + ' 由 ${sessionScope.sessionUser.name} 创建</small>\
                                         <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
-                                            <a class="myHref" onclick="modify(\'' + data.data.id + '\')><span class="glyphicon glyphicon-edit"\
-                                        style="font-size: 20px; color: #E6E6E6;"></span></a>\
-                                        &nbsp;&nbsp;&nbsp;&nbsp;\
-                                        <a class="myHref" onclick="removeClueRemark(\'' + data.data.id + '\')"><span class="glyphicon glyphicon-remove"\
-                                        style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                            <a class="myHref" onclick="modify(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                            &nbsp;&nbsp;&nbsp;&nbsp;\
+                                            <a class="myHref" onclick="removeClueRemark(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
                                         </div>\
                                     </div>\
                                 </div>')
+                            remark.val("")
                         }
                     }
                 })
             })
 
-            //修改模态窗口
-            let editRemarkModal = $("#editRemarkModal")
-
-            //确认修改按钮点击事件
-            let updateRemarkBtn = $("#updateRemarkBtn")
-
+            //修改按钮点击事件
             updateRemarkBtn.click(() => {
                 let id = $("#editId").val()
                 let noteContent = $("#noteContent").val()
@@ -98,8 +117,132 @@
                     datatype: "json",
                     success(data) {
                         if (data.code == "1") {
-
+                            $("#" + id + "").empty()
+                            $("#" + id + "").append(
+                                '<img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+                                <div style="position: relative; top: -40px; left: 40px;">\
+                                <h5>' + noteContent + '</h5>\
+                                <font color="gray">线索</font> <font color="gray">-</font> <b>' + data.data.editBy + '-${clue.company}</b>\
+                                <small style="color: gray;">' + data.data.editTime + ' 由 ${sessionScope.sessionUser.name} 修改</small>\
+                                    <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                    <a class="myHref" onclick="modify(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    &nbsp;&nbsp;&nbsp;&nbsp;\
+                                    <a class="myHref" onclick="removeClueRemark(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    </div>\
+                                </div>')
                             editRemarkModal.modal("hide")
+                        }
+                    }
+                })
+            })
+
+            //关联市场活动全选按钮点击事件
+            relatedAllCheckbox.click(() => {
+                $("#relatedActivityTbody input[type='checkbox']").prop("checked", relatedAllCheckbox.prop("checked"))
+            })
+            //给其他复选框添加单击事件
+            relatedActivityTbody.on("click", "input[type='checkbox']", function () {
+                if ($("#relatedActivityTbody input[type='checkbox']").size() == $("#relatedActivityTbody input[type='checkbox']:checked").size()) {
+                    relatedAllCheckbox.prop("checked", true)
+                } else {
+                    relatedAllCheckbox.prop("checked", false)
+                }
+            })
+
+            //关联市场活动按钮单击事件
+            $("#relatedActivityBtn").click(() => {
+                relatedAllCheckbox.prop("checked", false)
+                $.ajax({
+                    url: "workbench/activity/findActivityForDetailSelectiveByName",
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            // console.log(data.data)
+                            relatedActivityTbody.empty()
+                            $.each(data.data, function (index) {
+                                relatedActivityTbody.append(
+                                    '<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
+                                        <td><input type="checkbox" value="' + this.id + '"/></td>\
+                                        <td>' + this.name + '</td>\
+                                        <td>' + this.startDate + '</td>\
+                                        <td>' + this.endDate + '</td>\
+                                        <td>' + this.owner + '</td>\
+                                    </tr>')
+                            })
+                            relatedActivityModal.modal("show")
+                        }
+                    }
+                })
+            })
+            //确定关联市场活动按钮单击事件
+            relatedActivity.click(() => {
+                let checkedCheckbox = $("#relatedActivityTbody input[type='checkbox']:checked")
+                if (checkedCheckbox.size() < 1) {
+                    alert("请选择一条需要关联的市场活动")
+                    return
+                }
+                let activityId = []
+                $.each(checkedCheckbox, function () {
+                    activityId.push(this.value)
+                })
+                // console.log(activityId)
+                $.ajax({
+                    url: "workbench/activity/addClueActivityRelation",
+                    data: {
+                        clueId: clueId.val(),
+                        activityId: activityId
+                    },
+                    type: "post",
+                    datatype: "json",
+                    traditional: true,
+                    success(data) {
+                        if (data.code == "1") {
+                            alert("成功关联" + data.message + "条数据")
+                            ActivityTbody.empty()
+                            console.log(data.data)
+                            $.each(data.data, function () {
+                                ActivityTbody.append(
+                                    '<tr id="' + this.id + '">\
+                                        <td>' + this.name + '</td>\
+                                        <td>' + this.createTime + '</td>\
+                                        <td>' + this.endDate + '</td>\
+                                        <td>' + this.owner + '</td>\
+                                        <td><a onclick="disconnectRelated(\'' + this.id + '\')" style="text-decoration: none;">\
+                                        <span class="glyphicon glyphicon-remove"></span>解除关联</a></td>\
+                                    </tr>')
+                            })
+                            relatedActivityModal.modal("hide")
+                        }
+                    }
+                })
+            })
+
+            //查询市场活动
+            $("#relatedInputName").keyup(() => {
+                let name = $("#relatedInputName").val()
+                $.ajax({
+                    url: "workbench/activity/findActivityForDetailSelectiveByName",
+                    data: {
+                        name: name
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            relatedActivityTbody.empty()
+                            $.each(data.data, function (index) {
+                                relatedActivityTbody.append(
+                                    '<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
+                                        <td><input type="checkbox" value="' + this.id + '"/></td>\
+                                        <td>' + this.name + '</td>\
+                                        <td>' + this.startDate + '</td>\
+                                        <td>' + this.endDate + '</td>\
+                                        <td>' + this.owner + '</td>\
+                                    </tr>')
+                            })
                         }
                     }
                 })
@@ -108,7 +251,9 @@
             //回车事件
             $(window).keydown(e => {
                 if (e.key == "Enter") {
-                    if (!editRemarkModal.is(":hidden")) {
+                    if (!relatedActivityModal.is(":hidden")) {
+                        relatedActivity.click()
+                    } else if (!editRemarkModal.is(":hidden")) {
                         updateRemarkBtn.click()
                     } else if (!addClueRemarkBtn.is(":hidden")) {
                         addClueRemarkBtn.click()
@@ -117,6 +262,7 @@
             })
         });
 
+        //修改线索备注函数
         function modify(id) {
             $.ajax({
                 url: "workbench/clue/findClueRemarkById",
@@ -135,9 +281,27 @@
             })
         }
 
+        //删除线索备注函数
         function removeClueRemark(id) {
             $.ajax({
                 url: "workbench/clue/removeClueRemarkById",
+                data: {
+                    id: id
+                },
+                type: "post",
+                datatype: "json",
+                success(data) {
+                    if (data.code == "1") {
+                        $("#" + id + "").remove()
+                    }
+                }
+            })
+        }
+
+        //解除关联
+        function disconnectRelated(id) {
+            $.ajax({
+                url: "workbench/activity/removeByPrimaryKey",
                 data: {
                     id: id
                 },
@@ -183,7 +347,7 @@
     </div>
 </div>
 <!-- 关联市场活动的模态窗口 -->
-<div class="modal fade" id="bundModal" role="dialog">
+<div class="modal fade" id="relatedActivityModal" role="dialog">
     <div class="modal-dialog" role="document" style="width: 80%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -196,7 +360,8 @@
                 <div class="btn-group" style="position: relative; top: 18%; left: 8px;">
                     <form class="form-inline" role="form">
                         <div class="form-group has-feedback">
-                            <input type="text" class="form-control" style="width: 300px;"
+                            <input id="relatedInputName" type="text" autocomplete="off" class="form-control"
+                                   style="width: 300px;"
                                    placeholder="请输入市场活动名称，支持模糊查询">
                             <span class="glyphicon glyphicon-search form-control-feedback"></span>
                         </div>
@@ -205,7 +370,7 @@
                 <table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
                     <thead>
                     <tr style="color: #B3B3B3;">
-                        <td><input type="checkbox"/></td>
+                        <td><input id="relatedAllCheckbox" type="checkbox"/></td>
                         <td>名称</td>
                         <td>开始日期</td>
                         <td>结束日期</td>
@@ -213,27 +378,13 @@
                         <td></td>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td><input type="checkbox"/></td>
-                        <td>发传单</td>
-                        <td>2020-10-10</td>
-                        <td>2020-10-20</td>
-                        <td>zhangsan</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"/></td>
-                        <td>发传单</td>
-                        <td>2020-10-10</td>
-                        <td>2020-10-20</td>
-                        <td>zhangsan</td>
-                    </tr>
+                    <tbody id="relatedActivityTbody">
                     </tbody>
                 </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+                <button id="relatedActivity" type="button" class="btn btn-primary">关联</button>
             </div>
         </div>
     </div>
@@ -407,35 +558,26 @@
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>发传单</td>
-                    <td>2020-10-10</td>
-                    <td>2020-10-20</td>
-                    <td>zhangsan</td>
-                    <td><a href="javascript:void(0);" style="text-decoration: none;"><span
-                            class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-                </tr>
-                <tr>
-                    <td>发传单</td>
-                    <td>2020-10-10</td>
-                    <td>2020-10-20</td>
-                    <td>zhangsan</td>
-                    <td><a href="javascript:void(0);" style="text-decoration: none;"><span
-                            class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-                </tr>
+                <tbody id="ActivityTbody">
+                <c:forEach items="${activityList}" var="activity">
+                    <tr id="${activity.id}">
+                        <td>${activity.name}</td>
+                        <td>${activity.createTime}</td>
+                        <td>${activity.endDate}</td>
+                        <td>${activity.owner}</td>
+                        <td><a onclick="disconnectRelated('${activity.id}')" style="text-decoration: none;"><span
+                                class="glyphicon glyphicon-remove"></span>解除关联</a></td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
 
         <div>
-            <a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal"
-               style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
+            <a id="relatedActivityBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
         </div>
     </div>
 </div>
-
-
 <div style="height: 200px;"></div>
 </body>
 </html>

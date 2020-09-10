@@ -48,7 +48,7 @@ public interface ActivityService {
      * @param map
      * @return
      */
-    long queryCountOFActivityByCondition(Map<String, Object> map);
+    long queryCountFActivityByCondition(Map<String, Object> map);
 
     /**
      * 根据id查询数据
@@ -57,6 +57,22 @@ public interface ActivityService {
      * @return
      */
     Activity queryActivityById(String id);
+
+    /**
+     * 选择性根据name查询详细的市场活动
+     *
+     * @param name 名称
+     * @return 市场活动list集合
+     */
+    List<Activity> findActivityForDetailSelectiveByName(String name);
+
+    /**
+     * 根据线索id查询关联的市场活动
+     *
+     * @param clueId 线索id
+     * @return 市场活动list集合
+     */
+    List<Activity> findActivityByClueId(String clueId);
 
 
     /**
@@ -67,6 +83,7 @@ public interface ActivityService {
      */
     int saveCreateActivity(Activity activity);
 
+
     /**
      * 保存创建的多个市场活动
      *
@@ -74,7 +91,6 @@ public interface ActivityService {
      * @return 添加条数
      */
     int modifyActivityList(List<Activity> activityList);
-
 
     /**
      * 修改数据

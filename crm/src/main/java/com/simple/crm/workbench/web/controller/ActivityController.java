@@ -58,6 +58,25 @@ public class ActivityController {
     }
 
     /**
+     * 根据id查询详细数据信息
+     *
+     * @param id 市场活动id
+     * @return 数据以及视图
+     */
+    @RequestMapping("queryActivityToDataIl")
+    public ModelAndView queryActivityToDataIl(ModelAndView modelAndView, @RequestParam String id) {
+        //查询数据
+        Activity activity = activityService.findActivityForDetailById(id);
+        List<ActivityRemark> activityRemarkList = activityRemarkService.findActivityRemarkForDetailByActivityId(activity.getId());
+        //封装数据
+        modelAndView.addObject("activity", activity);
+        modelAndView.addObject("activityRemarkList", activityRemarkList);
+        modelAndView.setViewName("workbench/activity/detail");
+        return modelAndView;
+    }
+
+
+    /**
      * 根据数据分页查询数据
      *
      * @param pageNo
@@ -82,7 +101,7 @@ public class ActivityController {
         map.put("endDate", endDate);
         //查询数据
         List<Activity> activitiesList = activityService.queryActivityForPageByCondition(map);
-        long totalRows = activityService.queryCountOFActivityByCondition(map);
+        long totalRows = activityService.queryCountFActivityByCondition(map);
         //响应信息
         map.clear();
         map.put("activitiesList", activitiesList);
@@ -117,21 +136,103 @@ public class ActivityController {
     }
 
     /**
-     * 根据id查询详细数据信息
+     * 选择性根据name查询详细的市场活动
      *
-     * @param id 市场活动id
-     * @return 数据以及视图
+     * @param name 名称
+     * @return 市场活动list集合
      */
-    @RequestMapping("queryActivityToDataIl")
-    public ModelAndView queryActivityToDataIl(ModelAndView modelAndView, @RequestParam String id) {
-        //查询数据
-        Activity activity = activityService.findActivityForDetailById(id);
-        List<ActivityRemark> activityRemarkList = activityRemarkService.findActivityRemarkForDetailByActivityId(activity.getId());
-        //封装数据
-        modelAndView.addObject("activity", activity);
-        modelAndView.addObject("activityRemarkList", activityRemarkList);
-        modelAndView.setViewName("workbench/activity/detail");
-        return modelAndView;
+    @RequestMapping("findActivityForDetailSelectiveByName")
+    public Object findActivityForDetailSelectiveByName(String name) {
+        List<Activity> activityList = activityService.findActivityForDetailSelectiveByName(name);
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setData(activityList);
+        return returnObject;
+    }
+
+
+    /**
+     * 保存创建的参数
+     *
+     * @param activity
+     * @param session
+     * @return
+     */
+    @PostMapping("saveCreateActivity")
+    public Object saveCreateActivity(Activity activity, HttpSession session) {
+        User user = (User) session.getAttribute(Contents.SESSION_USER);
+        //封装参数
+        activity.setId(UUIDUtils.getUUID());
+        activity.setCreateTime(DateUtils.formatDateTime(new Date()));
+        activity.setCreateBy(user.getId());
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            int i = activityService.saveCreateActivity(activity);
+            if (i > 0) {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("数据保存失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("数据保存失败,出现异常");
+        }
+        return returnObject;
+    }
+
+
+    /**
+     * 修改市场活动数据
+     *
+     * @param request
+     * @param activity
+     * @return
+     */
+    @PostMapping("updateActivityById")
+    public Object updateActivityById(HttpServletRequest request, Activity activity) {
+        //设置修改时间和修改者id
+        activity.setEditTime(DateUtils.formatDateTime(new Date()));
+        User user = (User) request.getSession().getAttribute(Contents.SESSION_USER);
+        activity.setEditBy(user.getId());
+
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            int i = activityService.modifyActivityById(activity);
+            if (i > 0) {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("更新失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("更新失败，出现异常");
+        }
+        return returnObject;
+    }
+
+
+    /**
+     * 根据多个id删除数据
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping("removeActivityByIds")
+    private Object removeActivityByIds(String[] ids) {
+        int i = activityService.removeActivityByIds(ids);
+        ReturnObject returnObject = new ReturnObject();
+        if (i > 0) {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        } else {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("修改失败");
+        }
+        return returnObject;
     }
 
 
@@ -151,7 +252,7 @@ public class ActivityController {
     /**
      * 根据多个id下载市场活动文件
      *
-     * @param request 请求
+     * @param request  请求
      * @param response 响应
      */
     @RequestMapping("downloadsActivityByIds")
@@ -258,91 +359,6 @@ public class ActivityController {
         returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
         returnObject.setMessage("成功添加条数");
         returnObject.setData(i);
-        return returnObject;
-    }
-
-
-    /**
-     * 保存创建的参数
-     *
-     * @param activity
-     * @param session
-     * @return
-     */
-    @PostMapping("saveCreateActivity")
-    public Object saveCreateActivity(Activity activity, HttpSession session) {
-        User user = (User) session.getAttribute(Contents.SESSION_USER);
-        //封装参数
-        activity.setId(UUIDUtils.getUUID());
-        activity.setCreateTime(DateUtils.formatDateTime(new Date()));
-        activity.setCreateBy(user.getId());
-
-        ReturnObject returnObject = new ReturnObject();
-        try {
-            int i = activityService.saveCreateActivity(activity);
-            if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            } else {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-                returnObject.setMessage("数据保存失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-            returnObject.setMessage("数据保存失败,出现异常");
-        }
-        return returnObject;
-    }
-
-
-    /**
-     * 修改市场活动数据
-     *
-     * @param request
-     * @param activity
-     * @return
-     */
-    @PostMapping("updateActivityById")
-    public Object updateActivityById(HttpServletRequest request, Activity activity) {
-        //设置修改时间和修改者id
-        activity.setEditTime(DateUtils.formatDateTime(new Date()));
-        User user = (User) request.getSession().getAttribute(Contents.SESSION_USER);
-        activity.setEditBy(user.getId());
-
-        ReturnObject returnObject = new ReturnObject();
-        try {
-            int i = activityService.modifyActivityById(activity);
-            if (i > 0) {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-            } else {
-                returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-                returnObject.setMessage("更新失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-            returnObject.setMessage("更新失败，出现异常");
-        }
-        return returnObject;
-    }
-
-
-    /**
-     * 根据多个id删除数据
-     *
-     * @param ids
-     * @return
-     */
-    @RequestMapping("removeActivityByIds")
-    private Object removeActivityByIds(String[] ids) {
-        int i = activityService.removeActivityByIds(ids);
-        ReturnObject returnObject = new ReturnObject();
-        if (i > 0) {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-        } else {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-            returnObject.setMessage("修改失败");
-        }
         return returnObject;
     }
 }

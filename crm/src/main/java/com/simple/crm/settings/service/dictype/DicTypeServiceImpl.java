@@ -2,7 +2,7 @@ package com.simple.crm.settings.service.dictype;
 
 import com.simple.crm.settings.domain.DicType;
 import com.simple.crm.settings.mapper.dictype.DicTypeMapper;
-import com.simple.crm.settings.mapper.dicvlue.DicValueMapper;
+import com.simple.crm.settings.mapper.dicvalue.DicValueMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

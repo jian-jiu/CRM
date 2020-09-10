@@ -8,8 +8,11 @@ import com.simple.crm.settings.domain.DicValue;
 import com.simple.crm.settings.domain.User;
 import com.simple.crm.settings.service.dicvalue.DicValueService;
 import com.simple.crm.settings.service.user.UserService;
+import com.simple.crm.workbench.domain.activity.Activity;
 import com.simple.crm.workbench.domain.clue.Clue;
 import com.simple.crm.workbench.domain.clue.ClueRemark;
+import com.simple.crm.workbench.service.activity.ActivityService;
+import com.simple.crm.workbench.service.clue.ClueActivityRelationService;
 import com.simple.crm.workbench.service.clue.ClueRemarkService;
 import com.simple.crm.workbench.service.clue.ClueService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +42,8 @@ public class ClueController {
     private final DicValueService dicValueService;
     private final ClueService clueService;
     private final ClueRemarkService clueRemarkService;
+    private final ClueActivityRelationService clueActivityRelationService;
+    private final ActivityService activityService;
 
     private final HttpSession session;
 
@@ -73,10 +78,14 @@ public class ClueController {
      */
     @RequestMapping("findClueForDetailById")
     public ModelAndView findClueForDetailById(String id, ModelAndView modelAndView) {
+        //查询数据
         Clue clue = clueService.findClueForDetailById(id);
         List<ClueRemark> clueRemarkList = clueRemarkService.findClueRemarkForDetailByClueId(id);
+        List<Activity> activityList = activityService.findActivityByClueId(id);
+        //封装参数
         modelAndView.addObject("clue", clue);
         modelAndView.addObject("clueRemarkList", clueRemarkList);
+        modelAndView.addObject("activityList", activityList);
         modelAndView.setViewName("workbench/clue/detail");
         return modelAndView;
     }
@@ -92,8 +101,6 @@ public class ClueController {
     @RequestMapping("findPagingClue")
     public Object findPagingClue(Clue clue, @RequestParam(defaultValue = "1") Integer pageNo,
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
-        System.out.println(clue);
-
         Integer beginNo = (pageNo - 1) * pageSize;
 
         List<Clue> clueList = clueService.findPagingForDetailClue(clue, beginNo, pageSize);

@@ -9,7 +9,7 @@ import com.simple.crm.workbench.domain.clue.ClueActivityRelation;
  */
 public interface ClueActivityRelationMapper {
     /**
-     * id
+     * 根据id删除数据
      *
      * @param id id
      * @return 市场条数
@@ -55,4 +55,12 @@ public interface ClueActivityRelationMapper {
      * @return 修改条数
      */
     int updateByPrimaryKey(ClueActivityRelation record);
+
+    /**
+     * 根据市场活动id查询数据
+     *
+     * @param activityId 市场活动id
+     * @return 查询条数
+     */
+    ClueActivityRelation selectClueActivityRelationByActivity(String activityId);
 }

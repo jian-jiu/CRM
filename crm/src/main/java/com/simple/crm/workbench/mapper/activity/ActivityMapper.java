@@ -79,12 +79,28 @@ public interface ActivityMapper {
     List<Activity> selectActivityForDetailByIds(String[] ids);
 
     /**
+     * 选择性根据name查询详细的市场活动
+     *
+     * @param name 名称
+     * @return 市场活动list集合
+     */
+    List<Activity> selectActivityForDetailSelectiveByName(String name);
+
+    /**
      * 根据条件查询总条数
      *
      * @param map map
      * @return 总条数
      */
-    long selectCountOActivityByCondition(Map<String, Object> map);
+    long selectCountActivityByCondition(Map<String, Object> map);
+
+    /**
+     * 根据线索id查询关联的市场活动
+     *
+     * @param clueId 线索id
+     * @return 市场活动list集合
+     */
+    List<Activity> selectActivityByClueId(String clueId);
 
 
     /**

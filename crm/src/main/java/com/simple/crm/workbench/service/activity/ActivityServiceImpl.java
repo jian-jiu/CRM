@@ -68,8 +68,8 @@ public class ActivityServiceImpl implements ActivityService {
      * @return
      */
     @Override
-    public long queryCountOFActivityByCondition(Map<String, Object> map) {
-        return activityMapper.selectCountOActivityByCondition(map);
+    public long queryCountFActivityByCondition(Map<String, Object> map) {
+        return activityMapper.selectCountActivityByCondition(map);
     }
 
     /**
@@ -81,6 +81,28 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Activity queryActivityById(String id) {
         return activityMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 选择性根据name查询详细的市场活动
+     *
+     * @param name 名称
+     * @return 市场活动list集合
+     */
+    @Override
+    public List<Activity> findActivityForDetailSelectiveByName(String name) {
+        return activityMapper.selectActivityForDetailSelectiveByName(name);
+    }
+
+    /**
+     * 根据线索id查询关联的市场活动
+     *
+     * @param clueId 线索id
+     * @return 市场活动list集合
+     */
+    @Override
+    public List<Activity> findActivityByClueId(String clueId) {
+        return activityMapper.selectActivityByClueId(clueId);
     }
 
 

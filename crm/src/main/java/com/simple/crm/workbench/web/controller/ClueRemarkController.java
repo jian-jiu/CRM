@@ -78,8 +78,15 @@ public class ClueRemarkController {
         return returnObject;
     }
 
+    /**
+     * 根据id更新线索备注
+     *
+     * @param clueRemark 线索备注对象
+     * @return 结果集
+     */
     @RequestMapping("modifyClueRemark")
     public Object modifyClueRemark(ClueRemark clueRemark) {
+        //设置更新参数
         clueRemark.setEditTime(DateUtils.formatDateTime(new Date()));
         if (clueRemark.getEditBy() == null || "".equals(clueRemark.getEditBy())) {
             User user = (User) session.getAttribute(Contents.SESSION_USER);
@@ -92,7 +99,8 @@ public class ClueRemarkController {
             int i = clueRemarkService.modifyClueRemark(clueRemark);
             if (i > 0) {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-
+                clueRemark = clueRemarkService.findClueRemarkForDetailById(clueRemark.getId());
+                returnObject.setData(clueRemark);
             } else {
                 returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
                 returnObject.setMessage("修改失败");

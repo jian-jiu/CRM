@@ -231,7 +231,7 @@
         order by create_time desc
         limit #{beginNo},#{pageSize}
     </select>
-    <select id="selectCountOActivityByCondition" resultType="long">
+    <select id="selectCountActivityByCondition" resultType="long">
         select count(*) as totalRows
         <include refid="selectActivityByConditionSql"/>
     </select>
@@ -256,6 +256,29 @@
         join tbl_user tu2 on ta.create_by = tu2.id
         left join tbl_user tu3 on ta.edit_by = tu3.id
         order by ta.create_time desc
+    </select>
+    <select id="selectActivityForDetailSelectiveByName" parameterType="string" resultMap="BaseResultMap">
+        select ta.id,ta.name,tu1.name as owner,ta.start_date,ta.end_date,ta.edit_time,
+        ta.cost,ta.description,ta.create_time,tu2.name as create_by,tu3.name as edit_by
+        from tbl_activity ta
+        join tbl_user tu1 on ta.owner = tu1.id
+        join tbl_user tu2 on ta.create_by = tu2.id
+        left join tbl_user tu3 on ta.edit_by = tu3.id
+        <where>
+            <if test="name != null and name != ''">
+                and ta.name like '%' #{name} '%'
+            </if>
+        </where>
+    </select>
+    <select id="selectActivityByClueId" parameterType="string" resultMap="BaseResultMap" useCache="false">
+        select tcar.id,ta.name,tu1.name as owner,ta.start_date,ta.end_date,ta.edit_time,
+        ta.cost,ta.description,ta.create_time,tu2.name as create_by,tu3.name as edit_by
+        from tbl_activity ta
+        join (select * from tbl_clue_activity_relation where clue_id = #{clueId})  tcar
+        on ta.id = activity_id
+        join tbl_user tu1 on ta.owner = tu1.id
+        join tbl_user tu2 on ta.create_by = tu2.id
+        left join tbl_user tu3 on ta.edit_by = tu3.id
     </select>
 
     <insert id="insertActivity" parameterType="com.simple.crm.workbench.domain.activity.Activity">

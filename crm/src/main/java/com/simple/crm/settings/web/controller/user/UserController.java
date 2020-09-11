@@ -2,9 +2,9 @@ package com.simple.crm.settings.web.controller.user;
 
 import com.simple.crm.commons.contants.Contents;
 import com.simple.crm.commons.domain.ReturnObject;
-import com.simple.crm.commons.utils.webutil.CookieUtils;
 import com.simple.crm.commons.utils.otherutil.IpUtils;
 import com.simple.crm.commons.utils.otherutil.Md5Util;
+import com.simple.crm.commons.utils.webutil.CookieUtils;
 import com.simple.crm.settings.service.user.UserService;
 import com.simple.crm.settings.web.exception.LoginException;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +48,22 @@ public class UserController {
     }
 
     /**
+     * 退出登入
+     *
+     * @return 登入视图
+     */
+    @RequestMapping("logout")
+    public ModelAndView logout(ModelAndView modelAndView) {
+        //清空cookie
+        CookieUtils.closeCookie(response);
+        //使该会话无效
+        session.invalidate();
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
+    }
+
+
+    /**
      * 用户登入
      *
      * @param loginName 登入名
@@ -65,21 +81,6 @@ public class UserController {
     }
 
     /**
-     * 退出登入
-     *
-     * @return 登入视图
-     */
-    @RequestMapping("logout")
-    public ModelAndView logout(ModelAndView modelAndView) {
-        //清空cookie
-        CookieUtils.closeCookie(response);
-        //使该会话无效
-        session.invalidate();
-        modelAndView.setViewName("redirect:/");
-        return modelAndView;
-    }
-
-    /**
      * 修改密码
      *
      * @param id     用户id
@@ -87,7 +88,7 @@ public class UserController {
      * @param newPwd 新密码
      * @return 结果集
      */
-    @RequestMapping("/editUserPassword")
+    @RequestMapping("editUserPassword")
     public Object editUserPassword(@RequestParam() String id, String oldPwd, String newPwd) {
         ReturnObject returnObject = new ReturnObject();
 

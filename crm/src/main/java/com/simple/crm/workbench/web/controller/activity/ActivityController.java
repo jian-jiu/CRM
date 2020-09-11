@@ -50,9 +50,6 @@ public class ActivityController {
      */
     @RequestMapping("index")
     public ModelAndView index(ModelAndView modelAndView) {
-        //获取用户信息
-        List<User> usersList = userService.queryAllUsers();
-        modelAndView.addObject("usersList", usersList);
         modelAndView.setViewName("workbench/activity/index");
         return modelAndView;
     }
@@ -63,7 +60,7 @@ public class ActivityController {
      * @param id 市场活动id
      * @return 数据以及视图
      */
-    @RequestMapping("queryActivityToDataIl")
+    @RequestMapping("queryActivityToDataId")
     public ModelAndView queryActivityToDataIl(ModelAndView modelAndView, @RequestParam String id) {
         //查询数据
         Activity activity = activityService.findActivityForDetailById(id);

@@ -2,6 +2,7 @@ package com.simple.crm.settings.service.dictype;
 
 import com.simple.crm.settings.domain.DicType;
 
+import javax.servlet.ServletContext;
 import java.util.List;
 
 /**
@@ -24,6 +25,12 @@ public interface DicTypeService {
      * @return
      */
     DicType queryDicTypeByCode(String code);
+
+    /**
+     * 设置所有数据字典类型相关的数据字典值到servletContext作用域中
+     * @param servletContext servlet上下文
+     */
+    void setAllDicTypeAndDicValueToServletContext(ServletContext servletContext);
 
 
     /**

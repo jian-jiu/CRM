@@ -155,7 +155,7 @@
             $("#relatedActivityBtn").click(() => {
                 relatedAllCheckbox.prop("checked", false)
                 $.ajax({
-                    url: "workbench/activity/findActivityForDetailSelectiveByName",
+                    url: "workbench/clue/findActivityForDetailSelectiveByName",
                     data: {
                         clueId: clueId.val()
                     },
@@ -193,7 +193,7 @@
                 })
                 // console.log(activityIds)
                 $.ajax({
-                    url: "workbench/activity/addClueActivityRelation",
+                    url: "workbench/clue/addClueActivityRelation",
                     data: {
                         clueId: clueId.val(),
                         activityIds: activityIds
@@ -227,7 +227,7 @@
             $("#relatedInputName").keyup(() => {
                 let name = $("#relatedInputName").val()
                 $.ajax({
-                    url: "workbench/activity/findActivityForDetailSelectiveByName",
+                    url: "workbench/clue/findActivityForDetailSelectiveByName",
                     data: {
                         name: name,
                         clueId: clueId.val()

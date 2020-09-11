@@ -28,7 +28,7 @@
                     $.each(data.data.activitiesList, (index, object) => {
                         htmlStr += "<tr class=" + (index % 2 == 0 ? "active" : "") + " > "
                         htmlStr += "<td><input type=\"checkbox\" value=\"" + object.id + "\"/></td>"
-                        htmlStr += "<td><a style='text-decoration: none; cursor: pointer;' onclick=\"window.location.href='workbench/activity/queryActivityToDataIl?id=" + object.id + "'\">" + object.name + "</a></td>"
+                        htmlStr += "<td><a style='text-decoration: none; cursor: pointer;' onclick=\"window.location.href='workbench/activity/queryActivityToDataId?id=" + object.id + "'\">" + object.name + "</a></td>"
                         htmlStr += "<td>" + object.owner + "</td>"
                         htmlStr += "<td>" + object.startDate + "</td>"
                         htmlStr += "<td>" + object.endDate + "</td>"
@@ -403,7 +403,7 @@
                             <span style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-marketActivityOwner">
-                                <c:forEach items="${usersList}" var="user">
+                                <c:forEach items="${userList}" var="user">
                                     <option value="${user.id}">${user.name}</option>
                                 </c:forEach>
                             </select>
@@ -472,7 +472,7 @@
                             <span style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-marketActivityOwner">
-                                <c:forEach items="${usersList}" var="user">
+                                <c:forEach items="${userList}" var="user">
                                     <option value="${user.id}">${user.name}</option>
                                 </c:forEach>
                             </select>
@@ -585,7 +585,7 @@
                         <%--                        <input id="query-owner" class="form-control" type="text">--%>
                         <select class="form-control" id="query-owner" style="width: 196px   ;">
                             <option></option>
-                            <c:forEach items="${usersList}" var="user">
+                            <c:forEach items="${userList}" var="user">
                                 <option value="${user.name}">${user.name}</option>
                             </c:forEach>
                         </select>

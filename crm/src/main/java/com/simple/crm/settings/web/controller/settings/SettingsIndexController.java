@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class SettingsIndexController {
+
     /**
      * 跳转到设置界面
      *
-     * @return
+     * @return 页面
      */
     @RequestMapping("/settings/index")
     public String index() {

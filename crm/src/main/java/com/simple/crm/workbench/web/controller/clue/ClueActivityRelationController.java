@@ -20,12 +20,18 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/workbench/activity/")
+@RequestMapping("/workbench/clue/")
 public class ClueActivityRelationController {
 
     private final ClueActivityRelationService clueActivityRelationService;
     private final ActivityService activityService;
 
+    /**
+     * 按主键删除
+     *
+     * @param id id
+     * @return 结果集
+     */
     @RequestMapping("removeByPrimaryKey")
     public Object removeByPrimaryKey(String id) {
         int i = clueActivityRelationService.removeByPrimaryKey(id);

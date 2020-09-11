@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class DictionaryIndexController {
+
     /**
      * 跳转到数据字典界面
      *
-     * @return
+     * @return 视图
      */
     @RequestMapping("/settings/dictionary/index")
     public String index() {

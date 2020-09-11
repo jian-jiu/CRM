@@ -4,15 +4,11 @@ import com.simple.crm.commons.contants.Contents;
 import com.simple.crm.commons.domain.ReturnObject;
 import com.simple.crm.commons.utils.otherutil.DateUtils;
 import com.simple.crm.commons.utils.otherutil.UUIDUtils;
-import com.simple.crm.settings.domain.DicValue;
 import com.simple.crm.settings.domain.User;
-import com.simple.crm.settings.service.dicvalue.DicValueService;
-import com.simple.crm.settings.service.user.UserService;
 import com.simple.crm.workbench.domain.activity.Activity;
 import com.simple.crm.workbench.domain.clue.Clue;
 import com.simple.crm.workbench.domain.clue.ClueRemark;
 import com.simple.crm.workbench.service.activity.ActivityService;
-import com.simple.crm.workbench.service.clue.ClueActivityRelationService;
 import com.simple.crm.workbench.service.clue.ClueRemarkService;
 import com.simple.crm.workbench.service.clue.ClueService;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +34,8 @@ import java.util.Map;
 @RequestMapping("/workbench/clue/")
 public class ClueController {
 
-    private final UserService userService;
-    private final DicValueService dicValueService;
     private final ClueService clueService;
     private final ClueRemarkService clueRemarkService;
-    private final ClueActivityRelationService clueActivityRelationService;
     private final ActivityService activityService;
 
     private final HttpSession session;
@@ -55,16 +48,6 @@ public class ClueController {
      */
     @RequestMapping("index")
     public ModelAndView index(ModelAndView modelAndView) {
-        //查询数据
-        List<User> userList = userService.queryAllUsers();
-        List<DicValue> dicValueOnAppellation = dicValueService.findDicValueByDicType("appellation");
-        List<DicValue> dicValueOnClueState = dicValueService.findDicValueByDicType("clueState");
-        List<DicValue> dicValueOnSource = dicValueService.findDicValueByDicType("source");
-        //封装参数
-        modelAndView.addObject("userList", userList);
-        modelAndView.addObject("dicValueOnAppellation", dicValueOnAppellation);
-        modelAndView.addObject("dicValueOnClueState", dicValueOnClueState);
-        modelAndView.addObject("dicValueOnSource", dicValueOnSource);
         modelAndView.setViewName("workbench/clue/index");
         return modelAndView;
     }
@@ -89,6 +72,7 @@ public class ClueController {
         modelAndView.setViewName("workbench/clue/detail");
         return modelAndView;
     }
+
 
     /**
      * 分页查询数据
@@ -130,6 +114,7 @@ public class ClueController {
         return returnObject;
     }
 
+
     /**
      * 添加线索
      *
@@ -160,6 +145,7 @@ public class ClueController {
         }
         return returnObject;
     }
+
 
     /**
      * 根据id更新线索

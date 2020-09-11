@@ -464,8 +464,8 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-call">
                                 <option></option>
-                                <c:forEach items="${dicValueOnAppellation}" var="dicValue">
-                                    <option value="${dicValue.id}">${dicValue.value}</option>
+                                <c:forEach items="${appellationList}" var="appellation">
+                                    <option value="${appellation.id}">${appellation.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -507,8 +507,8 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-status">
                                 <option></option>
-                                <c:forEach items="${dicValueOnClueState}" var="dicValue">
-                                    <option value="${dicValue.id}">${dicValue.value}</option>
+                                <c:forEach items="${clueStateList}" var="clueState">
+                                    <option value="${clueState.id}">${clueState.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -519,8 +519,8 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-source">
                                 <option></option>
-                                <c:forEach items="${dicValueOnSource}" var="dicValue">
-                                    <option value="${dicValue.id}">${dicValue.value}</option>
+                                <c:forEach items="${sourceList}" var="source">
+                                    <option value="${source.id}">${source.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -608,8 +608,8 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-call">
                                 <option></option>
-                                <c:forEach items="${dicValueOnAppellation}" var="dicValue">
-                                    <option value="${dicValue.id}">${dicValue.value}</option>
+                                <c:forEach items="${appellationList}" var="appellation">
+                                    <option value="${appellation.id}">${appellation.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -652,8 +652,8 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-status">
                                 <option></option>
-                                <c:forEach items="${dicValueOnClueState}" var="dicValue">
-                                    <option value="${dicValue.id}">${dicValue.value}</option>
+                                <c:forEach items="${clueStateList}" var="clueState">
+                                    <option value="${clueState.id}">${clueState.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -664,8 +664,8 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-source">
                                 <option></option>
-                                <c:forEach items="${dicValueOnSource}" var="dicValue">
-                                    <option value="${dicValue.id}">${dicValue.value}</option>
+                                <c:forEach items="${sourceList}" var="source">
+                                    <option value="${source.id}">${source.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -756,8 +756,8 @@
                         <div class="input-group-addon">线索来源</div>
                         <select id="querySource" class="form-control">
                             <option></option>
-                            <c:forEach items="${dicValueOnSource}" var="dicValue">
-                                <option value="${dicValue.id}">${dicValue.value}</option>
+                            <c:forEach items="${sourceList}" var="source">
+                                <option value="${source.id}">${source.value}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -791,8 +791,8 @@
                         <div class="input-group-addon">线索状态</div>
                         <select id="queryState" class="form-control" style="width: 196px;">
                             <option></option>
-                            <c:forEach items="${dicValueOnClueState}" var="dicValue">
-                                <option value="${dicValue.id}">${dicValue.value}</option>
+                            <c:forEach items="${clueStateList}" var="clueState">
+                                <option value="${clueState.id}">${clueState.value}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -836,7 +836,7 @@
                 <tbody id="clueTbody">
                 </tbody>
             </table>
-            <div id="demo_pag" style="height: 80px; position: relative;top: 60px;"></div>
+            <div id="demo_pag"></div>
         </div>
     </div>
 </div>

@@ -11,12 +11,29 @@ import java.util.List;
  */
 public interface ClueRemarkMapper {
     /**
-     * 根据id删除数据
+     * 根据id查询线索备注
      *
      * @param id id
-     * @return 删除条数
+     * @return 线索备注对象
      */
-    int deleteByPrimaryKey(String id);
+    ClueRemark selectByPrimaryKey(String id);
+
+    /**
+     * 根据id查询详细的线索备注
+     *
+     * @param id id
+     * @return 线索备注
+     */
+    ClueRemark selectClueRemarkForDetailById(String id);
+
+    /**
+     * 根据线索id查询详细的线索备注
+     *
+     * @param id id
+     * @return 线索备注
+     */
+    List<ClueRemark> selectClueRemarkForDetailByClueId(String id);
+
 
     /**
      * 根据线索备注对象添加数据
@@ -34,13 +51,6 @@ public interface ClueRemarkMapper {
      */
     int insertSelective(ClueRemark record);
 
-    /**
-     * 根据id查询线索备注
-     *
-     * @param id id
-     * @return 线索备注对象
-     */
-    ClueRemark selectByPrimaryKey(String id);
 
     /**
      * 根据id选择性修改线索备注数据
@@ -58,19 +68,19 @@ public interface ClueRemarkMapper {
      */
     int updateByPrimaryKey(ClueRemark record);
 
-    /**
-     * 根据id查询详细的线索备注
-     *
-     * @param id id
-     * @return 线索备注
-     */
-    ClueRemark selectClueRemarkForDetailById(String id);
 
     /**
-     * 根据线索id查询详细的线索备注
+     * 根据id删除数据
      *
      * @param id id
-     * @return 线索备注
+     * @return 删除条数
      */
-    List<ClueRemark> selectClueRemarkForDetailByClueId(String id);
+    int deleteByPrimaryKey(String id);
+
+    /**
+     * 根据多个线索id删除线索备注
+     * @param clueIds 线索id数组
+     * @return 删除条数
+     */
+    int deleteByClueId(String[] clueIds);
 }

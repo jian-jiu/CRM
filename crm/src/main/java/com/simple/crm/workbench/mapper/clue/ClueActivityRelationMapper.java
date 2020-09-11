@@ -76,4 +76,20 @@ public interface ClueActivityRelationMapper {
      * @return 市场条数
      */
     int deleteByPrimaryKey(String id);
+
+    /**
+     * 根据多个线索id删除线索市场活动关系
+     *
+     * @param clueIds 线索id数组
+     * @return 删除条数
+     */
+    int deleteByClueId(String[] clueIds);
+
+    /**
+     * 根据多个市场活动id删除线索市场活动关系
+     *
+     * @param activityIds 市场活动id数组
+     * @return 删除条数
+     */
+    int deleteByActivityId(String[] activityIds);
 }

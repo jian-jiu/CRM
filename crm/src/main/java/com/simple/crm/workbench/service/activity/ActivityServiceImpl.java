@@ -3,6 +3,7 @@ package com.simple.crm.workbench.service.activity;
 import com.simple.crm.workbench.domain.activity.Activity;
 import com.simple.crm.workbench.mapper.activity.ActivityMapper;
 import com.simple.crm.workbench.mapper.activity.ActivityRemarkMapper;
+import com.simple.crm.workbench.mapper.clue.ClueActivityRelationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     private final ActivityMapper activityMapper;
     private final ActivityRemarkMapper activityRemarkMapper;
+    private final ClueActivityRelationMapper clueActivityRelationMapper;
 
     /**
      * 根据条件分页查询数据
@@ -151,6 +153,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public int removeActivityByIds(String[] ids) {
         activityRemarkMapper.deleteActivityRemarkByActivityIds(ids);
+        clueActivityRelationMapper.deleteByActivityId(ids);
         return activityMapper.deleteActivityByIds(ids);
     }
 }

@@ -34,8 +34,8 @@ public class ActivityFileUtils {
 
         ServletOutputStream outputStream;
 //        InputStream inputStream = null;
-        HSSFWorkbook wb = null;
-        try {
+//        HSSFWorkbook wb = null;
+        try (HSSFWorkbook wb = new HSSFWorkbook()) {
             //用来获取浏览器信息进行判断编码格式
             String userAgent = request.getHeader("User-Agent");
             System.out.println(userAgent);
@@ -46,7 +46,7 @@ public class ActivityFileUtils {
             //2 获取输出流
             outputStream = response.getOutputStream();
             //1 创建对象，对应一个excel对象
-            wb = new HSSFWorkbook();
+//            wb = new HSSFWorkbook();
             //2 使用wb对象创建一页
             HSSFSheet sheet = wb.createSheet("市场活动列表");
             //3 第一行标题
@@ -94,26 +94,10 @@ public class ActivityFileUtils {
                     //把数据输出到浏览器
                     outputStream.write(bytes, 0, len);
                 }*/
-            //刷新流
+            ///刷新流
             outputStream.flush();
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            /*if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }*/
-            if (wb != null) {
-                try {
-                    wb.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 

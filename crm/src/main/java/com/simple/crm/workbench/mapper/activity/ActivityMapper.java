@@ -46,7 +46,7 @@ public interface ActivityMapper {
      */
     List<Activity> selectActivityForDetailByIds(String[] ids);
 
-    /**
+    /**-
      * 根据name查询详细的市场活动
      *
      * @param map 封装参数后的map

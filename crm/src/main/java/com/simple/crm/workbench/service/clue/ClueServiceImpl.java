@@ -1,7 +1,9 @@
 package com.simple.crm.workbench.service.clue;
 
 import com.simple.crm.workbench.domain.clue.Clue;
+import com.simple.crm.workbench.mapper.clue.ClueActivityRelationMapper;
 import com.simple.crm.workbench.mapper.clue.ClueMapper;
+import com.simple.crm.workbench.mapper.clue.ClueRemarkMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClueServiceImpl implements ClueService {
     private final ClueMapper clueMapper;
+    private final ClueRemarkMapper clueRemarkMapper;
+    private final ClueActivityRelationMapper clueActivityRelationMapper;
 
     /**
      * 分页查询
@@ -92,6 +96,8 @@ public class ClueServiceImpl implements ClueService {
      */
     @Override
     public int removeClueByIds(String[] ids) {
+        clueActivityRelationMapper.deleteByClueId(ids);
+        clueRemarkMapper.deleteByClueId(ids);
         return clueMapper.deleteClueByIds(ids);
     }
 }

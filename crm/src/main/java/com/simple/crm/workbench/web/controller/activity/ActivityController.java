@@ -1,4 +1,4 @@
-package com.simple.crm.workbench.web.controller;
+package com.simple.crm.workbench.web.controller.activity;
 
 import com.simple.crm.commons.contants.Contents;
 import com.simple.crm.commons.domain.ReturnObject;

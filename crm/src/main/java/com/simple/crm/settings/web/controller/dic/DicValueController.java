@@ -1,4 +1,4 @@
-package com.simple.crm.settings.web.controller;
+package com.simple.crm.settings.web.controller.dic;
 
 import com.simple.crm.commons.contants.Contents;
 import com.simple.crm.commons.domain.ReturnObject;

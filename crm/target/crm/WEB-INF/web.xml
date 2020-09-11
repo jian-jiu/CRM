@@ -8,10 +8,10 @@
         <welcome-file>/</welcome-file>
     </welcome-file-list>
 
-    <!--注册自定义监听器-->
-    <listener>
+    <!--注册自定义监听器 使用注解@WebListener-->
+<!--    <listener>
         <listener-class>com.simple.crm.web.listener.MyContextListener</listener-class>
-    </listener>
+    </listener>-->
 
     <!--    注册ContextLoaderListener监听器-->
     <listener>

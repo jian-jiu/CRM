@@ -4,6 +4,7 @@ import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -11,6 +12,7 @@ import java.sql.SQLException;
  * @author 简单
  * @date 2020/8/19
  */
+@WebListener
 public class MyContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

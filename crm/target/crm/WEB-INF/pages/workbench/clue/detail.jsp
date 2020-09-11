@@ -205,7 +205,7 @@
                         if (data.code == "1") {
                             alert(data.message)
                             ActivityTbody.empty()
-                            console.log(data.data)
+                            // console.log(data.data)
                             $.each(data.data, function () {
                                 ActivityTbody.append(
                                     '<tr id="' + this.id + '">\
@@ -566,7 +566,7 @@
                 <c:forEach items="${activityList}" var="activity">
                     <tr id="${activity.id}">
                         <td>${activity.name}</td>
-                        <td>${activity.createTime}</td>
+                        <td>${activity.startDate}</td>
                         <td>${activity.endDate}</td>
                         <td>${activity.owner}</td>
                         <td><a onclick="disconnectRelated('${activity.id}')" style="text-decoration: none;"><span

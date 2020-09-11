@@ -225,7 +225,7 @@
 
             //查询市场活动
             $("#relatedInputName").keyup(() => {
-                let name = this.value
+                let name = $("#relatedInputName").val()
                 $.ajax({
                     url: "workbench/activity/findActivityForDetailSelectiveByName",
                     data: {

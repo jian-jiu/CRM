@@ -140,22 +140,10 @@
                 queryActivityForPageByCondition(1, demo.bs_pagination('getOption', 'rowsPerPage'))
             })
 
-            //回车事件
-            $(window).keydown(e => {
-                if (e.key == "Enter") {
-                    //判断是否在创建市场活动界面
-                    if (!createActivityModal.is(":hidden")) {
-                        saveCreateActivityBtn.click()
-                    } else if (!editActivityModal.is(":hidden")) {
-                        updateActivityBtn.click()
-                    } else {
-                        queryActivityBtn.click()
-                    }
-                }
-            })
-
             //创建_所有者
             let marketActivityOwner = $("#create-marketActivityOwner")
+            //创建_描述
+            let marketDescription = $("#create-description")
             //给创建按钮添加单击事件
             $("#createActivityBtn").click(() => {
                 //重置表单
@@ -172,7 +160,7 @@
                 let startDate = $("#create-startDate").val();
                 let endDate = $("#create-endDate").val();
                 let cost = $.trim($("#create-cost").val());
-                let description = $.trim($("#create-description").val());
+                let description = $.trim(marketDescription.val());
                 //判断参数
                 if (!owner) {
                     alert("所有者不能为空")
@@ -288,6 +276,27 @@
                     },
                     'json'
                 )
+            })
+
+            //回车事件
+            $(window).keydown(e => {
+                if (e.key == "Enter") {
+                    //判断是否在创建市场活动界面
+                    if (!createActivityModal.is(":hidden")) {
+                        if (!(marketDescription[0] == document.activeElement)) {
+                            //确定添加市场活动
+                            saveCreateActivityBtn.click()
+                        }
+                    } else if (!editActivityModal.is(":hidden")) {
+                        if (!(editDescribe[0] == document.activeElement)) {
+                            //确定修改市场活动
+                            updateActivityBtn.click()
+                        }
+                    } else {
+                        //确定查询市场活动
+                        queryActivityBtn.click()
+                    }
+                }
             })
 
             //给删除按钮添加事件

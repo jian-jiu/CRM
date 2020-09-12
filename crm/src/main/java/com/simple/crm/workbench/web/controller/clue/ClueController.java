@@ -89,7 +89,7 @@ public class ClueController {
 
         List<Clue> clueList = clueService.findPagingForDetailClue(clue, beginNo, pageSize);
         long totalRows = clueService.findCountPagingClue(clue);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(2);
         map.put("clueList", clueList);
         map.put("totalRows", totalRows);
 

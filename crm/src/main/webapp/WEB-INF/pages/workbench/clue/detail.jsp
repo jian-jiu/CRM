@@ -155,7 +155,7 @@
             $("#relatedActivityBtn").click(() => {
                 relatedAllCheckbox.prop("checked", false)
                 $.ajax({
-                    url: "workbench/clue/findActivityForDetailSelectiveByName",
+                    url: "workbench/activity/findActivityForDetailSelectiveByName",
                     data: {
                         clueId: clueId.val()
                     },
@@ -191,7 +191,7 @@
                 $.each(checkedCheckbox, function () {
                     activityIds.push(this.value)
                 })
-                // console.log(activityIds)
+                console.log(activityIds)
                 $.ajax({
                     url: "workbench/clue/addClueActivityRelation",
                     data: {
@@ -223,9 +223,11 @@
                 })
             })
 
+            //查询市场活动输入框
+            let relatedInputName = $("#relatedInputName")
             //查询市场活动
-            $("#relatedInputName").keyup(() => {
-                let name = $("#relatedInputName").val()
+            relatedInputName.keyup(() => {
+                let name = relatedInputName.val()
                 $.ajax({
                     url: "workbench/clue/findActivityForDetailSelectiveByName",
                     data: {
@@ -256,11 +258,20 @@
             $(window).keydown(e => {
                 if (e.key == "Enter") {
                     if (!relatedActivityModal.is(":hidden")) {
-                        relatedActivity.click()
+                        if (!(relatedInputName[0] == document.activeElement)) {
+                            //确定关联市场活动
+                            relatedActivity.click()
+                        }
                     } else if (!editRemarkModal.is(":hidden")) {
-                        updateRemarkBtn.click()
+                        if (!($("#noteContent")[0] == document.activeElement)) {
+                            //确定修改备注
+                            updateRemarkBtn.click()
+                        }
                     } else if (!addClueRemarkBtn.is(":hidden")) {
-                        addClueRemarkBtn.click()
+                        if (!(remark[0] == document.activeElement)) {
+                            //确定添加备注
+                            addClueRemarkBtn.click()
+                        }
                     }
                 }
             })
@@ -305,7 +316,7 @@
         //解除关联
         function disconnectRelated(id) {
             $.ajax({
-                url: "workbench/activity/removeByPrimaryKey",
+                url: "workbench/clue/removeByPrimaryKey",
                 data: {
                     id: id
                 },

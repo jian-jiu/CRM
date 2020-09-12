@@ -294,6 +294,8 @@
 
             //创建_所有者
             let createClueOwner = $("#create-clueOwner")
+            //创建_线索描述
+            let createDescribe = $("#create-describe")
             //点击创建线索按钮
             $("#addClueBtnView").click(() => {
                 $("#addClueForm")[0].reset()
@@ -315,7 +317,7 @@
                 let cellPhone = $("#create-cellPhone").val()
                 let state = $("#create-status").val()
                 let source = $("#create-source").val()
-                let description = $("#create-describe").val()
+                let description = $.trim(createDescribe.val())
                 let contactSummary = $("#create-contactSummary").val()
                 let nextContactTime = $("#create-nextContactTime").val()
                 let address = $("#create-address").val()
@@ -391,10 +393,13 @@
                 if (e.key == "Enter") {
                     //判断是否在创建线索界面
                     if (!createClueModal.is(":hidden")) {
+                        //确定创建
                         createClueBtn.click()
                     } else if (!editClueModal.is(":hidden")) {
+                        //确定修改
                         modifyClueBtn.click()
                     } else {
+                        //查询
                         queryClueBtn.click()
                     }
                 }

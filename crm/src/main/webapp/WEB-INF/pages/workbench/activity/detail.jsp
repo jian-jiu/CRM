@@ -52,31 +52,34 @@
             $(window).keydown(e => {
                 if (e.key == "Enter") {
                     if (!editRemarkModal.is(":hidden")) {
-                        if (!($("#noteContent")[0] == document.activeElement)) {
+                        if ((!$("#noteContent")[0] == document.activeElement)) {
+                            //确定修改市场活动备注
                             updateRemarkBtn.click()
                         }
-                    } else {
-                        if (!$("#cancelAndSaveBtn").is(":hidden")) {
+                    } else if (!$("#cancelAndSaveBtn").is(":hidden")) {
+                        if (!(remark[0] == document.activeElement)) {
+                            //确定添加市场活动备注
                             addActivityRemarkBtn.click()
                         }
                     }
                 }
             })
+        })
 
-            let activityId = $("#id")
+        let activityId = $("#id")
 
-            //添加市场活动备注按钮单击事件
-            addActivityRemarkBtn.click(() => {
-                let noteContent = remark.val()
-                let id = activityId.val()
-                if (!noteContent) {
-                    alert("备注消息不能为空!!!")
-                    return
-                }
-                $.post("workbench/activity/addActivityRemark", {activityId: id, noteContent: noteContent}, (data) => {
-                    if (data.code == "1") {
-                        remarkDiv.before(
-                            '<div id="div_' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
+        //添加市场活动备注按钮单击事件
+        addActivityRemarkBtn.click(() => {
+            let noteContent = remark.val()
+            let id = activityId.val()
+            if (!noteContent) {
+                alert("备注消息不能为空!!!")
+                return
+            }
+            $.post("workbench/activity/addActivityRemark", {activityId: id, noteContent: noteContent}, (data) => {
+                if (data.code == "1") {
+                    remarkDiv.before(
+                        '<div id="div_' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
                             <img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
                                 <div style="position: relative; top: -40px; left: 40px;">\
                                 <h5>' + noteContent + '</h5>\
@@ -92,26 +95,26 @@
                                     </div>\
                                 </div>\
                             </div>')
-                        //设置备注输入框的值
-                        remark.val("")
-                    }
-                }, "json")
-            })
+                    //设置备注输入框的值
+                    remark.val("")
+                }
+            }, "json")
+        })
 
-            //单击确定修改按钮
-            updateRemarkBtn.click(() => {
-                let editId = $("#editId").val()
-                let noteContent = $.trim($("#noteContent").val())
-                $.post("workbench/activity/updateActivityRemarkById", {
-                    id: editId,
-                    noteContent: noteContent
-                }, (data) => {
-                    if (data.code == "1") {
-                        console.log(data.data)
-                        let editIdDiv = $("#div_" + editId + "")
-                        editIdDiv.empty()
-                        editIdDiv.append(
-                            '<img title="div_' + data.data.editBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+        //单击确定修改按钮
+        updateRemarkBtn.click(() => {
+            let editId = $("#editId").val()
+            let noteContent = $.trim($("#noteContent").val())
+            $.post("workbench/activity/updateActivityRemarkById", {
+                id: editId,
+                noteContent: noteContent
+            }, (data) => {
+                if (data.code == "1") {
+                    console.log(data.data)
+                    let editIdDiv = $("#div_" + editId + "")
+                    editIdDiv.empty()
+                    editIdDiv.append(
+                        '<img title="div_' + data.data.editBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
                             <div style="position: relative; top: -40px; left: 40px;">\
                             <h5>' + data.data.noteContent + '</h5>\
                             <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
@@ -124,12 +127,13 @@
                                     <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
                                 </div>\
                             </div>')
-                        //关闭修改窗口
-                        editRemarkModal.modal("hide")
-                    }
-                }, "json")
-            })
-        });
+                    //关闭修改窗口
+                    editRemarkModal.modal("hide")
+                }
+            }, "json")
+        })
+        })
+        ;
 
         //编辑函数
         function editActivityRemark(id) {
@@ -217,10 +221,12 @@
 
     <div style="position: relative; left: 40px; height: 30px; top: 10px;">
         <div style="width: 300px; color: gray;">开始日期</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${not empty activity.startDate && !(activity.startDate eq null)?activity.startDate:"未设置"}</b>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;">
+            <b>${not empty activity.startDate && !(activity.startDate eq null)?activity.startDate:"未设置"}</b>
         </div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">结束日期</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${not empty activity.endDate && !(activity.endDate eq null)?activity.startDate:"未设置"}</b>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;">
+            <b>${not empty activity.endDate && !(activity.endDate eq null)?activity.startDate:"未设置"}</b>
         </div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>

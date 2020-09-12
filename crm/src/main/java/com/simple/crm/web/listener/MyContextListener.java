@@ -26,12 +26,14 @@ public class MyContextListener implements ServletContextListener {
 
         ServletContext servletContext = sce.getServletContext();
         WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        System.out.println("开始读取复选框数据");
         //设置复选框的值
         DicTypeService dicTypeService = Objects.requireNonNull(context).getBean(DicTypeService.class);
         dicTypeService.setAllDicTypeAndDicValueToServletContext(servletContext);
         //设置用户
         UserService userService = Objects.requireNonNull(context).getBean(UserService.class);
         servletContext.setAttribute("userList",userService.queryAllUsers());
+        System.out.println("读取复选框数据完毕");
     }
 
     @Override

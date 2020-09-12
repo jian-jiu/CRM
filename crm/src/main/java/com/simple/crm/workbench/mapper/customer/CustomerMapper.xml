@@ -1,37 +1,98 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.simple.crm.workbench.mapper.customer.CustomerMapper" >
-  <cache/>
-  <resultMap id="BaseResultMap" type="com.simple.crm.workbench.domain.customer.Customer" >
-    <id column="id" property="id" jdbcType="CHAR" />
-    <result column="owner" property="owner" jdbcType="CHAR" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="website" property="website" jdbcType="VARCHAR" />
-    <result column="phone" property="phone" jdbcType="VARCHAR" />
-    <result column="create_by" property="createBy" jdbcType="CHAR" />
-    <result column="create_time" property="createTime" jdbcType="CHAR" />
-    <result column="edit_by" property="editBy" jdbcType="CHAR" />
-    <result column="edit_time" property="editTime" jdbcType="CHAR" />
-    <result column="contact_summary" property="contactSummary" jdbcType="VARCHAR" />
-    <result column="next_contact_time" property="nextContactTime" jdbcType="CHAR" />
-    <result column="description" property="description" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
+<mapper namespace="com.simple.crm.workbench.mapper.customer.CustomerMapper">
+    <cache/>
+    <resultMap id="BaseResultMap" type="com.simple.crm.workbench.domain.customer.Customer">
+        <id column="id" property="id" jdbcType="CHAR"/>
+        <result column="owner" property="owner" jdbcType="CHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="website" property="website" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="CHAR"/>
+        <result column="create_time" property="createTime" jdbcType="CHAR"/>
+        <result column="edit_by" property="editBy" jdbcType="CHAR"/>
+        <result column="edit_time" property="editTime" jdbcType="CHAR"/>
+        <result column="contact_summary" property="contactSummary" jdbcType="VARCHAR"/>
+        <result column="next_contact_time" property="nextContactTime" jdbcType="CHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, owner, name, website, phone, create_by, create_time, edit_by, edit_time, contact_summary, 
     next_contact_time, description, address
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from tbl_customer
-    where id = #{id,jdbcType=CHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_customer
+        where id = #{id,jdbcType=CHAR}
+    </select>
+
+    <sql id="selectResultCustomerForDetailSql">
+        tc.id,tu1.name as owner,tc.name,tc.website,tc.phone,tu2.name as create_by,tc.create_time,
+        tu3.name as edit_by,tc.edit_time,tc.contact_summary,tc.next_contact_time,tc.description,tc.address
+    </sql>
+    <sql id="selectCustomerForDetailSql">
+        from tbl_customer as tc
+        join tbl_user as tu1 on tc.owner = tu1.id
+        join tbl_user as tu2 on tc.create_by = tu2.id
+        left join tbl_user as tu3 on tc.edit_by = tu3.id
+    </sql>
+    <sql id="selectCustomerByWhereIfSql">
+        <where>
+            <if test="customer.name != null and customer.name != ''">
+                and tc.name like '%' #{customer.name} '%'
+            </if>
+            <if test="customer.owner != null and customer.owner != ''">
+                and tc.owner like '%' #{customer.owner} '%'
+            </if>
+            <if test="customer.phone != null and customer.phone != ''">
+                and tc.phone like '%' #{customer.phone} '%'
+            </if>
+            <if test="customer.website != null and customer.website != ''">
+                and tc.website like '%' #{customer.website} '%'
+            </if>
+        </where>
+    </sql>
+    <select id="selectPagingCustomerForDetail" resultMap="BaseResultMap">
+        select
+        <include refid="selectResultCustomerForDetailSql"/>
+        <include refid="selectCustomerForDetailSql"/>
+        <include refid="selectCustomerByWhereIfSql"/>
+        order by create_time desc
+        limit #{beginNo},#{pageSize}
+    </select>
+    <select id="selectCountCustomer" parameterType="map" resultType="long">
+        select count(*)
+        <include refid="selectCustomerForDetailSql"/>
+        <include refid="selectCustomerByWhereIfSql"/>
+    </select>
+    <select id="selectCustomerById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_customer
+        where id = #{id}
+    </select>
+    <select id="selectCustomerForDetailById" resultMap="BaseResultMap">
+        select
+        <include refid="selectResultCustomerForDetailSql"/>
+        <include refid="selectCustomerForDetailSql"/>
+        where tc.id = #{id}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tbl_customer
     where id = #{id,jdbcType=CHAR}
   </delete>
-  <insert id="insert" parameterType="com.simple.crm.workbench.domain.customer.Customer" >
+    <delete id="deleteByMultiplePrimaryKeys" parameterType="string">
+        delete from tbl_customer
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insert" parameterType="com.simple.crm.workbench.domain.customer.Customer">
     insert into tbl_customer (id, owner, name, website, 
       phone, create_by, create_time, 
       edit_by, edit_time, contact_summary, 
@@ -43,134 +104,135 @@
       #{nextContactTime,jdbcType=CHAR}, #{description,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.simple.crm.workbench.domain.customer.Customer" >
-    insert into tbl_customer
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="owner != null" >
-        owner,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="website != null" >
-        website,
-      </if>
-      <if test="phone != null" >
-        phone,
-      </if>
-      <if test="createBy != null" >
-        create_by,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="editBy != null" >
-        edit_by,
-      </if>
-      <if test="editTime != null" >
-        edit_time,
-      </if>
-      <if test="contactSummary != null" >
-        contact_summary,
-      </if>
-      <if test="nextContactTime != null" >
-        next_contact_time,
-      </if>
-      <if test="description != null" >
-        description,
-      </if>
-      <if test="address != null" >
-        address,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=CHAR},
-      </if>
-      <if test="owner != null" >
-        #{owner,jdbcType=CHAR},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="website != null" >
-        #{website,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null" >
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="createBy != null" >
-        #{createBy,jdbcType=CHAR},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=CHAR},
-      </if>
-      <if test="editBy != null" >
-        #{editBy,jdbcType=CHAR},
-      </if>
-      <if test="editTime != null" >
-        #{editTime,jdbcType=CHAR},
-      </if>
-      <if test="contactSummary != null" >
-        #{contactSummary,jdbcType=VARCHAR},
-      </if>
-      <if test="nextContactTime != null" >
-        #{nextContactTime,jdbcType=CHAR},
-      </if>
-      <if test="description != null" >
-        #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null" >
-        #{address,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.simple.crm.workbench.domain.customer.Customer" >
-    update tbl_customer
-    <set >
-      <if test="owner != null" >
-        owner = #{owner,jdbcType=CHAR},
-      </if>
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="website != null" >
-        website = #{website,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null" >
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="createBy != null" >
-        create_by = #{createBy,jdbcType=CHAR},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=CHAR},
-      </if>
-      <if test="editBy != null" >
-        edit_by = #{editBy,jdbcType=CHAR},
-      </if>
-      <if test="editTime != null" >
-        edit_time = #{editTime,jdbcType=CHAR},
-      </if>
-      <if test="contactSummary != null" >
-        contact_summary = #{contactSummary,jdbcType=VARCHAR},
-      </if>
-      <if test="nextContactTime != null" >
-        next_contact_time = #{nextContactTime,jdbcType=CHAR},
-      </if>
-      <if test="description != null" >
-        description = #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null" >
-        address = #{address,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=CHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.simple.crm.workbench.domain.customer.Customer" >
+    <insert id="insertSelective" parameterType="com.simple.crm.workbench.domain.customer.Customer">
+        insert into tbl_customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="owner != null">
+                owner,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="website != null">
+                website,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="editBy != null">
+                edit_by,
+            </if>
+            <if test="editTime != null">
+                edit_time,
+            </if>
+            <if test="contactSummary != null">
+                contact_summary,
+            </if>
+            <if test="nextContactTime != null">
+                next_contact_time,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=CHAR},
+            </if>
+            <if test="owner != null">
+                #{owner,jdbcType=CHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="website != null">
+                #{website,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=CHAR},
+            </if>
+            <if test="editBy != null">
+                #{editBy,jdbcType=CHAR},
+            </if>
+            <if test="editTime != null">
+                #{editTime,jdbcType=CHAR},
+            </if>
+            <if test="contactSummary != null">
+                #{contactSummary,jdbcType=VARCHAR},
+            </if>
+            <if test="nextContactTime != null">
+                #{nextContactTime,jdbcType=CHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.simple.crm.workbench.domain.customer.Customer">
+        update tbl_customer
+        <set>
+            <if test="owner != null">
+                owner = #{owner,jdbcType=CHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="website != null">
+                website = #{website,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=CHAR},
+            </if>
+            <if test="editBy != null">
+                edit_by = #{editBy,jdbcType=CHAR},
+            </if>
+            <if test="editTime != null">
+                edit_time = #{editTime,jdbcType=CHAR},
+            </if>
+            <if test="contactSummary != null">
+                contact_summary = #{contactSummary,jdbcType=VARCHAR},
+            </if>
+            <if test="nextContactTime != null">
+                next_contact_time = #{nextContactTime,jdbcType=CHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=CHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.simple.crm.workbench.domain.customer.Customer">
     update tbl_customer
     set owner = #{owner,jdbcType=CHAR},
       name = #{name,jdbcType=VARCHAR},

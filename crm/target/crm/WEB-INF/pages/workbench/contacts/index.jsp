@@ -144,8 +144,10 @@
             //修改按钮点击视图
             let editContactViewBtn = $("#editContactViewBtn")
 
-            //确定保存联系人按钮
+            //确定创建联系人按钮
             let createContactsBtn = $("#createContactsBtn")
+            //确定修改联系人按钮
+            let editContactsBtn = $("#editContactsBtn")
 
             //创建界面所有者
             let createContactsOwner = $("#create-contactsOwner")
@@ -197,6 +199,95 @@
                         if (data.code == "1") {
                             findContact(1, demo.bs_pagination('getOption', 'rowsPerPage'))
                             createContactsModal.modal("hide")
+                        }
+                    }
+                })
+            })
+
+            //修改页面数据
+            let editId = $("#edit-id")
+            let editContactsOwner = $("#edit-contactsOwner")
+            let editClueSource = $("#edit-clueSource")
+            let editSurname = $("#edit-surname")
+            let editCall = $("#edit-call")
+            let editJob = $("#edit-job")
+            let editCellPhone = $("#edit-CellPhone")
+            let editEmail = $("#edit-email")
+            let editBirth = $("#edit-birth")
+            let editCustomerName = $("#edit-customerName")
+            let editDescribe = $("#edit-describe")
+            let editContactSummary = $("#edit-contactSummary")
+            let editNextContactTime = $("#edit-nextContactTime")
+            let editAddress = $("#edit-address")
+            //修改按钮点击事件
+            editContactViewBtn.click(() => {
+                let checkboxChecked = $("#dataTbody input[type='checkbox']:checked")
+                if (checkboxChecked.size() < 1) {
+                    alert("请选择一条需要修改的联系人")
+                    return
+                }
+                if (checkboxChecked.size() > 1) {
+                    alert("只能选择一条需要修改的联系人")
+                    return
+                }
+                $.ajax({
+                    url: "workbench/contacts/findContactsForDetailById",
+                    data: {
+                        id: checkboxChecked[0].value
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            // console.log(data.data)
+
+                            editId.val(data.data.id)
+                            editContactsOwner.val(data.data.owner)
+                            editClueSource.val(data.data.source)
+                            editSurname.val(data.data.fullName)
+                            editCall.val(data.data.appellation)
+                            editJob.val(data.data.job)
+                            editCellPhone.val(data.data.cellPhone)
+                            editEmail.val(data.data.email)
+                            editBirth.val(data.data.birth)
+                            editCustomerName.val(data.data.customerId)
+                            editDescribe.val(data.data.description)
+                            editContactSummary.val(data.data.contactSummary)
+                            editNextContactTime.val(data.data.nextContactTime)
+                            editAddress.val(data.data.address)
+
+                            editContactsModal.modal("show")
+                        }
+                    }
+                })
+            })
+            //确定修改按钮点击事件
+            editContactsBtn.click(() => {
+                $.ajax({
+                    url: "workbench/contacts/updateByPrimaryKeySelective",
+                    data: {
+                        id: editId.val(),
+                        owner: editContactsOwner.val(),
+                        source: editClueSource.val(),
+                        fullName: editSurname.val(),
+                        appellation: editCall.val(),
+                        job: editJob.val(),
+                        cellPhone: editCellPhone.val(),
+                        email: editEmail.val(),
+                        birth: editBirth.val(),
+                        editBy: "${sessionScope.sessionUser.id}",
+                        customerId: editCustomerName.val(),
+                        description: editDescribe.val(),
+                        contactSummary: editContactSummary.val(),
+                        nextContactTime: editNextContactTime.val(),
+                        address: editAddress.val()
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            findContact(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+                            editContactsModal.modal("hide")
                         }
                     }
                 })
@@ -376,6 +467,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel1">修改联系人</h4>
+                <input type="hidden" id="edit-id">
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
@@ -390,9 +482,9 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        <label for="edit-clueSource1" class="col-sm-2 control-label">来源</label>
+                        <label for="edit-clueSource" class="col-sm-2 control-label">来源</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-clueSource1">
+                            <select class="form-control" id="edit-clueSource">
                                 <option></option>
                                 <c:forEach items="${sourceList}" var="source">
                                     <option value="${source.id}">${source.value}</option>
@@ -405,7 +497,7 @@
                         <label for="edit-surname" class="col-sm-2 control-label">姓名<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-surname" value="李四">
+                            <input type="text" class="form-control" id="edit-surname">
                         </div>
                         <label for="edit-call" class="col-sm-2 control-label">称呼</label>
                         <div class="col-sm-10" style="width: 300px;">
@@ -421,18 +513,18 @@
                     <div class="form-group">
                         <label for="edit-job" class="col-sm-2 control-label">职位</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-job" value="CTO">
+                            <input type="text" class="form-control" id="edit-job">
                         </div>
                         <label for="edit-cellPhone" class="col-sm-2 control-label">手机</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-CellPhone" value="12345678901">
+                            <input type="text" class="form-control" id="edit-CellPhone">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-email" class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
+                            <input type="text" class="form-control" id="edit-email">
                         </div>
                         <label for="edit-birth" class="col-sm-2 control-label">生日</label>
                         <div class="col-sm-10" style="width: 300px;">
@@ -444,14 +536,14 @@
                         <label for="edit-customerName" class="col-sm-2 control-label">客户名称</label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="edit-customerName"
-                                   placeholder="支持自动补全，输入客户不存在则新建" value="动力节点">
+                                   placeholder="支持自动补全，输入客户不存在则新建">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-describe" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="edit-describe">这是一条线索的描述信息</textarea>
+                            <textarea class="form-control" rows="3" id="edit-describe"></textarea>
                         </div>
                     </div>
 
@@ -478,7 +570,7 @@
                         <div class="form-group">
                             <label for="edit-address" class="col-sm-2 control-label">详细地址</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="1" id="edit-address">北京大兴区大族企业湾</textarea>
+                                <textarea class="form-control" rows="1" id="edit-address"></textarea>
                             </div>
                         </div>
                     </div>
@@ -487,7 +579,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button id="editContactsBtn" type="button" class="btn btn-primary">更新</button>
             </div>
         </div>
     </div>
@@ -569,12 +661,11 @@
                 <button id="createContactsViewBtn" type="button" class="btn btn-primary">
                     <span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
-                <button id="editContactViewBtn" type="button" class="btn btn-default" data-toggle="modal"
-                        data-target="#editContactsModal"><span
-                        class="glyphicon glyphicon-pencil"></span> 修改
+                <button id="editContactViewBtn" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-pencil"></span> 修改
                 </button>
-                <button id="removeContactBtn" type="button" class="btn btn-danger"><span
-                        class="glyphicon glyphicon-minus"></span> 删除
+                <button id="removeContactBtn" type="button" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-minus"></span> 删除
                 </button>
             </div>
         </div>

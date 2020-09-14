@@ -13,11 +13,13 @@ import java.util.Map;
 public interface CustomerService {
 
 
-    List<Customer> findPagingCustomerForDetail(Map<String, Object> map);
-
     Customer findCustomerById(String id);
 
     Customer findCustomerForDetailById(String id);
+
+    Customer findCustomerByName(String name);
+
+    List<Customer> findPagingCustomerForDetail(Map<String, Object> map);
 
     long findCountCustomer(Map<String, Object> map);
 
@@ -35,4 +37,5 @@ public interface CustomerService {
 
 
     int removeByMultiplePrimaryKeys(String[] ids);
+
 }

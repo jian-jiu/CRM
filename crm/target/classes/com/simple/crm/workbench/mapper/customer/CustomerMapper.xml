@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.simple.crm.workbench.mapper.customer.CustomerMapper">
-    <cache/>
     <resultMap id="BaseResultMap" type="com.simple.crm.workbench.domain.customer.Customer">
         <id column="id" property="id" jdbcType="CHAR"/>
         <result column="owner" property="owner" jdbcType="CHAR"/>
@@ -54,7 +53,7 @@
             </if>
         </where>
     </sql>
-    <select id="selectPagingCustomerForDetail" resultMap="BaseResultMap" useCache="false">
+    <select id="selectPagingCustomerForDetail" resultMap="BaseResultMap">
         select
         <include refid="selectResultCustomerForDetailSql"/>
         <include refid="selectCustomerForDetailSql"/>
@@ -84,6 +83,12 @@
         <include refid="Base_Column_List"/>
         from tbl_customer
         where name = #{name}
+    </select>
+    <select id="selectCustomerLikeName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_customer
+        where name like '%' #{name} '%'
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

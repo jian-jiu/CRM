@@ -27,6 +27,8 @@ public interface CustomerMapper {
 
     Customer selectCustomerByName(String name);
 
+    List<Customer> selectCustomerLikeName(String name);
+
     List<Customer> selectPagingCustomerForDetail(Map<String, Object> map);
 
     long selectCountCustomer(Map<String, Object> map);
@@ -35,4 +37,5 @@ public interface CustomerMapper {
     int updateByPrimaryKeySelective(Customer record);
 
     int updateByPrimaryKey(Customer record);
+
 }

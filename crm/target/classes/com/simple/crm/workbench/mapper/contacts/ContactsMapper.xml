@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.simple.crm.workbench.mapper.contacts.ContactsMapper">
-    <cache/>
     <resultMap id="BaseResultMap" type="com.simple.crm.workbench.domain.contacts.Contacts">
         <id column="id" property="id" jdbcType="CHAR"/>
         <result column="owner" property="owner" jdbcType="CHAR"/>
@@ -58,7 +57,10 @@
                 and tc1.full_name like '%' #{contacts.fullName} '%'
             </if>
             <if test="contacts.customerId != null and contacts.customerId != ''">
-                and tc1.customer_id like '%' #{contacts.customerId} '%'
+                and tc1.customer_id in
+                <foreach collection="customerList" item="customer" open="(" separator="," close=")">
+                    #{customer.id}
+                </foreach>
             </if>
             <if test="contacts.source != null and contacts.source != ''">
                 and tc1.source like '%' #{contacts.source} '%'
@@ -79,6 +81,13 @@
         select count(*)
         <include refid="selectContactsForDetailSql"/>
         <include refid="selectContactsByWhereIfSql"/>
+    </select>
+    <select id="selectContactsDetailedCustomerIdById" resultMap="BaseResultMap">
+        select tc1.id, tc1.owner, tc1.source, tc2.name as customer_id, tc1.full_name, tc1.appellation, tc1.email,
+          tc1.cell_phone, tc1.job, tc1.birth, tc1.description,tc1.contact_summary, tc1.next_contact_time,tc1.address
+        from tbl_contacts as tc1
+        left join tbl_customer as tc2 on tc1.customer_id = tc2.id
+        where tc1.id = #{id}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -304,7 +313,7 @@
       address = #{address,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
-    <update id="updateContactsByCustomerId" parameterType="string">
+    <update id="updateContactsSetNameIsEmptyByCustomerId" parameterType="string">
         update tbl_contacts
         set customer_id = ''
         where customer_id in

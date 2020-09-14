@@ -165,11 +165,11 @@
             $("#modifyClueBtnView").click(() => {
                 let checkedCheckbox = $("#clueTbody input[type='checkbox']:checked")
                 if (checkedCheckbox.size() < 1) {
-                    alert("请选择一天需要修改的线索")
+                    alert("请选择一条需要修改的线索")
                     return
                 }
                 if (checkedCheckbox.size() > 1) {
-                    alert("只能选择一天修改的线索")
+                    alert("只能选择一条需要修改的线索")
                     return
                 }
                 let clueId = checkedCheckbox[0].value

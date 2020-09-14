@@ -21,11 +21,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final ContactsMapper contactsMapper;
 
     @Override
-    public List<Customer> findPagingCustomerForDetail(Map<String, Object> map) {
-        return customerMapper.selectPagingCustomerForDetail(map);
-    }
-
-    @Override
     public Customer findCustomerById(String id) {
         return customerMapper.selectCustomerById(id);
     }
@@ -33,6 +28,16 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findCustomerForDetailById(String id) {
         return customerMapper.selectCustomerForDetailById(id);
+    }
+
+    @Override
+    public Customer findCustomerByName(String name) {
+        return customerMapper.selectCustomerByName(name);
+    }
+
+    @Override
+    public List<Customer> findPagingCustomerForDetail(Map<String, Object> map) {
+        return customerMapper.selectPagingCustomerForDetail(map);
     }
 
     @Override
@@ -61,7 +66,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public int removeByMultiplePrimaryKeys(String[] ids) {
-        contactsMapper.updateContactsByCustomerId(ids);
+        contactsMapper.updateContactsSetNameIsEmptyByCustomerId(ids);
         return customerMapper.deleteByMultiplePrimaryKeys(ids);
     }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.simple.crm.workbench.mapper.transaction.TransactionMapper" >
-  <cache/>
   <resultMap id="BaseResultMap" type="com.simple.crm.workbench.domain.transaction.Transaction" >
     <id column="id" property="id" jdbcType="CHAR" />
     <result column="owner" property="owner" jdbcType="CHAR" />
@@ -27,16 +26,19 @@
     contacts_id, create_by, create_time, edit_by, edit_time, description, contact_summary, 
     next_contact_time
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tbl_tran
     where id = #{id,jdbcType=CHAR}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tbl_tran
     where id = #{id,jdbcType=CHAR}
   </delete>
+
   <insert id="insert" parameterType="com.simple.crm.workbench.domain.transaction.Transaction" >
     insert into tbl_tran (id, owner, money, name, 
       expected_date, customer_id, stage, 
@@ -166,6 +168,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.simple.crm.workbench.domain.transaction.Transaction" >
     update tbl_tran
     <set >

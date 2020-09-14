@@ -7,6 +7,7 @@ import com.simple.crm.commons.utils.otherutil.UUIDUtils;
 import com.simple.crm.settings.domain.User;
 import com.simple.crm.workbench.domain.contacts.Contacts;
 import com.simple.crm.workbench.service.contacts.ContactsService;
+import com.simple.crm.workbench.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ import java.util.List;
 public class ContactsController {
 
     private final ContactsService contactsService;
+    private final CustomerService customerService;
 
     private final HttpSession session;
 
@@ -53,7 +55,6 @@ public class ContactsController {
         map.put("contacts", contacts);
         map.put("beginNo", (pageNo - 1) * pageSize);
         map.put("pageSize", pageSize);
-        System.out.println(contacts);
 
         List<Contacts> contactsList = contactsService.findPagingContactsForDetail(map);
         long totalRows = contactsService.findCountContacts(map);
@@ -65,6 +66,22 @@ public class ContactsController {
         ReturnObject returnObject = new ReturnObject();
         returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
         returnObject.setData(map);
+        return returnObject;
+    }
+
+    /**
+     * 根据id查询详细的联系人
+     *
+     * @param id id
+     * @return 结果集
+     */
+    @RequestMapping("findContactsForDetailById")
+    public Object findContactsForDetailById(String id) {
+        Contacts contacts = contactsService.findContactsDetailedCustomerIdById(id);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setData(contacts);
         return returnObject;
     }
 
@@ -90,6 +107,31 @@ public class ContactsController {
         } else {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("添加失败");
+        }
+        return returnObject;
+    }
+
+    /**
+     * 修改联系人
+     *
+     * @param contacts 联系人对象
+     * @return 结果集
+     */
+    @RequestMapping("updateByPrimaryKeySelective")
+    public Object updateByPrimaryKeySelective(Contacts contacts) {
+        contacts.setEditTime(DateUtils.formatDateTime(new Date()));
+        if (contacts.getEditBy() == null || "".equals(contacts.getEditBy())) {
+            User user = (User) session.getAttribute(Contents.SESSION_USER);
+            contacts.setEditBy(user.getId());
+        }
+
+        int i = contactsService.updateByPrimaryKeySelective(contacts);
+        ReturnObject returnObject = new ReturnObject();
+        if (i > 0) {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        } else {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("修改失败");
         }
         return returnObject;
     }

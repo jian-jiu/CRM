@@ -46,6 +46,8 @@ public interface ContactsMapper {
      */
     Contacts selectByPrimaryKey(String id);
 
+    Contacts selectContactsDetailedCustomerIdById(String id);
+
     List<Contacts> selectPagingContactsForDetail(Map<String,Object> map);
 
     long selectCountContacts(HashMap<String, Object> map);
@@ -67,6 +69,6 @@ public interface ContactsMapper {
      */
     int updateByPrimaryKey(Contacts record);
 
-    int updateContactsByCustomerId(String[] customerIds);
+    int updateContactsSetNameIsEmptyByCustomerId(String[] customerIds);
 
 }

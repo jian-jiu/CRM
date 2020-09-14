@@ -31,14 +31,24 @@ public class ContactsServiceImpl implements ContactsService {
     private final HttpSession session;
 
     @Override
+    public Contacts findByPrimaryKey(String id) {
+        return contactsMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public Contacts findContactsDetailedCustomerIdById(String id) {
+        return contactsMapper.selectContactsDetailedCustomerIdById(id);
+    }
+
+    @Override
     public List<Contacts> findPagingContactsForDetail(Map<String, Object> map) {
         Contacts contacts = (Contacts) map.get("contacts");
         if (!("".equals(contacts.getCustomerId()))) {
-            Customer customer = customerMapper.selectCustomerByName(contacts.getCustomerId());
-            if (customer != null) {
-                contacts.setCustomerId(customer.getId());
-                map.put("contacts", contacts);
+            List<Customer> customerList = customerMapper.selectCustomerLikeName(contacts.getCustomerId());
+            if (customerList != null) {
+                map.put("customerList", customerList);
             }
+            contacts.setCustomerId("111");
         }
         return contactsMapper.selectPagingContactsForDetail(map);
     }
@@ -54,9 +64,24 @@ public class ContactsServiceImpl implements ContactsService {
         return contactsMapper.deleteByMultiplePrimaryKey(ids);
     }
 
+    @Override
+    public int updateByPrimaryKeySelective(Contacts contacts) {
+        return contactsMapper.updateByPrimaryKeySelective(findContactsCustomerId(contacts));
+    }
+
 
     @Override
     public int addContacts(Contacts contacts) {
+        return contactsMapper.insertSelective(findContactsCustomerId(contacts));
+    }
+
+    /**
+     * 查询联系人客户是否存在，不存在就创建
+     *
+     * @param contacts 联系人对象
+     * @return 联系人对象
+     */
+    private Contacts findContactsCustomerId(Contacts contacts) {
         if (!("".equals(contacts.getCustomerId()))) {
             Customer customer = customerMapper.selectCustomerByName(contacts.getCustomerId());
             if (customer == null) {
@@ -72,7 +97,6 @@ public class ContactsServiceImpl implements ContactsService {
             }
             contacts.setCustomerId(customer.getId());
         }
-        return contactsMapper.insertSelective(contacts);
+        return contacts;
     }
-
 }

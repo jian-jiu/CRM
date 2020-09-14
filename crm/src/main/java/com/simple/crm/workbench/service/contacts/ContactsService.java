@@ -12,12 +12,19 @@ import java.util.Map;
  */
 public interface ContactsService {
 
+    Contacts findByPrimaryKey(String id);
+
+    Contacts findContactsDetailedCustomerIdById(String id);
+
     List<Contacts> findPagingContactsForDetail(Map<String,Object> map);
 
     long findCountContacts(HashMap<String, Object> map);
 
 
     int removeByMultiplePrimaryKey(String[] ids);
+
+
+    int updateByPrimaryKeySelective(Contacts contacts);
 
 
     int addContacts(Contacts contacts);

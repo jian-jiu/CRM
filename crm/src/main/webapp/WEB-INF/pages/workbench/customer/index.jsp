@@ -32,8 +32,8 @@
                                                 <td><a style="text-decoration: none; cursor: pointer;" \
                                                 href="workbench/customer/findCustomerForDetailById?id=' + Object.id + '">' + Object.name + '</a></td>\
                                             <td>' + Object.owner + '</td>\
-                                            <td>' + Object.phone + '</td>\
-                                            <td>' + Object.website + '</td>\
+                                            <td>' + (Object.phone||"") + '</td>\
+                                            <td>' + (Object.website||"") + '</td>\
                                         </tr>')
                         })
                         $("#dataTbody").html(html)

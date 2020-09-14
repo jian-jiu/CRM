@@ -4,12 +4,101 @@
 <head>
     <%@include file="../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
+        function findContact(pageNo, pageSize) {
+            let owner = $("#findOwner").val()
+            let name = $("#findName").val()
+            let customerId = $("#findCustomerId").val()
+            let clueSource = $("#findClueSource").val()
+            let birth = $("#findBirth").val()
+
+            $.ajax({
+                url: "workbench/contacts/findPagingContactsForDetail",
+                data: {
+                    pageNo: pageNo,
+                    pageSize: pageSize,
+                    name: name,
+                    owner: owner,
+                    customerId: customerId,
+                    clueSource: clueSource,
+                    birth: birth
+                },
+                type: "post",
+                datatype: "json",
+                success(data) {
+                    if (data.code == "1") {
+                        // console.log(data.data)
+                        let html = []
+                        $.each(data.data.contactsList, (index, Object) => {
+                            html.push('<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
+                                            <td><input type="checkbox" value="' + Object.id + '"/></td>\
+                                                <td><a style="text-decoration: none; cursor: pointer;"\
+                                            onclick="">' + Object.fullName + '</a></td>\
+                                            <td>' + (Object.customerId || "") + '</td>\
+                                            <td>' + Object.owner + '</td>\
+                                            <td>' + (Object.source || "") + '</td>\
+                                            <td>' + Object.birth + '</td>\
+                                        </tr>')
+                        })
+                        $("#dataTbody").html(html)
+
+                        //设置全选择按钮不选中
+                        $("#allCheckbox").prop("checked", false)
+
+                        //分页插件
+                        let totalPages = 0;
+                        if (data.data.totalRows % pageSize == 0) {
+                            totalPages = data.data.totalRows / pageSize
+                        } else {
+                            totalPages = parseInt(data.data.totalRows / pageSize) + 1
+                        }
+                        $("#demo_pag").bs_pagination({
+                            currentPage: pageNo,//当前页
+                            rowsPerPage: pageSize,//每有显示条数
+                            totalRows: data.data.totalRows,//总条数
+                            totalPages: totalPages,//总页数
+
+                            visiblePageLinks: 5,//显示的翻页卡片数
+
+                            showGoToPage: true,//是否显示“跳转到第几页”
+                            showRowsPerPage: true,//是否显示“每页显示条数”
+                            showRowsInfo: true,//是否显示记录的信息
+
+                            //每次切换页号对会触发函数，函数那返回切换后的页号和每页显示条数
+                            onChangePage: (e, pageObj) => {
+                                findContact(pageObj.currentPage, pageObj.rowsPerPage)
+                            }
+                        })
+                    }
+                }
+            })
+        }
+
         $(() => {
+            findContact(1, 10)
+
+            //分页div
+            let demo = $("#demo_pag")
+
             //定制字段
             $("#definedColumns > li").click(function (e) {
                 //防止下拉菜单消失
                 e.stopPropagation();
             });
+
+            //全选按钮
+            let allCheckbox = $("#allCheckbox")
+            //全选事件
+            allCheckbox.click(() => {
+                $("#dataTbody input[type='checkbox']").prop("checked", allCheckbox.prop("checked"))
+            })
+            //绑定其他复选框事件
+            $("#dataTbody").on("click", "input[type='checkbox']", () => {
+                if ($("#dataTbody input[type='checkbox']").size() == $("#dataTbody input[type='checkbox']:checked").size()) {
+                    allCheckbox.prop("checked", true)
+                } else {
+                    allCheckbox.prop("checked", false)
+                }
+            })
 
             //设置查询日期样式
             $(".findDate").datetimepicker({
@@ -47,13 +136,16 @@
 
             //创建联系人的模态窗口
             let createContactsModal = $("#createContactsModal")
+            //修改联系人的模态窗口
+            let editContactsModal = $("#editContactsModal")
 
             //创建按钮点击视图
             let createContactsViewBtn = $("#createContactsViewBtn")
+            //修改按钮点击视图
+            let editContactViewBtn = $("#editContactViewBtn")
 
             //确定保存联系人按钮
             let createContactsBtn = $("#createContactsBtn")
-
 
             //创建界面所有者
             let createContactsOwner = $("#create-contactsOwner")
@@ -78,10 +170,6 @@
                 let contactSummary = $("#create-contactSummary").val()
                 let nextContactTime = $("#create-nextContactTime").val()
                 let address = $("#create-address").val()
-                if (!owner) {
-                    alert("所有者不能为空")
-                    return
-                }
                 if (!fullName) {
                     alert("姓名不能为空")
                     return;
@@ -107,12 +195,46 @@
                     datatype: "json",
                     success(data) {
                         if (data.code == "1") {
-                            alert(1)
+                            findContact(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+                            createContactsModal.modal("hide")
                         }
                     }
                 })
             })
 
+            //点击页面查询事件
+            $("#findContactsBtn").click(() => {
+                findContact(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+            })
+
+            //删除按钮点击事件
+            $("#removeContactBtn").click(() => {
+                let checkedCheckbox = $("#dataTbody input[type='checkbox']:checked")
+                if (checkedCheckbox.size() < 1) {
+                    alert("请选择一条需要删除的数据")
+                    return
+                }
+                let ids = []
+                $.each(checkedCheckbox, function () {
+                    ids.push(this.value)
+                })
+                console.log(ids)
+                if (!confirm("是否删除吗")) return;
+                $.ajax({
+                    url: "workbench/contacts/removeByMultiplePrimaryKey",
+                    data: {
+                        ids: ids
+                    },
+                    type: "post",
+                    datatype: "json",
+                    traditional: true,
+                    success(data) {
+                        if (data.code == "1") {
+                            findContact(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+                        }
+                    }
+                })
+            })
         });
     </script>
 </head>
@@ -145,7 +267,7 @@
                             <select class="form-control" id="create-clueSource">
                                 <option></option>
                                 <c:forEach items="${sourceList}" var="source">
-                                    <option>${source.value}</option>
+                                    <option value="${source.id}">${source.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -162,7 +284,7 @@
                             <select class="form-control" id="create-call">
                                 <option></option>
                                 <c:forEach items="${appellationList}" var="appellation">
-                                    <option>${appellation.value}</option>
+                                    <option value="${appellation.id}">${appellation.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -231,7 +353,7 @@
                         <div class="form-group">
                             <label for="create-address" class="col-sm-2 control-label">详细地址</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="1" id="create-address">北京大兴区大族企业湾</textarea>
+                                <textarea class="form-control" rows="1" id="create-address"></textarea>
                             </div>
                         </div>
                     </div>
@@ -264,7 +386,7 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-contactsOwner">
                                 <c:forEach items="${userList}" var="user">
-                                    <option>${user.name}</option>
+                                    <option value="${user.id}">${user.name}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -273,7 +395,7 @@
                             <select class="form-control" id="edit-clueSource1">
                                 <option></option>
                                 <c:forEach items="${sourceList}" var="source">
-                                    <option>${source.value}</option>
+                                    <option value="${source.id}">${source.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -290,7 +412,7 @@
                             <select class="form-control" id="edit-call">
                                 <option></option>
                                 <c:forEach items="${appellationList}" var="appellation">
-                                    <option>${appellation.value}</option>
+                                    <option value="${appellation.id}">${appellation.value}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -380,9 +502,8 @@
 </div>
 <%-- 内容--%>
 <div style="position: relative; top: -20px; left: 0px; width: 100%; height: 100%;">
-
     <div style="width: 100%; position: absolute;top: 5px; left: 10px;">
-
+        <%-- 查询列表--%>
         <div id="findDiv" class="btn-toolbar" role="toolbar" style="height: 80px;">
             <form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
 
@@ -390,10 +511,10 @@
                     <div class="input-group">
                         <div class="input-group-addon">所有者</div>
                         <%--                        <input class="form-control" type="text">--%>
-                        <select class="form-control" id="edit-owner" style="width: 196px;">
+                        <select class="form-control" id="findOwner" style="width: 196px;">
                             <option></option>
                             <c:forEach items="${userList}" var="user">
-                                <option>${user.name}</option>
+                                <option value="${user.id}">${user.name}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -402,14 +523,14 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">姓名</div>
-                        <input class="form-control" type="text">
+                        <input id="findName" class="form-control" type="text">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">客户名称</div>
-                        <input class="form-control" type="text">
+                        <input id="findCustomerId" class="form-control" type="text">
                     </div>
                 </div>
 
@@ -418,10 +539,10 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon" style="width: 67px">来源</div>
-                        <select class="form-control" id="edit-clueSource" style="width: 196px;">
+                        <select class="form-control" id="findClueSource" style="width: 196px;">
                             <option></option>
                             <c:forEach items="${sourceList}" var="source">
-                                <option>${source.value}</option>
+                                <option value="${source.id}">${source.value}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -430,34 +551,39 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">生日</div>
-                        <input class="form-control findDate" type="text" readonly style="background-color: #ffffff">
+                        <input id="findBirth" class="form-control findDate" type="text" readonly
+                               style="background-color: #ffffff">
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-default" style="width: 277px; background-color: #74a4ce;"><span
+                <button id="findContactsBtn" type="button" class="btn btn-default"
+                        style="width: 277px; background-color: #74a4ce;"><span
                         style="color: #ffffff">查询</span></button>
 
             </form>
         </div>
+        <%-- 操作列表--%>
         <div class="btn-toolbar" role="toolbar"
              style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button id="createContactsViewBtn" type="button" class="btn btn-primary">
                     <span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContactsModal"><span
+                <button id="editContactViewBtn" type="button" class="btn btn-default" data-toggle="modal"
+                        data-target="#editContactsModal"><span
                         class="glyphicon glyphicon-pencil"></span> 修改
                 </button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+                <button id="removeContactBtn" type="button" class="btn btn-danger"><span
+                        class="glyphicon glyphicon-minus"></span> 删除
+                </button>
             </div>
-
-
         </div>
+        <%-- 数据区--%>
         <div style="position: relative;top: 20px;">
             <table class="table table-hover">
                 <thead>
                 <tr style="color: #B3B3B3;">
-                    <td><input type="checkbox"/></td>
+                    <td><input id="allCheckbox" type="checkbox"/></td>
                     <td>姓名</td>
                     <td>客户名称</td>
                     <td>所有者</td>
@@ -465,31 +591,11 @@
                     <td>生日</td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td><input type="checkbox"/></td>
-                    <td><a style="text-decoration: none; cursor: pointer;"
-                           onclick="window.location.href='detail.html';">李四</a></td>
-                    <td>动力节点</td>
-                    <td>zhangsan</td>
-                    <td>广告</td>
-                    <td>2000-10-10</td>
-                </tr>
-                <tr class="active">
-                    <td><input type="checkbox"/></td>
-                    <td><a style="text-decoration: none; cursor: pointer;"
-                           onclick="window.location.href='detail.html';">李四</a></td>
-                    <td>动力节点</td>
-                    <td>zhangsan</td>
-                    <td>广告</td>
-                    <td>2000-10-10</td>
-                </tr>
+                <tbody id="dataTbody">
                 </tbody>
             </table>
-        </div>
-
-        <div style="height: 50px; position: relative;top: 10px;">
-            分页
+            <div id="demo_pag">
+            </div>
         </div>
     </div>
 </div>

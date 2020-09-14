@@ -3,10 +3,9 @@ $(() => {
         complete: xhr => {
             let data = xhr.responseJSON
             if (data.code == "0") {
-                alert(data.message);
+                alert(data.message)
             }
-            if (data.data == "è½¬å‘åˆ°ç™»å…¥ç•Œé¢") {
-                alert(data.data)
+            if (data.data == "×ª·¢µ½µÇÈë½çÃæ") {
                 window.top.location.href = '';
             }
         }

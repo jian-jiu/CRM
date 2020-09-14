@@ -15,10 +15,10 @@
 <link type="text/css" rel="stylesheet" href="static/jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css"/>
 <link type="text/css" rel="stylesheet" href="static/jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
 
-<script type="text/javascript" src="static/jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="static/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
-<script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
-<script type="text/javascript" src="static/jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
-<script type="text/javascript" src="static/jquery/bs_pagination-master/localization/en.min.js"></script>
-<script type="text/javascript" src="static/js/ajax.js"></script>
+<script type="text/javascript" charset="utf-8" src="static/jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="static/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="static/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="static/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" charset="utf-8" src="static/jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="static/jquery/bs_pagination-master/localization/en.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="static/js/ajax.js"></script>

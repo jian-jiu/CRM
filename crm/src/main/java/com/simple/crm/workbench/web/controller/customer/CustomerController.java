@@ -115,8 +115,6 @@ public class CustomerController {
         }
         customer.setCreateTime(DateUtils.formatDateTime(new Date()));
 
-        System.out.println(customer);
-
         ReturnObject returnObject = new ReturnObject();
         int i = customerService.saveContacts(customer);
         if (i > 0) {

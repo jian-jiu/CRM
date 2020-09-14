@@ -2,6 +2,10 @@ package com.simple.crm.workbench.mapper.contacts;
 
 import com.simple.crm.workbench.domain.contacts.Contacts;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author 24245
  */
@@ -13,6 +17,9 @@ public interface ContactsMapper {
      * @return 删除条数
      */
     int deleteByPrimaryKey(String id);
+
+    int deleteByMultiplePrimaryKey(String[] ids);
+
 
     /**
      * 添加
@@ -30,6 +37,7 @@ public interface ContactsMapper {
      */
     int insertSelective(Contacts record);
 
+
     /**
      * 按主键查询
      *
@@ -37,6 +45,11 @@ public interface ContactsMapper {
      * @return 联系人对象
      */
     Contacts selectByPrimaryKey(String id);
+
+    List<Contacts> selectPagingContactsForDetail(Map<String,Object> map);
+
+    long selectCountContacts(HashMap<String, Object> map);
+
 
     /**
      * 按主键选择性更新
@@ -53,4 +66,7 @@ public interface ContactsMapper {
      * @return 更新条数
      */
     int updateByPrimaryKey(Contacts record);
+
+    int updateContactsByCustomerId(String[] customerIds);
+
 }

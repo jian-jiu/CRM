@@ -1,6 +1,7 @@
 package com.simple.crm.workbench.service.customer;
 
 import com.simple.crm.workbench.domain.customer.Customer;
+import com.simple.crm.workbench.mapper.contacts.ContactsMapper;
 import com.simple.crm.workbench.mapper.customer.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerMapper customerMapper;
-
+    private final ContactsMapper contactsMapper;
 
     @Override
     public List<Customer> findPagingCustomerForDetail(Map<String, Object> map) {
@@ -60,6 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public int removeByMultiplePrimaryKeys(String[] ids) {
+        contactsMapper.updateContactsByCustomerId(ids);
         return customerMapper.deleteByMultiplePrimaryKeys(ids);
     }
 }

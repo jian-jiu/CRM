@@ -76,7 +76,7 @@
 <body>
 <%--图片·--%>
 <div style="position: absolute; top: 0px; left: 0px; width: 70%;">
-    <img src="image/IMG_7114.JPG" style="width: 100%; position: relative; top: 50px;">
+    <img src="static/image/IMG_7114.JPG" style="width: 100%; position: relative; top: 50px;">
 </div>
 <%--顶部--%>
 <div id="top" style="height: 50px; background-color: #3C3C3C; width: 100%;">

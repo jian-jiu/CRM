@@ -9,11 +9,14 @@ import com.simple.crm.workbench.domain.contacts.Contacts;
 import com.simple.crm.workbench.service.contacts.ContactsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author 简单
@@ -29,12 +32,48 @@ public class ContactsController {
     private final HttpSession session;
 
     @RequestMapping("index")
-    public ModelAndView index(ModelAndView modelAndView){
+    public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("workbench/contacts/index");
         return modelAndView;
     }
 
+    /**
+     * 分页查询联系人详情
+     *
+     * @param contacts 联系人对象
+     * @param pageNo   当前页面
+     * @param pageSize 每页数量
+     * @return 结果集
+     */
+    @RequestMapping("findPagingContactsForDetail")
+    public Object findPagingContactsForDetail(Contacts contacts, @RequestParam(defaultValue = "1") Integer pageNo,
+                                              @RequestParam(defaultValue = "10") Integer pageSize) {
+        HashMap<String, Object> map = new HashMap<>(3);
 
+        map.put("contacts", contacts);
+        map.put("beginNo", (pageNo - 1) * pageSize);
+        map.put("pageSize", pageSize);
+        System.out.println(contacts);
+
+        List<Contacts> contactsList = contactsService.findPagingContactsForDetail(map);
+        long totalRows = contactsService.findCountContacts(map);
+
+        map.clear();
+        map.put("contactsList", contactsList);
+        map.put("totalRows", totalRows);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setData(map);
+        return returnObject;
+    }
+
+    /**
+     * 添加联系人
+     *
+     * @param contacts 联系人
+     * @return 结果集
+     */
     @RequestMapping("addContacts")
     public Object addContacts(Contacts contacts) {
         contacts.setId(UUIDUtils.getUUID());
@@ -44,8 +83,6 @@ public class ContactsController {
         }
         contacts.setCreateTime(DateUtils.formatDateTime(new Date()));
 
-        System.out.println(contacts);
-
         ReturnObject returnObject = new ReturnObject();
         int i = contactsService.addContacts(contacts);
         if (i > 0) {
@@ -53,6 +90,26 @@ public class ContactsController {
         } else {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("添加失败");
+        }
+        return returnObject;
+    }
+
+    /**
+     * 根据多个id删除数据
+     *
+     * @param ids id数组
+     * @return 结果集
+     */
+    @RequestMapping("removeByMultiplePrimaryKey")
+    public Object removeByMultiplePrimaryKey(String[] ids) {
+        int i = contactsService.removeByMultiplePrimaryKey(ids);
+
+        ReturnObject returnObject = new ReturnObject();
+        if (i > 0) {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        } else {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("删除失败");
         }
         return returnObject;
     }

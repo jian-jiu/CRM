@@ -21,11 +21,13 @@ public interface CustomerMapper {
 
     Customer selectByPrimaryKey(String id);
 
-    List<Customer> selectPagingCustomerForDetail(Map<String, Object> map);
-
     Customer selectCustomerById(String id);
 
     Customer selectCustomerForDetailById(String id);
+
+    Customer selectCustomerByName(String name);
+
+    List<Customer> selectPagingCustomerForDetail(Map<String, Object> map);
 
     long selectCountCustomer(Map<String, Object> map);
 

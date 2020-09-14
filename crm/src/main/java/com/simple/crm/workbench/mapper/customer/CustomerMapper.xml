@@ -54,7 +54,7 @@
             </if>
         </where>
     </sql>
-    <select id="selectPagingCustomerForDetail" resultMap="BaseResultMap">
+    <select id="selectPagingCustomerForDetail" resultMap="BaseResultMap" useCache="false">
         select
         <include refid="selectResultCustomerForDetailSql"/>
         <include refid="selectCustomerForDetailSql"/>
@@ -78,6 +78,12 @@
         <include refid="selectResultCustomerForDetailSql"/>
         <include refid="selectCustomerForDetailSql"/>
         where tc.id = #{id}
+    </select>
+    <select id="selectCustomerByName" resultType="com.simple.crm.workbench.domain.customer.Customer">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_customer
+        where name = #{name}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

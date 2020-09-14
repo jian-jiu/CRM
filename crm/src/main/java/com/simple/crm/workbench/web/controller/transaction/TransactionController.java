@@ -11,12 +11,18 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("workbench/transaction")
+@RequestMapping("/workbench/transaction/")
 public class TransactionController {
 
     @RequestMapping("index")
     public ModelAndView index(ModelAndView modelAndView){
         modelAndView.setViewName("workbench/transaction/index");
+        return modelAndView;
+    }
+
+    @RequestMapping("saveIndex")
+    public ModelAndView saveIndex(ModelAndView modelAndView){
+        modelAndView.setViewName("workbench/transaction/save");
         return modelAndView;
     }
 }

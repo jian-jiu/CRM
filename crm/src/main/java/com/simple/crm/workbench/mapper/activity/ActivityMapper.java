@@ -10,18 +10,7 @@ import java.util.Map;
  */
 public interface ActivityMapper {
 
-    int deleteByPrimaryKey(String id);
-
-    int insert(Activity record);
-
-    int insertSelective(Activity record);
-
     Activity selectByPrimaryKey(String id);
-
-    int updateByPrimaryKeySelective(Activity record);
-
-    int updateByPrimaryKey(Activity record);
-
 
     /**
      * 根据条件分页查询数据
@@ -46,13 +35,19 @@ public interface ActivityMapper {
      */
     List<Activity> selectActivityForDetailByIds(String[] ids);
 
-    /**-
+    List<Activity> selectActivityForDetailByOptionalName(String name);
+
+    /**
      * 根据name查询详细的市场活动
      *
      * @param map 封装参数后的map
      * @return 未关联此线索id的市场活动list集合
      */
     List<Activity> selectActivityForDetailByOptionalNameAndClueId(Map<String, Object> map);
+
+    List<Activity> selectActivityForDetailByOptionalNameAndContactsId(Map<String, Object> map);
+
+    List<Activity> selectActivityByContactsId(String contactsId);
 
     /**
      * 根据线索id查询关联的市场活动
@@ -71,6 +66,10 @@ public interface ActivityMapper {
     long selectCountActivityByCondition(Map<String, Object> map);
 
 
+    int insert(Activity record);
+
+    int insertSelective(Activity record);
+
     /**
      * 保存创建的市场活动
      *
@@ -88,6 +87,10 @@ public interface ActivityMapper {
     int insertActivityByList(List<Activity> activity);
 
 
+    int updateByPrimaryKeySelective(Activity record);
+
+    int updateByPrimaryKey(Activity record);
+
     /**
      * 修改数据
      *
@@ -97,6 +100,8 @@ public interface ActivityMapper {
     int updateByPrimaryId(Activity activity);
 
 
+    int deleteByPrimaryKey(String id);
+
     /**
      * 根据多个id删除数据
      *
@@ -104,6 +109,4 @@ public interface ActivityMapper {
      * @return 删除条数
      */
     int deleteActivityByIds(String[] ids);
-
-
 }

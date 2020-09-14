@@ -12,6 +12,22 @@ import java.util.Map;
 public interface ActivityService {
 
     /**
+     * 根据id查询数据
+     *
+     * @param id
+     * @return
+     */
+    Activity queryActivityById(String id);
+
+    /**
+     * 根据id查询详细的市场活动
+     *
+     * @param id 市场活动id
+     * @return 详细市场活动集合
+     */
+    Activity findActivityForDetailById(String id);
+
+    /**
      * 根据条件分页查询数据
      *
      * @param map
@@ -34,29 +50,7 @@ public interface ActivityService {
      */
     List<Activity> findActivityForDetailByIds(String[] ids);
 
-    /**
-     * 根据id查询详细的市场活动
-     *
-     * @param id 市场活动id
-     * @return 详细市场活动集合
-     */
-    Activity findActivityForDetailById(String id);
-
-    /**
-     * 根据条件查询总条数
-     *
-     * @param map
-     * @return
-     */
-    long queryCountActivityByCondition(Map<String, Object> map);
-
-    /**
-     * 根据id查询数据
-     *
-     * @param id
-     * @return
-     */
-    Activity queryActivityById(String id);
+    List<Activity> findActivityForDetailByOptionalName(String name);
 
     /**
      * 根据name查询详细的市场活动
@@ -66,6 +60,8 @@ public interface ActivityService {
      */
     List<Activity> findActivityForDetailByOptionalNameAndClueId(Map<String, Object> map);
 
+    List<Activity> findActivityForDetailByOptionalNameAndContactsId(Map<String, Object> map);
+
     /**
      * 根据线索id查询关联的市场活动
      *
@@ -73,6 +69,16 @@ public interface ActivityService {
      * @return 市场活动list集合
      */
     List<Activity> findActivityByClueId(String clueId);
+
+    List<Activity> findActivityByContactsId(String contactsId);
+
+    /**
+     * 根据条件查询总条数
+     *
+     * @param map
+     * @return
+     */
+    long queryCountActivityByCondition(Map<String, Object> map);
 
 
     /**
@@ -108,4 +114,5 @@ public interface ActivityService {
      * @return
      */
     int removeActivityByIds(String[] ids);
+
 }

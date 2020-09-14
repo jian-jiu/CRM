@@ -48,7 +48,11 @@ public interface ContactsMapper {
 
     Contacts selectContactsDetailedCustomerIdById(String id);
 
+    Contacts selectContactsForDetailById(String id);
+
     List<Contacts> selectPagingContactsForDetail(Map<String,Object> map);
+
+    List<Contacts> selectContactsForDetailByName(String name);
 
     long selectCountContacts(HashMap<String, Object> map);
 

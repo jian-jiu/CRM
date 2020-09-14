@@ -2,6 +2,8 @@ package com.simple.crm.workbench.mapper.contacts;
 
 import com.simple.crm.workbench.domain.contacts.ContactsActivityRelation;
 
+import java.util.List;
+
 /**
  * @author 24245
  */
@@ -13,6 +15,7 @@ public interface ContactsActivityRelationMapper {
      * @return 删除条数
      */
     int deleteByPrimaryKey(String id);
+
 
     /**
      * 添加
@@ -30,6 +33,9 @@ public interface ContactsActivityRelationMapper {
      */
     int insertSelective(ContactsActivityRelation record);
 
+    int insertContactsActivityRelationList(List<ContactsActivityRelation> contactsActivityRelationList);
+
+
     /**
      * 按主键查询
      *
@@ -37,6 +43,7 @@ public interface ContactsActivityRelationMapper {
      * @return 联系人活动关系对象
      */
     ContactsActivityRelation selectByPrimaryKey(String id);
+
 
     /**
      * 按主键选择性更新
@@ -53,4 +60,5 @@ public interface ContactsActivityRelationMapper {
      * @return 更新条数
      */
     int updateByPrimaryKey(ContactsActivityRelation record);
+
 }

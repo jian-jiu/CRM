@@ -139,11 +139,46 @@ public class ActivityController {
      * @return 市场活动list集合
      */
     @RequestMapping("findActivityForDetailSelectiveByName")
-    public Object findActivityForDetailSelectiveByName(String name, String clueId) {
+    public Object findActivityForDetailSelectiveByName(String name) {
+        List<Activity> activityList = activityService.findActivityForDetailByOptionalName(name);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setData(activityList);
+        return returnObject;
+    }
+
+    /**
+     * 选择性根据name查询详细的市场活动
+     *
+     * @param name 名称
+     * @return 市场活动list集合
+     */
+    @RequestMapping("findActivityForDetailSelectiveByNameAndClueId")
+    public Object findActivityForDetailSelectiveByNameAndClueId(String name, String clueId) {
         Map<String, Object> map = new HashMap<>(2);
         map.put("name", name);
         map.put("clueId", clueId);
         List<Activity> activityList = activityService.findActivityForDetailByOptionalNameAndClueId(map);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setData(activityList);
+        return returnObject;
+    }
+
+    /**
+     * 选择性根据name查询详细的市场活动
+     *
+     * @param name 名称
+     * @return 市场活动list集合
+     */
+    @RequestMapping("findActivityForDetailSelectiveByNameAndContactsId")
+    public Object findActivityForDetailSelectiveByNameAndContactsId(String name, String contactsId) {
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("name", name);
+        map.put("contactsId", contactsId);
+        List<Activity> activityList = activityService.findActivityForDetailByOptionalNameAndContactsId(map);
 
         ReturnObject returnObject = new ReturnObject();
         returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);

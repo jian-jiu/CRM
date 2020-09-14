@@ -2,6 +2,8 @@ package com.simple.crm.workbench.mapper.contacts;
 
 import com.simple.crm.workbench.domain.contacts.ContactsRemark;
 
+import java.util.List;
+
 /**
  * @author 24245
  */
@@ -38,6 +40,11 @@ public interface ContactsRemarkMapper {
      */
     ContactsRemark selectByPrimaryKey(String id);
 
+    ContactsRemark selectContactsRemarkForDetailById(String id);
+
+    List<ContactsRemark> selectAllContactsRemarkForDetailByContactsId(String contactsId);
+
+
     /**
      * 按主键选择性更新
      *
@@ -53,4 +60,5 @@ public interface ContactsRemarkMapper {
      * @return 更新条数
      */
     int updateByPrimaryKey(ContactsRemark record);
+
 }

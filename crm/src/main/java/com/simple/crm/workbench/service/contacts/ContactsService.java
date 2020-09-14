@@ -16,7 +16,11 @@ public interface ContactsService {
 
     Contacts findContactsDetailedCustomerIdById(String id);
 
+    Contacts findContactsForDetailById(String id);
+
     List<Contacts> findPagingContactsForDetail(Map<String,Object> map);
+
+    List<Contacts> findContactsForDetailByName(String name);
 
     long findCountContacts(HashMap<String, Object> map);
 
@@ -28,6 +32,4 @@ public interface ContactsService {
 
 
     int addContacts(Contacts contacts);
-
-
 }

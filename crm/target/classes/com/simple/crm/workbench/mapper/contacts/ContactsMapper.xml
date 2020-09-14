@@ -37,7 +37,7 @@
     <sql id="selectResultContactsForDetailSql">
         tc1.id,tu1.name as owner,tdv2.value as source,tc2.name as customer_id,tc1.full_name,tdv1.value as appellation,
         tc1.email,tc1.cell_phone,tc1.job,tc1.birth,tu2.name as create_by,tc1.create_time,tu3.name as edit_by,
-        tu1.edit_time,tc1.description,tc1.contact_summary,tc1.next_contact_time,tc1.address
+        tc1.edit_time,tc1.description,tc1.contact_summary,tc1.next_contact_time,tc1.address
     </sql>
     <sql id="selectContactsForDetailSql">
         from tbl_contacts as tc1
@@ -87,6 +87,21 @@
           tc1.cell_phone, tc1.job, tc1.birth, tc1.description,tc1.contact_summary, tc1.next_contact_time,tc1.address
         from tbl_contacts as tc1
         left join tbl_customer as tc2 on tc1.customer_id = tc2.id
+        where tc1.id = #{id}
+    </select>
+    <select id="selectContactsForDetailByName" resultMap="BaseResultMap">
+        select
+        <include refid="selectResultContactsForDetailSql"/>
+        <include refid="selectContactsForDetailSql"/>
+        where 1
+        <if test="name != null and name != ''">
+            and full_name like '%' #{name} '%'
+        </if>
+    </select>
+    <select id="selectContactsForDetailById" resultMap="BaseResultMap">
+        select
+        <include refid="selectResultContactsForDetailSql"/>
+        <include refid="selectContactsForDetailSql"/>
         where tc1.id = #{id}
     </select>
 

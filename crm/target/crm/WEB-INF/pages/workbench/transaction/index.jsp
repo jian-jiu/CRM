@@ -2,11 +2,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta charset="UTF-8">
     <%@include file="../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
         $(() => {
-
+            //页面创建点击事件
+            $("#addTransactionBtn").click(() => {
+                location.href = "workbench/transaction/saveIndex"
+            })
         });
     </script>
 </head>
@@ -68,8 +70,8 @@
                         <select class="form-control" style="width: 196px">
                             <option></option>
                             <<c:forEach items="${transactionTypeList}" var="transactionType">
-                                <option value="${transactionType.id}">${transactionType.value}</option>
-                            </c:forEach>
+                            <option value="${transactionType.id}">${transactionType.value}</option>
+                        </c:forEach>
                         </select>
                     </div>
                 </div>
@@ -101,8 +103,8 @@
         <div class="btn-toolbar" role="toolbar"
              style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
             <div class="btn-group" style="position: relative; top: 18%;">
-                <button type="button" class="btn btn-primary" onclick="window.location.href='save.html';"><span
-                        class="glyphicon glyphicon-plus"></span> 创建
+                <button id="addTransactionBtn" type="button" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
                 <button type="button" class="btn btn-default" onclick="window.location.href='edit.html';"><span
                         class="glyphicon glyphicon-pencil"></span> 修改

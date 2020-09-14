@@ -4,6 +4,7 @@
 <head>
     <%@include file="../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
+        //分页查询联系人
         function findContact(pageNo, pageSize) {
             let owner = $("#findOwner").val()
             let name = $("#findName").val()
@@ -32,7 +33,7 @@
                             html.push('<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
                                             <td><input type="checkbox" value="' + Object.id + '"/></td>\
                                                 <td><a style="text-decoration: none; cursor: pointer;"\
-                                            onclick="">' + Object.fullName + '</a></td>\
+                                            href="workbench/contacts/findContactsForDetailByIdToView?id=' + Object.id + '">' + Object.fullName + '</a></td>\
                                             <td>' + (Object.customerId || "") + '</td>\
                                             <td>' + Object.owner + '</td>\
                                             <td>' + (Object.source || "") + '</td>\
@@ -231,7 +232,7 @@
                     return
                 }
                 $.ajax({
-                    url: "workbench/contacts/findContactsForDetailById",
+                    url: "workbench/contacts/findContactsDetailedCustomerIdById",
                     data: {
                         id: checkboxChecked[0].value
                     },

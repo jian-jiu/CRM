@@ -41,6 +41,11 @@ public class ContactsServiceImpl implements ContactsService {
     }
 
     @Override
+    public Contacts findContactsForDetailById(String id) {
+        return contactsMapper.selectContactsForDetailById(id);
+    }
+
+    @Override
     public List<Contacts> findPagingContactsForDetail(Map<String, Object> map) {
         Contacts contacts = (Contacts) map.get("contacts");
         if (!("".equals(contacts.getCustomerId()))) {
@@ -51,6 +56,11 @@ public class ContactsServiceImpl implements ContactsService {
             contacts.setCustomerId("111");
         }
         return contactsMapper.selectPagingContactsForDetail(map);
+    }
+
+    @Override
+    public List<Contacts> findContactsForDetailByName(String name) {
+        return contactsMapper.selectContactsForDetailByName(name);
     }
 
     @Override

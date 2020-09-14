@@ -85,6 +85,11 @@ public class ActivityServiceImpl implements ActivityService {
         return activityMapper.selectByPrimaryKey(id);
     }
 
+    @Override
+    public List<Activity> findActivityForDetailByOptionalName(String name) {
+        return activityMapper.selectActivityForDetailByOptionalName(name);
+    }
+
     /**
      * 根据name查询详细的市场活动
      *
@@ -96,6 +101,11 @@ public class ActivityServiceImpl implements ActivityService {
         return activityMapper.selectActivityForDetailByOptionalNameAndClueId(map);
     }
 
+    @Override
+    public List<Activity> findActivityForDetailByOptionalNameAndContactsId(Map<String, Object> map) {
+        return activityMapper.selectActivityForDetailByOptionalNameAndContactsId(map);
+    }
+
     /**
      * 根据线索id查询关联的市场活动
      *
@@ -105,6 +115,11 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> findActivityByClueId(String clueId) {
         return activityMapper.selectActivityByClueId(clueId);
+    }
+
+    @Override
+    public List<Activity> findActivityByContactsId(String contactsId) {
+        return activityMapper.selectActivityByContactsId(contactsId);
     }
 
 
@@ -156,4 +171,6 @@ public class ActivityServiceImpl implements ActivityService {
         clueActivityRelationMapper.deleteByActivityId(ids);
         return activityMapper.deleteActivityByIds(ids);
     }
+
+
 }

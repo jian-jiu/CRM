@@ -89,7 +89,7 @@
                                     <font color="gray">线索</font> <font color="gray">-</font> <b>' + data.data.createBy + '-${clue.company}</b>\
                                     <small style="color: gray;">' + data.data.createTime + ' 由 ${sessionScope.sessionUser.name} 创建</small>\
                                         <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
-                                            <a class="myHref" onclick="modify(\'' + data.data.id + '\')">\
+                                            <a class="myHref" onclick="modifyClueRemark(\'' + data.data.id + '\')">\
                                             <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
                                             &nbsp;&nbsp;&nbsp;&nbsp;\
                                             <a class="myHref" onclick="removeClueRemark(\'' + data.data.id + '\')">\
@@ -125,7 +125,7 @@
                                 <font color="gray">线索</font> <font color="gray">-</font> <b>' + data.data.editBy + '-${clue.company}</b>\
                                 <small style="color: gray;">' + data.data.editTime + ' 由 ${sessionScope.sessionUser.name} 修改</small>\
                                     <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
-                                    <a class="myHref" onclick="modify(\'' + data.data.id + '\')">\
+                                    <a class="myHref" onclick="modifyClueRemark(\'' + data.data.id + '\')">\
                                     <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
                                     &nbsp;&nbsp;&nbsp;&nbsp;\
                                     <a class="myHref" onclick="removeClueRemark(\'' + data.data.id + '\')">\
@@ -151,11 +151,14 @@
                 }
             })
 
+            //查询市场活动输入框
+            let relatedInputName = $("#relatedInputName")
             //关联市场活动按钮单击事件
             $("#relatedActivityBtn").click(() => {
+                relatedInputName.val("")
                 relatedAllCheckbox.prop("checked", false)
                 $.ajax({
-                    url: "workbench/activity/findActivityForDetailSelectiveByName",
+                    url: "workbench/activity/findActivityForDetailSelectiveByNameAndClueId",
                     data: {
                         clueId: clueId.val()
                     },
@@ -223,8 +226,6 @@
                 })
             })
 
-            //查询市场活动输入框
-            let relatedInputName = $("#relatedInputName")
             //查询市场活动
             relatedInputName.keyup(() => {
                 let name = relatedInputName.val()
@@ -278,7 +279,7 @@
         });
 
         //修改线索备注函数
-        function modify(id) {
+        function modifyClueRemark(id) {
             $.ajax({
                 url: "workbench/clue/findClueRemarkById",
                 data: {
@@ -534,7 +535,7 @@
                         ${clueRemark.editFlag?clueRemark.editBy:clueRemark.createBy}
                         ${clueRemark.editFlag?"修改":"创建"}</small>
                 <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                    <a class="myHref" onclick="modify('${clueRemark.id}')">
+                    <a class="myHref" onclick="modifyClueRemark('${clueRemark.id}')">
                         <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <a class="myHref" onclick="removeClueRemark('${clueRemark.id}')">

@@ -5,9 +5,12 @@ import com.simple.crm.commons.domain.ReturnObject;
 import com.simple.crm.commons.utils.otherutil.DateUtils;
 import com.simple.crm.commons.utils.otherutil.UUIDUtils;
 import com.simple.crm.settings.domain.User;
+import com.simple.crm.workbench.domain.activity.Activity;
 import com.simple.crm.workbench.domain.contacts.Contacts;
+import com.simple.crm.workbench.domain.contacts.ContactsRemark;
+import com.simple.crm.workbench.service.activity.ActivityService;
+import com.simple.crm.workbench.service.contacts.ContactsRemarkService;
 import com.simple.crm.workbench.service.contacts.ContactsService;
-import com.simple.crm.workbench.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,13 +32,33 @@ import java.util.List;
 public class ContactsController {
 
     private final ContactsService contactsService;
-    private final CustomerService customerService;
+    private final ContactsRemarkService contactsRemarkService;
+    private final ActivityService activityService;
 
     private final HttpSession session;
 
     @RequestMapping("index")
     public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("workbench/contacts/index");
+        return modelAndView;
+    }
+
+    /**
+     * 根据id查询详细的联系人
+     *
+     * @param id id
+     * @return 结果集
+     */
+    @RequestMapping("findContactsForDetailByIdToView")
+    public ModelAndView findContactsForDetailByIdToView(String id,ModelAndView modelAndView) {
+        Contacts contacts = contactsService.findContactsForDetailById(id);
+        List<ContactsRemark> contactsRemarkList = contactsRemarkService.findAllContactsRemarkForDetailByContactsId(id);
+        List<Activity> activityList = activityService.findActivityByContactsId(id);
+
+        modelAndView.addObject("contacts",contacts);
+        modelAndView.addObject("contactsRemarkList",contactsRemarkList);
+        modelAndView.addObject("activityList",activityList);
+        modelAndView.setViewName("workbench/contacts/detail");
         return modelAndView;
     }
 
@@ -70,13 +93,13 @@ public class ContactsController {
     }
 
     /**
-     * 根据id查询详细的联系人
+     * 根据id查询联系人详细的客户
      *
      * @param id id
      * @return 结果集
      */
-    @RequestMapping("findContactsForDetailById")
-    public Object findContactsForDetailById(String id) {
+    @RequestMapping("findContactsDetailedCustomerIdById")
+    public Object findContactsDetailedCustomerIdById(String id) {
         Contacts contacts = contactsService.findContactsDetailedCustomerIdById(id);
 
         ReturnObject returnObject = new ReturnObject();
@@ -84,6 +107,17 @@ public class ContactsController {
         returnObject.setData(contacts);
         return returnObject;
     }
+
+    @RequestMapping("findContactsForDetailByName")
+    public Object findContactsForDetailByName(String name){
+        List<Contacts> contactsList = contactsService.findContactsForDetailByName(name);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setData(contactsList);
+        return returnObject;
+    }
+
 
     /**
      * 添加联系人
@@ -111,6 +145,7 @@ public class ContactsController {
         return returnObject;
     }
 
+
     /**
      * 修改联系人
      *
@@ -135,6 +170,7 @@ public class ContactsController {
         }
         return returnObject;
     }
+
 
     /**
      * 根据多个id删除数据

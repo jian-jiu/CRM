@@ -26,6 +26,10 @@ public interface ClueActivityRelationMapper {
      */
     ClueActivityRelation selectByPrimaryKey(String id);
 
+    List<ClueActivityRelation> selectByClueId(String clueId);
+
+    List<ClueActivityRelation> selectByActivityId(String activityId);
+
 
     /**
      * 添加一条线索市场活动关系

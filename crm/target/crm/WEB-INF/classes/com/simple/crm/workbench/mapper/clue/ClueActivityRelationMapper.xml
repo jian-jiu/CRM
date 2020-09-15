@@ -22,6 +22,18 @@
         from tbl_clue_activity_relation
         where activity_id = #{activityId}
     </select>
+    <select id="selectByClueId" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_clue_activity_relation
+        where 1 and clue_id = #{clueId}
+    </select>
+    <select id="selectByActivityId" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_clue_activity_relation
+        where 1 and activity_id = #{activityId}
+    </select>
 
     <insert id="insert" parameterType="com.simple.crm.workbench.domain.clue.ClueActivityRelation">
         insert into tbl_clue_activity_relation (id, clue_id, activity_id)

@@ -20,6 +20,15 @@ public interface ClueMapper {
     int deleteByPrimaryKey(String id);
 
     /**
+     * 根据多个id删除线索
+     *
+     * @param ids 线索id数组
+     * @return 删除条数
+     */
+    int deleteClueByIds(String[] ids);
+
+
+    /**
      * 添加线索
      *
      * @param record 线索对象
@@ -35,13 +44,6 @@ public interface ClueMapper {
      */
     int insertSelective(Clue record);
 
-    /**
-     * 根据线索id查询线索
-     *
-     * @param id 线索id
-     * @return 线索对象
-     */
-    Clue selectByPrimaryKey(String id);
 
     /**
      * 选择性更新线索
@@ -58,6 +60,23 @@ public interface ClueMapper {
      * @return 更新条数
      */
     int updateByPrimaryKey(Clue record);
+
+
+    /**
+     * 根据线索id查询线索
+     *
+     * @param id 线索id
+     * @return 线索对象
+     */
+    Clue selectByPrimaryKey(String id);
+
+    /**
+     * 根据线索id查询信息的线索
+     *
+     * @param id 线索id
+     * @return 线索对象
+     */
+    Clue selectClueForDetailById(String id);
 
     /**
      * 分页查询信息的线索list集合
@@ -78,20 +97,4 @@ public interface ClueMapper {
      * @return 线索数量
      */
     long selectCountPagingClue(@Param("clue") Clue clue);
-
-    /**
-     * 根据线索id查询信息的线索
-     *
-     * @param id 线索id
-     * @return 线索对象
-     */
-    Clue selectClueForDetailById(String id);
-
-    /**
-     * 根据多个id删除线索
-     *
-     * @param ids 线索id数组
-     * @return 删除条数
-     */
-    int deleteClueByIds(String[] ids);
 }

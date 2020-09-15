@@ -73,12 +73,57 @@ public class ClueController {
         return modelAndView;
     }
 
+    /**
+     * 根据id查询数据,跳转到转换页面
+     *
+     * @param id           id
+     * @param modelAndView 数据以及视图
+     * @return 数据以及视图
+     */
     @RequestMapping("toConvert")
-    private ModelAndView toConvert(String clueId,ModelAndView modelAndView){
-        Clue clue = clueService.findClueForDetailById(clueId);
-        modelAndView.addObject("clue",clue);
+    public ModelAndView toConvert(String id, ModelAndView modelAndView) {
+        Clue clue = clueService.findClueForDetailById(id);
+
+        modelAndView.addObject("clue", clue);
         modelAndView.setViewName("workbench/clue/convert");
         return modelAndView;
+    }
+
+
+    /**
+     * 转换线索
+     *
+     * @param clueId
+     * @param isCreateTransaction
+     * @param amountOfMoney
+     * @param tradeName
+     * @param expectedClosingDate
+     * @param stage
+     * @param activity
+     * @return
+     */
+    @RequestMapping("saveConvert")
+    public Object saveConvert(String clueId, String isCreateTransaction, String amountOfMoney, String tradeName,
+                              String expectedClosingDate, String stage, String activity) {
+        ReturnObject returnObject = new ReturnObject();
+
+        Map<String, Object> map = new HashMap<>(7);
+        map.put("clueId", clueId);
+        map.put("isCreateTransaction", isCreateTransaction);
+        map.put("amountOfMoney", amountOfMoney);
+        map.put("tradeName", tradeName);
+        map.put("expectedClosingDate", expectedClosingDate);
+        map.put("stage", stage);
+        map.put("activity", activity);
+        try {
+            clueService.saveConvert(map);
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("转换失败");
+        }
+        return returnObject;
     }
 
 
@@ -91,12 +136,15 @@ public class ClueController {
      * @return 结果集
      */
     @RequestMapping("findPagingClue")
-    public Object findPagingClue(Clue clue, @RequestParam(defaultValue = "1") Integer pageNo,
+    public Object findPagingClue(Clue clue,
+                                 @RequestParam(defaultValue = "1") Integer pageNo,
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        //计算当前数据哪里开始
         Integer beginNo = (pageNo - 1) * pageSize;
 
         List<Clue> clueList = clueService.findPagingForDetailClue(clue, beginNo, pageSize);
         long totalRows = clueService.findCountPagingClue(clue);
+
         Map<String, Object> map = new HashMap<>(2);
         map.put("clueList", clueList);
         map.put("totalRows", totalRows);

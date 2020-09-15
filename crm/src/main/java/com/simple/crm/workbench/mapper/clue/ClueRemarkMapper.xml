@@ -37,6 +37,12 @@
         left join tbl_user tu2 on tcr.edit_by = tu2.id
         where tcr.clue_id = #{id}
   </select>
+    <select id="selectByClueId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_clue_remark
+        where clue_id = #{clueId}
+    </select>
 
     <insert id="insert" parameterType="com.simple.crm.workbench.domain.clue.ClueRemark">
         <!--

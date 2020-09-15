@@ -51,8 +51,8 @@ public class CustomerController {
         Customer customer = customerService.findCustomerForDetailById(id);
         List<CustomerRemark> customerRemarkList = customerRemarkService.findAllCustomerRemarkForDetailByCustomerId(id);
 
-        modelAndView.addObject("customer",customer);
-        modelAndView.addObject("customerRemarkList",customerRemarkList);
+        modelAndView.addObject("customer", customer);
+        modelAndView.addObject("customerRemarkList", customerRemarkList);
         modelAndView.setViewName("workbench/customer/detail");
         return modelAndView;
     }
@@ -113,6 +113,13 @@ public class CustomerController {
      */
     @RequestMapping("addCustomer")
     public Object addCustomer(Customer customer) {
+        ReturnObject returnObject = new ReturnObject();
+        Customer customerByName = customerService.findCustomerByName(customer.getName());
+        if (customerByName != null) {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("客户名字重复了");
+            return returnObject;
+        }
         customer.setId(UUIDUtils.getUUID());
         if (customer.getCreateBy() == null || "".equals(customer.getCreateBy())) {
             User user = (User) session.getAttribute(Contents.SESSION_USER);
@@ -120,7 +127,6 @@ public class CustomerController {
         }
         customer.setCreateTime(DateUtils.formatDateTime(new Date()));
 
-        ReturnObject returnObject = new ReturnObject();
         int i = customerService.saveContacts(customer);
         if (i > 0) {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
@@ -128,6 +134,7 @@ public class CustomerController {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("添加失败");
         }
+
         return returnObject;
     }
 

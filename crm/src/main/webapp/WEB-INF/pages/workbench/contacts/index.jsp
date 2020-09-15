@@ -37,7 +37,7 @@
                                             <td>' + (Object.customerId || "") + '</td>\
                                             <td>' + Object.owner + '</td>\
                                             <td>' + (Object.source || "") + '</td>\
-                                            <td>' + Object.birth + '</td>\
+                                            <td>' + (Object.birth||"") + '</td>\
                                         </tr>')
                         })
                         $("#dataTbody").html(html)

@@ -22,4 +22,28 @@ public class ContactsActivityRelation implements Serializable {
      * 市场活动id
      */
     private String activityId;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
+
+    public String getContactsId() {
+        return contactsId;
+    }
+
+    public void setContactsId(String contactsId) {
+        this.contactsId = contactsId == null ? null : contactsId.trim();
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId == null ? null : activityId.trim();
+    }
 }

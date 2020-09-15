@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 客户
+ *
  * @author 24245
  */
 public interface CustomerMapper {
@@ -25,6 +27,12 @@ public interface CustomerMapper {
 
     Customer selectCustomerForDetailById(String id);
 
+    /**
+     * 根据name查询客户是否存在
+     *
+     * @param name 客户名字
+     * @return 客户对象
+     */
     Customer selectCustomerByName(String name);
 
     List<Customer> selectCustomerLikeName(String name);

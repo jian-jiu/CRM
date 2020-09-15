@@ -255,7 +255,7 @@
 
             //转换按钮单击事件
             $("#convertBtn").click(() => {
-                location.href = "workbench/clue/toConvert?clueId=" + clueId.val()
+                location.href = "workbench/clue/toConvert?id=" + clueId.val()
             })
 
             //回车事件
@@ -420,16 +420,14 @@
         <input id="clueId" type="hidden" value="${clue.id}">
     </div>
     <div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-        <button id="convertBtn" type="button" class="btn btn-default"><span
-                class="glyphicon glyphicon-retweet"></span> 转换
+        <button id="convertBtn" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-retweet"></span> 转换
         </button>
     </div>
 </div>
-
 <br/>
 <br/>
 <br/>
-
 <!-- 详细信息 -->
 <div style="position: relative; top: -70px;">
     <div style="position: relative; left: 40px; height: 30px;">
@@ -525,7 +523,6 @@
     <div class="page-header">
         <h4>备注</h4>
     </div>
-
     <c:forEach items="${clueRemarkList}" var="clueRemark">
         <div id="${clueRemark.id}" class="remarkDiv" style="height: 60px;">
             <img title="${clueRemark.createBy}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">
@@ -545,11 +542,9 @@
             </div>
         </div>
     </c:forEach>
-
     <div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
         <form role="form" style="position: relative;top: 10px; left: 10px;">
-            <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"
-                      placeholder="添加备注..."></textarea>
+            <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2" placeholder="添加备注..."></textarea>
             <p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
                 <button id="cancelBtn" type="button" class="btn btn-default">取消</button>
                 <button id="addClueRemarkBtn" type="button" class="btn btn-primary">保存</button>

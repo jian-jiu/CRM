@@ -3,29 +3,20 @@ package com.simple.crm.workbench.service.clue;
 import com.simple.crm.workbench.domain.clue.Clue;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 简单
  * @date 2020/9/6
  */
 public interface ClueService {
-    /**
-     * 分页查询
-     *
-     * @param clue     线索对象
-     * @param beginNo  第几页开始
-     * @param pageSize 每页条数
-     * @return 线索list集合
-     */
-    List<Clue> findPagingForDetailClue(Clue clue, Integer beginNo, Integer pageSize);
 
     /**
-     * 根据条件查询线索总数量
+     * 转换线索
      *
-     * @param clue     线索对象
-     * @return 线索数量
+     * @param map map
      */
-    long findCountPagingClue(Clue clue);
+    void saveConvert(Map<String, Object> map);
 
     /**
      * 根据id查询线索
@@ -42,6 +33,24 @@ public interface ClueService {
      * @return 线索对象
      */
     Clue findClueForDetailById(String id);
+
+    /**
+     * 分页查询
+     *
+     * @param clue     线索对象
+     * @param beginNo  第几页开始
+     * @param pageSize 每页条数
+     * @return 线索list集合
+     */
+    List<Clue> findPagingForDetailClue(Clue clue, Integer beginNo, Integer pageSize);
+
+    /**
+     * 根据条件查询线索总数量
+     *
+     * @param clue 线索对象
+     * @return 线索数量
+     */
+    long findCountPagingClue(Clue clue);
 
 
     /**

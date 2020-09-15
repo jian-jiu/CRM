@@ -18,6 +18,8 @@ public interface ClueRemarkMapper {
      */
     ClueRemark selectByPrimaryKey(String id);
 
+    List<ClueRemark> selectByClueId(String clueId);
+
     /**
      * 根据id查询详细的线索备注
      *

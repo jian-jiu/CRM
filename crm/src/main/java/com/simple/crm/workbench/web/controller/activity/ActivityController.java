@@ -135,7 +135,7 @@ public class ActivityController {
     }
 
     /**
-     * 选择性根据name查询详细的市场活动
+     * 选择性的根据name查询详细的市场活动
      *
      * @param name 名称
      * @return 市场活动list集合

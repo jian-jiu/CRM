@@ -8,10 +8,11 @@
         let cancelAndSaveBtnDefault = true;
         //窗口加载完毕
         $(() => {
+            //线索id
+            let clueId = $("#clueId")
 
             //线索备注输入框
             let remark = $("#remark")
-
             remark.focus(() => {
                 if (cancelAndSaveBtnDefault) {
                     //设置remarkDiv的高度为130px
@@ -38,9 +39,6 @@
             }).on("mouseout", ".myHref", function () {
                 $(this).children("span").css("color", "#E6E6E6");
             })
-
-            //线索id
-            let clueId = $("#clueId")
 
             //添加线索备注按钮
             let addClueRemarkBtn = $("#addClueRemarkBtn")
@@ -255,6 +253,11 @@
                 })
             })
 
+            //转换按钮单击事件
+            $("#convertBtn").click(() => {
+                location.href = "workbench/clue/toConvert?clueId=" + clueId.val()
+            })
+
             //回车事件
             $(window).keydown(e => {
                 if (e.key == "Enter") {
@@ -410,7 +413,6 @@
     <a href="javascript:void(0);" onclick="window.history.back();"><span class="glyphicon glyphicon-arrow-left"
                                                                          style="font-size: 20px; color: #DDDDDD"></span></a>
 </div>
-
 <!-- 大标题 -->
 <div style="position: relative; left: 40px; top: -30px;">
     <div class="page-header">
@@ -418,10 +420,9 @@
         <input id="clueId" type="hidden" value="${clue.id}">
     </div>
     <div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-        <button type="button" class="btn btn-default" onclick="window.location.href='convert.html';"><span
+        <button id="convertBtn" type="button" class="btn btn-default"><span
                 class="glyphicon glyphicon-retweet"></span> 转换
         </button>
-
     </div>
 </div>
 

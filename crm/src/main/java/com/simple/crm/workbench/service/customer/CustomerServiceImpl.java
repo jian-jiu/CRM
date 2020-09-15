@@ -3,6 +3,7 @@ package com.simple.crm.workbench.service.customer;
 import com.simple.crm.workbench.domain.customer.Customer;
 import com.simple.crm.workbench.mapper.contacts.ContactsMapper;
 import com.simple.crm.workbench.mapper.customer.CustomerMapper;
+import com.simple.crm.workbench.mapper.customer.CustomerRemarkMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 客户实现类
+ *
  * @author 简单
  * @date 2020/9/11
  */
@@ -18,6 +21,7 @@ import java.util.Map;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerMapper customerMapper;
+    private final CustomerRemarkMapper customerRemarkMapper;
     private final ContactsMapper contactsMapper;
 
     @Override
@@ -64,8 +68,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
+    /**
+     * 根据多个id删除客户，删除客户备注,把联系人客户名称设置为空
+     *
+     * @param ids id数组
+     * @return 删除条数
+     */
     @Override
     public int removeByMultiplePrimaryKeys(String[] ids) {
+        customerRemarkMapper.deleteByCustomerIds(ids);
         contactsMapper.updateContactsSetNameIsEmptyByCustomerId(ids);
         return customerMapper.deleteByMultiplePrimaryKeys(ids);
     }

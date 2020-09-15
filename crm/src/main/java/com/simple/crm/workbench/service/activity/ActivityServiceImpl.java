@@ -4,6 +4,7 @@ import com.simple.crm.workbench.domain.activity.Activity;
 import com.simple.crm.workbench.mapper.activity.ActivityMapper;
 import com.simple.crm.workbench.mapper.activity.ActivityRemarkMapper;
 import com.simple.crm.workbench.mapper.clue.ClueActivityRelationMapper;
+import com.simple.crm.workbench.mapper.contacts.ContactsActivityRelationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final ActivityMapper activityMapper;
     private final ActivityRemarkMapper activityRemarkMapper;
     private final ClueActivityRelationMapper clueActivityRelationMapper;
+    private final ContactsActivityRelationMapper contactsActivityRelationMapper;
 
     /**
      * 根据条件分页查询数据
@@ -160,15 +162,16 @@ public class ActivityServiceImpl implements ActivityService {
 
 
     /**
-     * 根据多个id删除数据
+     * 根据多个id删除数据,删除市场活动备注,删除线索和市场活动关系数据,删除联系人和市场活动关系数据
      *
-     * @param ids
-     * @return
+     * @param ids id数组
+     * @return 删除条数
      */
     @Override
     public int removeActivityByIds(String[] ids) {
         activityRemarkMapper.deleteActivityRemarkByActivityIds(ids);
         clueActivityRelationMapper.deleteByActivityId(ids);
+        contactsActivityRelationMapper.deleteByActivityIds(ids);
         return activityMapper.deleteActivityByIds(ids);
     }
 

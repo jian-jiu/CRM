@@ -50,7 +50,7 @@ public interface ContactsMapper {
 
     Contacts selectContactsForDetailById(String id);
 
-    List<Contacts> selectPagingContactsForDetail(Map<String,Object> map);
+    List<Contacts> selectPagingContactsForDetail(Map<String, Object> map);
 
     List<Contacts> selectContactsForDetailByName(String name);
 
@@ -73,6 +73,12 @@ public interface ContactsMapper {
      */
     int updateByPrimaryKey(Contacts record);
 
+    /**
+     * 把联系人客户名称设置为空
+     *
+     * @param customerIds 客户id数组
+     * @return 更新条数
+     */
     int updateContactsSetNameIsEmptyByCustomerId(String[] customerIds);
 
 }

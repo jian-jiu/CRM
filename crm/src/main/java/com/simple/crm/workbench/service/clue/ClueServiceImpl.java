@@ -89,15 +89,15 @@ public class ClueServiceImpl implements ClueService {
     }
 
     /**
-     * 根据多个id删除线索
+     * 根据多个id删除线索,删除线索备注,并且删除线索和市场活动关系数据
      *
      * @param ids 线索id数组
      * @return 删除条数
      */
     @Override
     public int removeClueByIds(String[] ids) {
-        clueActivityRelationMapper.deleteByClueId(ids);
         clueRemarkMapper.deleteByClueId(ids);
+        clueActivityRelationMapper.deleteByClueId(ids);
         return clueMapper.deleteClueByIds(ids);
     }
 }

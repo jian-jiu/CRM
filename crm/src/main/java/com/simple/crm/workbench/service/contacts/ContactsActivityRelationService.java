@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface ContactsActivityRelationService {
     int addContactsActivityRelation(List<ContactsActivityRelation> contactsActivityRelationList);
+
+    int removeByPrimaryKey(String id);
 }

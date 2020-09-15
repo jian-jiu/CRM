@@ -21,4 +21,9 @@ public class ContactsActivityRelationServiceImpl implements ContactsActivityRela
     public int addContactsActivityRelation(List<ContactsActivityRelation> contactsActivityRelationList) {
         return contactsActivityRelationMapper.insertContactsActivityRelationList(contactsActivityRelationList);
     }
+
+    @Override
+    public int removeByPrimaryKey(String id) {
+        return contactsActivityRelationMapper.deleteByPrimaryKey(id);
+    }
 }

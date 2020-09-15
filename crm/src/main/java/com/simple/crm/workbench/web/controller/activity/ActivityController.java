@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * 市场活动
+ *
  * @author 简单
  * @date 2020/8/16
  */
@@ -76,13 +78,13 @@ public class ActivityController {
     /**
      * 根据数据分页查询数据
      *
-     * @param pageNo
-     * @param pageSize
-     * @param name
-     * @param owner
-     * @param startDate
-     * @param endDate
-     * @return
+     * @param pageNo 起始页
+     * @param pageSize 每页大小
+     * @param name 名字
+     * @param owner 所有者
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return 结果集
      */
     @PostMapping("queryActivityForPageByCondition")
     public Object queryActivityForPageByCondition(@RequestParam(defaultValue = "1") Integer pageNo,

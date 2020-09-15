@@ -73,6 +73,14 @@ public class ClueController {
         return modelAndView;
     }
 
+    @RequestMapping("toConvert")
+    private ModelAndView toConvert(String clueId,ModelAndView modelAndView){
+        Clue clue = clueService.findClueForDetailById(clueId);
+        modelAndView.addObject("clue",clue);
+        modelAndView.setViewName("workbench/clue/convert");
+        return modelAndView;
+    }
+
 
     /**
      * 分页查询数据
@@ -173,6 +181,7 @@ public class ClueController {
         }
         return returnObject;
     }
+
 
     /**
      * 根据多个线索id删除线索

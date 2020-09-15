@@ -16,6 +16,10 @@ public interface ContactsActivityRelationMapper {
      */
     int deleteByPrimaryKey(String id);
 
+    int deleteByContactsIds(String[] ids);
+
+    int deleteByActivityIds(String[] ids);
+
 
     /**
      * 添加

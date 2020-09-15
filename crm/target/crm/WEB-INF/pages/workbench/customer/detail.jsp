@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -6,7 +7,13 @@
         //默认情况下取消和保存按钮是隐藏的
         let cancelAndSaveBtnDefault = true;
         $(() => {
-            $("#remark").focus(function () {
+            //联系人id
+            let customerId = $("#customerId")
+            //联系人备注输入框
+            let remark = $("#remark")
+
+            //输入框事件
+            remark.focus(() => {
                 if (cancelAndSaveBtnDefault) {
                     //设置remarkDiv的高度为130px
                     $("#remarkDiv").css("height", "130px");
@@ -15,30 +22,24 @@
                     cancelAndSaveBtnDefault = false;
                 }
             });
-
-            $("#cancelBtn").click(function () {
+            $("#cancelBtn").click(() => {
                 //显示
                 $("#cancelAndSaveBtn").hide();
                 //设置remarkDiv的高度为130px
                 $("#remarkDiv").css("height", "90px");
                 cancelAndSaveBtnDefault = true;
             });
-
-            $(".remarkDiv").mouseover(function () {
+            //联系人备注div
+            $("#CustomerRemarkDiv").on("mouseover", ".remarkDiv", function () {
                 $(this).children("div").children("div").show();
-            });
-
-            $(".remarkDiv").mouseout(function () {
+            }).on("mouseout", ".remarkDiv", function () {
                 $(this).children("div").children("div").hide();
-            });
-
-            $(".myHref").mouseover(function () {
+            }).on("mouseover", ".myHref", function () {
                 $(this).children("span").css("color", "red");
-            });
-
-            $(".myHref").mouseout(function () {
+            }).on("mouseout", ".myHref", function () {
                 $(this).children("span").css("color", "#E6E6E6");
-            });
+            })
+
 
             //删除联系人的模态窗口
             let removeContactsModal = $("#removeContactsModal")
@@ -46,10 +47,149 @@
             let removeTransactionModal = $("#removeTransactionModal")
             //创建联系人的模态窗口
             let createContactsModal = $("#createContactsModal")
+
+            //添加联系人备注点击按钮
+            $("#addContactsRemarkBtn").click(() => {
+                let noteContent = remark.val()
+                let id = customerId.val()
+                if (!noteContent) {
+                    alert("备注信息不能为空")
+                    return
+                }
+                $.ajax({
+                    url: "workbench/customer/saveCustomerRemark",
+                    data: {
+                        customerId: id,
+                        noteContent: noteContent,
+                        createBy: '${sessionScope.sessionUser.id}'
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            $("#remarkDiv").before(
+                                '<div id="' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
+                                    <img title="' + data.data.createBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+                                    <div style="position: relative; top: -40px; left: 40px;">\
+                                        <h5>' + noteContent + '</h5>\
+                                    <font color="gray">联系人</font> <font color="gray">-</font> <b>${customer.name}-${customer.website}</b> \
+                                    <small style="color: gray;">' + data.data.createTime + ' 由 ' + data.data.createBy + ' 创建</small>\
+                                        <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                            <a class="myHref" onclick="modifyContactsRemark(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-edit"style="font-size: 20px; color: #E6E6E6;">\
+                                            </span></a>&nbsp;&nbsp;&nbsp;&nbsp;\
+                                            <a class="myHref" onclick="removeContactsRemark(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-remove"style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                        </div>\
+                                    </div>\
+                                </div>')
+                            remark.val("")
+                        }
+                    }
+                })
+            })
+            //确定更新按钮单击事件
+            $("#updateRemarkBtn").click(() => {
+                let id = $("#editId").val()
+                let noteContent = $("#noteContent").val()
+                $.ajax({
+                    url: "workbench/customer/modifyCustomerRemark",
+                    data: {
+                        id: id,
+                        noteContent: noteContent
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            $("#" + id + "").empty()
+                            $("#" + id + "").append(
+                                '<img title="' + data.data.createBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+                                    <div style="position: relative; top: -40px; left: 40px;">\
+                                        <h5>' + noteContent + '</h5>\
+                                    <font color="gray">联系人</font> <font color="gray">-</font> <b>${customer.name}-${customer.website}</b> \
+                                    <small style="color: gray;">' + data.data.editTime + ' 由 ' + data.data.editBy + ' 修改</small>\
+                                        <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                            <a class="myHref" onclick="modifyContactsRemark(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-edit"style="font-size: 20px; color: #E6E6E6;">\
+                                            </span></a>&nbsp;&nbsp;&nbsp;&nbsp;\
+                                            <a class="myHref" onclick="removeContactsRemark(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-remove"style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                        </div>\
+                                    </div>')
+                            $("#editRemarkModal").modal("hide")
+                        }
+                    }
+                })
+            })
         });
+        //修改线索备注函数
+        function modifyContactsRemark(id) {
+            $.ajax({
+                url: "workbench/customer/findCustomerRemark",
+                data: {
+                    id: id
+                },
+                type: "post",
+                datatype: "json",
+                success(data) {
+                    if (data.code == "1") {
+                        $("#editId").val(data.data.id)
+                        $("#noteContent").val(data.data.noteContent)
+                        $("#editRemarkModal").modal("show")
+                    }
+                }
+            })
+        }
+
+        //删除线索备注函数
+        function removeContactsRemark(id) {
+            $.ajax({
+                url: "workbench/customer/removeCustomerRemark",
+                data: {
+                    id: id
+                },
+                type: "post",
+                datatype: "json",
+                success(data) {
+                    if (data.code == "1") {
+                        $("#" + id + "").remove()
+                    }
+                }
+            })
+        }
     </script>
 </head>
 <body>
+<!-- 修改市场活动备注的模态窗口 -->
+<div class="modal fade" id="editRemarkModal" role="dialog">
+    <%-- 备注的id --%>
+    <input type="hidden" id="editId">
+    <div class="modal-dialog" role="document" style="width: 40%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="ModalLabel">修改备注</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">内容</label>
+                        <div class="col-sm-10" style="width: 81%;">
+                            <textarea class="form-control" rows="3" id="noteContent"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 删除联系人的模态窗口 -->
 <div class="modal fade" id="removeContactsModal" role="dialog">
     <div class="modal-dialog" role="document" style="width: 30%;">
@@ -237,20 +377,20 @@
 <!-- 大标题 -->
 <div style="position: relative; left: 40px; top: -30px;">
     <div class="page-header">
-        <h3>${customer.name} <small><a href="http://${customer.website}" target="_blank">${customer.website}</a></small></h3>
+        <h3>${customer.name} <small><a href="http://${customer.website}" target="_blank">${customer.website}</a></small>
+        </h3>
+        <input type="hidden" id="customerId" value="${customer.id}">
     </div>
-<%--    <div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span
-                class="glyphicon glyphicon-edit"></span> 编辑
-        </button>
-        <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
-    </div>--%>
+    <%--    <div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span
+                    class="glyphicon glyphicon-edit"></span> 编辑
+            </button>
+            <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+        </div>--%>
 </div>
-
 <br/>
 <br/>
 <br/>
-
 <!-- 详细信息 -->
 <div style="position: relative; top: -70px;">
     <div style="position: relative; left: 40px; height: 30px;">
@@ -271,13 +411,15 @@
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 20px;">
         <div style="width: 300px; color: gray;">创建者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${customer.createBy}&nbsp;&nbsp;</b><small
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;">
+            <b>${customer.createBy}&nbsp;&nbsp;</b><small
                 style="font-size: 10px; color: gray;">${customer.createTime}</small></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
         <div style="width: 300px; color: gray;">修改者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${customer.editBy}&nbsp;&nbsp;</b><small
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;">
+            <b>${customer.editBy}&nbsp;&nbsp;</b><small
                 style="font-size: 10px; color: gray;">${customer.editTime}</small></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
@@ -314,59 +456,42 @@
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
 </div>
-
 <!-- 备注 -->
-<div style="position: relative; top: 10px; left: 40px;">
+<div id="CustomerRemarkDiv" style="position: relative; top: 10px; left: 40px;">
     <div class="page-header">
         <h4>备注</h4>
     </div>
-
-    <!-- 备注1 -->
-    <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
-        <div style="position: relative; top: -40px; left: 40px;">
-            <h5>哎呦！</h5>
-            <font color="gray">联系人</font> <font color="gray">-</font> <b>李四先生-北京动力节点</b> <small style="color: gray;">
-            2017-01-22 10:10:10 由zhangsan</small>
-            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
+    <c:forEach items="${customerRemarkList}" var="customerRemark">
+        <div id="${customerRemark.id}" class="remarkDiv" style="height: 60px;">
+            <img title="${customerRemark.createBy}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">
+            <div style="position: relative; top: -40px; left: 40px;">
+                <h5>${customerRemark.noteContent}</h5>
+                <font color="gray">联系人</font> <font color="gray">-</font>
+                <b>${customer.name}-${customer.website}</b> <small style="color: gray;">
+                    ${customerRemark.editFlag?customerRemark.editTime:customerRemark.createTime} 由
+                    ${customerRemark.editFlag?customerRemark.editBy:customerRemark.createBy}
+                    ${customerRemark.editFlag?"修改":"创建"}</small>
+                <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+                    <a class="myHref" onclick="modifyContactsRemark('${customerRemark.id}')">
+                        <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="myHref" onclick="removeContactsRemark('${customerRemark.id}')">
+                        <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- 备注2 -->
-    <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
-        <div style="position: relative; top: -40px; left: 40px;">
-            <h5>呵呵！</h5>
-            <font color="gray">联系人</font> <font color="gray">-</font> <b>李四先生-北京动力节点</b> <small style="color: gray;">
-            2017-01-22 10:20:10 由zhangsan</small>
-            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-            </div>
-        </div>
-    </div>
-
+    </c:forEach>
     <div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
         <form role="form" style="position: relative;top: 10px; left: 10px;">
             <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"
                       placeholder="添加备注..."></textarea>
             <p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
                 <button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-                <button type="button" class="btn btn-primary">保存</button>
+                <button id="addContactsRemarkBtn" type="button" class="btn btn-primary">保存</button>
             </p>
         </form>
     </div>
 </div>
-
 <!-- 交易 -->
 <div>
     <div style="position: relative; top: 20px; left: 40px;">
@@ -407,7 +532,6 @@
         </div>
     </div>
 </div>
-
 <!-- 联系人 -->
 <div>
     <div style="position: relative; top: 20px; left: 40px;">
@@ -442,7 +566,6 @@
         </div>
     </div>
 </div>
-
 <div style="height: 200px;"></div>
 </body>
 </html>

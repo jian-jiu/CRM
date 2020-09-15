@@ -8,7 +8,13 @@
         let cancelAndSaveBtnDefault = true;
 
         $(() => {
-            $("#remark").focus(() => {
+            //联系人id
+            let contactsId = $("#contactsId")
+            //联系人备注输入框
+            let remark = $("#remark")
+
+            //输入框事件
+            remark.focus(() => {
                 if (cancelAndSaveBtnDefault) {
                     //设置remarkDiv的高度为130px
                     $("#remarkDiv").css("height", "130px");
@@ -35,11 +41,23 @@
                 $(this).children("span").css("color", "#E6E6E6");
             })
 
-            //联系人id
-            let contactsId = $("#contactsId")
+            //关联市场活动数据区
+            let relatedActivityTbody = $("#relatedActivityTbody")
+            //关联市场活动全选按钮
+            let relatedAllCheckbox = $("#relatedAllCheckbox")
+            //关联市场活动全选按钮点击事件
+            relatedAllCheckbox.click(() => {
+                $("#relatedActivityTbody input[type='checkbox']").prop("checked", relatedAllCheckbox.prop("checked"))
+            })
+            //给其他复选框添加单击事件
+            relatedActivityTbody.on("click", "input[type='checkbox']", function () {
+                if ($("#relatedActivityTbody input[type='checkbox']").size() == $("#relatedActivityTbody input[type='checkbox']:checked").size()) {
+                    relatedAllCheckbox.prop("checked", true)
+                } else {
+                    relatedAllCheckbox.prop("checked", false)
+                }
+            })
 
-            //联系人备注输入框
-            let remark = $("#remark")
             //添加联系人备注点击按钮
             $("#addContactsRemarkBtn").click(() => {
                 let noteContent = remark.val()
@@ -80,7 +98,6 @@
                     }
                 })
             })
-
             //确定更新按钮单击事件
             $("#updateRemarkBtn").click(() => {
                 let id = $("#editId").val()
@@ -115,33 +132,13 @@
                     }
                 })
             })
+
             //确认关联市场活动
             let relatedActivity = $("#relatedActivity")
-
             //关联市场活动模态窗口
             let relatedActivityModal = $("#relatedActivityModal")
-
-            //关联市场活动数据
-            let relatedActivityTbody = $("#relatedActivityTbody")
-            //关联市场活动全选按钮
-            let relatedAllCheckbox = $("#relatedAllCheckbox")
-
-            //市场活动数据
+            //市场活动数据区
             let ActivityTbody = $("#ActivityTbody")
-
-            //关联市场活动全选按钮点击事件
-            relatedAllCheckbox.click(() => {
-                $("#relatedActivityTbody input[type='checkbox']").prop("checked", relatedAllCheckbox.prop("checked"))
-            })
-            //给其他复选框添加单击事件
-            relatedActivityTbody.on("click", "input[type='checkbox']", function () {
-                if ($("#relatedActivityTbody input[type='checkbox']").size() == $("#relatedActivityTbody input[type='checkbox']:checked").size()) {
-                    relatedAllCheckbox.prop("checked", true)
-                } else {
-                    relatedAllCheckbox.prop("checked", false)
-                }
-            })
-
             //查询市场活动输入框
             let relatedInputName = $("#relatedInputName")
 
@@ -171,6 +168,34 @@
                                     </tr>')
                             })
                             relatedActivityModal.modal("show")
+                        }
+                    }
+                })
+            })
+            //查询市场活动
+            relatedInputName.keyup(() => {
+                let name = relatedInputName.val()
+                $.ajax({
+                    url: "workbench/activity/findActivityForDetailSelectiveByNameAndContactsId",
+                    data: {
+                        name: name,
+                        contactsId: contactsId.val()
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            relatedActivityTbody.empty()
+                            $.each(data.data, function (index) {
+                                relatedActivityTbody.append(
+                                    '<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
+                                        <td><input type="checkbox" value="' + this.id + '"/></td>\
+                                        <td>' + this.name + '</td>\
+                                        <td>' + this.startDate + '</td>\
+                                        <td>' + this.endDate + '</td>\
+                                        <td>' + this.owner + '</td>\
+                                    </tr>')
+                            })
                         }
                     }
                 })
@@ -217,36 +242,6 @@
                     }
                 })
             })
-
-
-            //查询市场活动
-            relatedInputName.keyup(() => {
-                let name = relatedInputName.val()
-                $.ajax({
-                    url: "workbench/activity/findActivityForDetailSelectiveByNameAndContactsId",
-                    data: {
-                        name: name,
-                        contactsId: contactsId.val()
-                    },
-                    type: "post",
-                    datatype: "json",
-                    success(data) {
-                        if (data.code == "1") {
-                            relatedActivityTbody.empty()
-                            $.each(data.data, function (index) {
-                                relatedActivityTbody.append(
-                                    '<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
-                                        <td><input type="checkbox" value="' + this.id + '"/></td>\
-                                        <td>' + this.name + '</td>\
-                                        <td>' + this.startDate + '</td>\
-                                        <td>' + this.endDate + '</td>\
-                                        <td>' + this.owner + '</td>\
-                                    </tr>')
-                            })
-                        }
-                    }
-                })
-            })
         });
 
         //修改线索备注函数
@@ -272,6 +267,23 @@
         function removeContactsRemark(id) {
             $.ajax({
                 url: "workbench/contacts/removeContactsRemark",
+                data: {
+                    id: id
+                },
+                type: "post",
+                datatype: "json",
+                success(data) {
+                    if (data.code == "1") {
+                        $("#" + id + "").remove()
+                    }
+                }
+            })
+        }
+
+        //解除关联
+        function disconnectRelated(id) {
+            $.ajax({
+                url: "workbench/contacts/removeByPrimaryKey",
                 data: {
                     id: id
                 },
@@ -626,7 +638,6 @@
     <div class="page-header">
         <h4>备注</h4>
     </div>
-
     <c:forEach items="${contactsRemarkList}" var="contactsRemark">
         <div id="${contactsRemark.id}" class="remarkDiv" style="height: 60px;">
             <img title="${contactsRemark.createBy}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">
@@ -658,7 +669,6 @@
         </form>
     </div>
 </div>
-
 <!-- 交易 -->
 <div>
     <div style="position: relative; top: 20px; left: 40px;">
@@ -699,7 +709,6 @@
         </div>
     </div>
 </div>
-
 <!-- 市场活动 -->
 <div>
     <div style="position: relative; top: 60px; left: 40px;">

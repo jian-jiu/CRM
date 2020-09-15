@@ -32,9 +32,9 @@ public class ContactsActivityRelationController {
      * @param id id
      * @return 结果集
      */
-/*    @RequestMapping("removeByPrimaryKey")
+    @RequestMapping("removeByPrimaryKey")
     public Object removeByPrimaryKey(String id) {
-        int i = clueActivityRelationService.removeByPrimaryKey(id);
+        int i = contactsActivityRelationService.removeByPrimaryKey(id);
         ReturnObject returnObject = new ReturnObject();
         if (i > 0) {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
@@ -43,7 +43,7 @@ public class ContactsActivityRelationController {
             returnObject.setMessage("删除失败");
         }
         return returnObject;
-    }*/
+    }
 
     /**
      * 选择性根据name添加线索市场关系数据

@@ -16,6 +16,9 @@ public interface ContactsRemarkMapper {
      */
     int deleteByPrimaryKey(String id);
 
+    int deleteByContactsId(String[] ids);
+
+
     /**
      * 添加
      *
@@ -31,6 +34,7 @@ public interface ContactsRemarkMapper {
      * @return 添加条数
      */
     int insertSelective(ContactsRemark record);
+
 
     /**
      * 按主键查询

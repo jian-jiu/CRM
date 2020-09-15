@@ -6,6 +6,8 @@ import com.simple.crm.commons.utils.otherutil.DateUtils;
 import com.simple.crm.commons.utils.otherutil.UUIDUtils;
 import com.simple.crm.settings.domain.User;
 import com.simple.crm.workbench.domain.customer.Customer;
+import com.simple.crm.workbench.domain.customer.CustomerRemark;
+import com.simple.crm.workbench.service.customer.CustomerRemarkService;
 import com.simple.crm.workbench.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,7 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final CustomerRemarkService customerRemarkService;
 
     private final HttpSession session;
 
@@ -46,8 +49,10 @@ public class CustomerController {
     @RequestMapping("findCustomerForDetailById")
     public ModelAndView findCustomerForDetailById(String id, ModelAndView modelAndView) {
         Customer customer = customerService.findCustomerForDetailById(id);
+        List<CustomerRemark> customerRemarkList = customerRemarkService.findAllCustomerRemarkForDetailByCustomerId(id);
 
         modelAndView.addObject("customer",customer);
+        modelAndView.addObject("customerRemarkList",customerRemarkList);
         modelAndView.setViewName("workbench/customer/detail");
         return modelAndView;
     }

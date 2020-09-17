@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.simple.crm.workbench.mapper.transaction.TransactionMapper">
     <resultMap id="BaseResultMap" type="com.simple.crm.workbench.domain.transaction.Transaction">
         <id column="id" property="id" jdbcType="CHAR"/>
@@ -24,16 +22,15 @@
         <result column="next_contact_time" property="nextContactTime" jdbcType="CHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, owner, money, name, expected_date, customer_id, stage, type, source, activity_id,
+        id, owner, money, name, expected_date, customer_id, stage, type, source, activity_id,
     contacts_id, create_by, create_time, edit_by, edit_time, description, contact_summary, 
     next_contact_time
-  </sql>
+    </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from tbl_tran
-        join
         where id = #{id,jdbcType=CHAR}
     </select>
 
@@ -93,9 +90,28 @@
         <include refid="selectDetailedSql"/>
         <include refid="selectDetailedByWhereSql"/>
     </select>
+    <select id="selectForDetailByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="selectReturnDetailedSql"/>
+        <include refid="selectDetailedSql"/>
+        where tt.id = #{id}
+    </select>
+    <select id="selectForDetailByCustomerId" resultMap="BaseResultMap">
+        select
+        <include refid="selectReturnDetailedSql"/>
+        <include refid="selectDetailedSql"/>
+        where tt.customer_id = #{customerId}
+    </select>
+    <select id="selectForDetailByContactsId" resultMap="BaseResultMap">
+        select
+        <include refid="selectReturnDetailedSql"/>
+        <include refid="selectDetailedSql"/>
+        where tt.contacts_id = #{contactsId}
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete from tbl_tran
+        delete
+        from tbl_tran
         where id = #{id,jdbcType=CHAR}
     </delete>
     <delete id="deleteByPrimaryKeys">
@@ -107,19 +123,19 @@
     </delete>
 
     <insert id="insert" parameterType="com.simple.crm.workbench.domain.transaction.Transaction">
-    insert into tbl_tran (id, owner, money, name, 
-      expected_date, customer_id, stage, 
-      type, source, activity_id, 
-      contacts_id, create_by, create_time, 
-      edit_by, edit_time, description, 
-      contact_summary, next_contact_time)
-    values (#{id,jdbcType=CHAR}, #{owner,jdbcType=CHAR}, #{money,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{expectedDate,jdbcType=CHAR}, #{customerId,jdbcType=CHAR}, #{stage,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, #{activityId,jdbcType=CHAR}, 
-      #{contactsId,jdbcType=CHAR}, #{createBy,jdbcType=CHAR}, #{createTime,jdbcType=CHAR}, 
-      #{editBy,jdbcType=CHAR}, #{editTime,jdbcType=CHAR}, #{description,jdbcType=VARCHAR}, 
-      #{contactSummary,jdbcType=VARCHAR}, #{nextContactTime,jdbcType=CHAR})
-  </insert>
+        insert into tbl_tran (id, owner, money, name,
+                              expected_date, customer_id, stage,
+                              type, source, activity_id,
+                              contacts_id, create_by, create_time,
+                              edit_by, edit_time, description,
+                              contact_summary, next_contact_time)
+        values (#{id,jdbcType=CHAR}, #{owner,jdbcType=CHAR}, #{money,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{expectedDate,jdbcType=CHAR}, #{customerId,jdbcType=CHAR}, #{stage,jdbcType=VARCHAR},
+                #{type,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, #{activityId,jdbcType=CHAR},
+                #{contactsId,jdbcType=CHAR}, #{createBy,jdbcType=CHAR}, #{createTime,jdbcType=CHAR},
+                #{editBy,jdbcType=CHAR}, #{editTime,jdbcType=CHAR}, #{description,jdbcType=VARCHAR},
+                #{contactSummary,jdbcType=VARCHAR}, #{nextContactTime,jdbcType=CHAR})
+    </insert>
     <insert id="insertSelective" parameterType="com.simple.crm.workbench.domain.transaction.Transaction">
         insert into tbl_tran
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -294,25 +310,25 @@
         where id = #{id,jdbcType=CHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.simple.crm.workbench.domain.transaction.Transaction">
-    update tbl_tran
-    set owner = #{owner,jdbcType=CHAR},
-      money = #{money,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      expected_date = #{expectedDate,jdbcType=CHAR},
-      customer_id = #{customerId,jdbcType=CHAR},
-      stage = #{stage,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR},
-      source = #{source,jdbcType=VARCHAR},
-      activity_id = #{activityId,jdbcType=CHAR},
-      contacts_id = #{contactsId,jdbcType=CHAR},
-      create_by = #{createBy,jdbcType=CHAR},
-      create_time = #{createTime,jdbcType=CHAR},
-      edit_by = #{editBy,jdbcType=CHAR},
-      edit_time = #{editTime,jdbcType=CHAR},
-      description = #{description,jdbcType=VARCHAR},
-      contact_summary = #{contactSummary,jdbcType=VARCHAR},
-      next_contact_time = #{nextContactTime,jdbcType=CHAR}
-    where id = #{id,jdbcType=CHAR}
-  </update>
+        update tbl_tran
+        set owner             = #{owner,jdbcType=CHAR},
+            money             = #{money,jdbcType=VARCHAR},
+            name              = #{name,jdbcType=VARCHAR},
+            expected_date     = #{expectedDate,jdbcType=CHAR},
+            customer_id       = #{customerId,jdbcType=CHAR},
+            stage             = #{stage,jdbcType=VARCHAR},
+            type              = #{type,jdbcType=VARCHAR},
+            source            = #{source,jdbcType=VARCHAR},
+            activity_id       = #{activityId,jdbcType=CHAR},
+            contacts_id       = #{contactsId,jdbcType=CHAR},
+            create_by         = #{createBy,jdbcType=CHAR},
+            create_time       = #{createTime,jdbcType=CHAR},
+            edit_by           = #{editBy,jdbcType=CHAR},
+            edit_time         = #{editTime,jdbcType=CHAR},
+            description       = #{description,jdbcType=VARCHAR},
+            contact_summary   = #{contactSummary,jdbcType=VARCHAR},
+            next_contact_time = #{nextContactTime,jdbcType=CHAR}
+        where id = #{id,jdbcType=CHAR}
+    </update>
 
 </mapper>

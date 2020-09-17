@@ -90,6 +90,24 @@
         <include refid="selectDetailedSql"/>
         <include refid="selectDetailedByWhereSql"/>
     </select>
+    <select id="selectForDetailByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="selectReturnDetailedSql"/>
+        <include refid="selectDetailedSql"/>
+        where tt.id = #{id}
+    </select>
+    <select id="selectForDetailByCustomerId" resultMap="BaseResultMap">
+        select
+        <include refid="selectReturnDetailedSql"/>
+        <include refid="selectDetailedSql"/>
+        where tt.customer_id = #{customerId}
+    </select>
+    <select id="selectForDetailByContactsId" resultMap="BaseResultMap">
+        select
+        <include refid="selectReturnDetailedSql"/>
+        <include refid="selectDetailedSql"/>
+        where tt.contacts_id = #{contactsId}
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete

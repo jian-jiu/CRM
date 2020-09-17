@@ -11,7 +11,25 @@ import java.util.Map;
  */
 public interface TransactionService {
 
+    Transaction findForDetailByPrimaryKey(String id);
+
     List<Transaction> findPagingForDetail(Map<String, Object> map);
+
+    /**
+     * 根据客户id查询交易
+     *
+     * @param customerId 客户id
+     * @return 和客户有关的交易
+     */
+    List<Transaction> findForDetailByCustomerId(String customerId);
+
+    /**
+     * 根据联系人id查询交易
+     *
+     * @param contactsId 联系人id
+     * @return 和联系人有关的
+     */
+    List<Transaction> findForDetailByContactsId(String contactsId);
 
     long findCount(Map<String,Object> map);
 

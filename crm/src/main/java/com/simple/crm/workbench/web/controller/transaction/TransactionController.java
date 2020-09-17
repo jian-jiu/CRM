@@ -8,8 +8,10 @@ import com.simple.crm.settings.domain.User;
 import com.simple.crm.workbench.domain.contacts.Contacts;
 import com.simple.crm.workbench.domain.customer.Customer;
 import com.simple.crm.workbench.domain.transaction.Transaction;
+import com.simple.crm.workbench.domain.transaction.TransactionRemark;
 import com.simple.crm.workbench.service.contacts.ContactsService;
 import com.simple.crm.workbench.service.customer.CustomerService;
+import com.simple.crm.workbench.service.transaction.TransactionRemarkService;
 import com.simple.crm.workbench.service.transaction.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,7 @@ import java.util.*;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final TransactionRemarkService transactionRemarkService;
 
     private final CustomerService customerService;
     private final ContactsService contactsService;
@@ -55,7 +58,38 @@ public class TransactionController {
         return modelAndView;
     }
 
+    /**
+     * 根据id查询详细的交易详细
+     *
+     * @param id id
+     * @return 结果集
+     */
+    @RequestMapping("findTransactionForDetailByPrimaryKeyToDetail")
+    public ModelAndView findTransactionForDetailByPrimaryKeyToDetail(String id, ModelAndView modelAndView) {
+        Transaction transaction = transactionService.findForDetailByPrimaryKey(id);
+        List<TransactionRemark> transactionRemarkList = transactionRemarkService.findForDetailByTranId(id);
 
+
+        modelAndView.addObject("transaction", transaction);
+        modelAndView.addObject("transactionRemarkList", transactionRemarkList);
+        modelAndView.setViewName("workbench/transaction/detail");
+        return modelAndView;
+    }
+
+    /**
+     * 分页查询交易信息
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param owner
+     * @param name
+     * @param customerId
+     * @param stage
+     * @param type
+     * @param source
+     * @param contactsId
+     * @return
+     */
     @RequestMapping("findPagingForDetail")
     public Object findPagingForDetail(@RequestParam(defaultValue = "1") Integer pageNo,
                                       @RequestParam(defaultValue = "10") Integer pageSize,
@@ -110,8 +144,8 @@ public class TransactionController {
     /**
      * 添加一条交易记录
      *
-     * @param transaction
-     * @return
+     * @param transaction 交易对象
+     * @return 结果集
      */
     @RequestMapping("insertTransaction")
     public Object insertTransaction(Transaction transaction) {

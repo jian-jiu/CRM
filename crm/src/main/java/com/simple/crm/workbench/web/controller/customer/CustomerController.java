@@ -11,6 +11,7 @@ import com.simple.crm.workbench.domain.customer.CustomerRemark;
 import com.simple.crm.workbench.service.contacts.ContactsService;
 import com.simple.crm.workbench.service.customer.CustomerRemarkService;
 import com.simple.crm.workbench.service.customer.CustomerService;
+import com.simple.crm.workbench.service.transaction.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,8 @@ public class CustomerController {
     private final CustomerRemarkService customerRemarkService;
 
     private final ContactsService contactsService;
+
+    private final TransactionService transactionService;
 
     private final HttpSession session;
 
@@ -136,6 +139,17 @@ public class CustomerController {
     @RequestMapping("findCustomerAllName")
     public Object findCustomerAllName() {
         return customerService.findAllName();
+    }
+
+    /**
+     * 根据id查询交易信息
+     *
+     * @param id id
+     * @return 和客户有关的交易信息
+     */
+    @RequestMapping("findTransactionForDetailById")
+    public Object findTransactionForDetailById(String id) {
+        return transactionService.findForDetailByCustomerId(id);
     }
 
 

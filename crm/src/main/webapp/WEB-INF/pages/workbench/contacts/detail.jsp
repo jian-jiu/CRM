@@ -8,6 +8,7 @@
         let cancelAndSaveBtnDefault = true;
 
         $(() => {
+            findTransaction()
             //联系人id
             let contactsId = $("#contactsId")
             //联系人备注输入框
@@ -242,6 +243,48 @@
                     }
                 })
             })
+
+            //删除联系人单击事件
+            $("#removeCustomerBtn").click(() => {
+                let ids = $("#removeCustomerId").val()
+                $.ajax({
+                    url: "workbench/contacts/removeByMultiplePrimaryKey",
+                    data: {
+                        ids: ids
+                    },
+                    type: 'post',
+                    datatype: 'json',
+                    success(data) {
+                        if (data.code == "1") {
+                            $("#tr_" + ids + "").remove()
+                            $("#removeContactsModal").modal("hide")
+                        }
+                    }
+                })
+            })
+
+            //创建交易按钮单击事件
+            $("#addTransactionBtn").click(() => {
+                location.href = "workbench/transaction/saveIndex"
+            })
+
+            //确定删除交易单击事件
+            $("#deleteTransactionBtn").click(() => {
+                $.ajax({
+                    url: 'workbench/transaction/removeTransactionByPrimaryKeys',
+                    data: {
+                        ids: $("#transactionId").val()
+                    },
+                    type: 'post',
+                    datatype: 'json',
+                    success(data) {
+                        if (data.code == "1") {
+                            findTransaction()
+                            $("#removeTransactionModal").modal("hide")
+                        }
+                    }
+                })
+            })
         });
 
         //修改线索备注函数
@@ -295,6 +338,64 @@
                     }
                 }
             })
+        }
+
+        //查询交易信息
+        function findTransaction() {
+            $.ajax({
+                url: 'workbench/contacts/findTransactionForDetailById',
+                data: {
+                    id: $("#contactsId").val()
+                },
+                type: 'post',
+                datatype: 'json',
+                complete: false,
+                success(data) {
+                    // console.log(data)
+                    let html = []
+                    $(data).each(function () {
+                        html.push('<tr>\
+                                        <td><a href="workbench/transaction/findTransactionForDetailByPrimaryKeyToDetail?id=' + this.id + '" style="text-decoration: none;">' + this.name + '</a></td>\
+                                        <td>' + this.money + '</td>\
+                                        <td>' + this.stage + '</td>\
+                                        <td>' + getPossibilityByStageValue(this.stage) + '</td>\
+                                        <td>' + this.expectedDate + '</td>\
+                                        <td>' + (this.type || "") + '</td>\
+                                        <td><a onclick="deleteTransaction(\'' + this.id + '\')" style="text-decoration: none;">\
+                                                <span class="glyphicon glyphicon-remove"></span>删除\
+                                            </a>\
+                                        </td>\
+                                    </tr>')
+                    })
+                    $("#transactionTbody").html(html)
+                }
+            })
+        }
+
+        //删除交易弹出窗口
+        function deleteTransaction(id) {
+            $("#transactionId").val(id)
+            $("#removeTransactionModal").modal("show")
+        }
+
+        //查询交易阶段可能性
+        function getPossibilityByStageValue(stageValue) {
+            let value = 0
+            $.ajax({
+                url: 'workbench/transaction/getPossibilityByStageValue',
+                data: {
+                    stageValue: stageValue
+                },
+                type: 'post',
+                datatype: 'json',
+                complete: false,
+                async: false,
+                success(data) {
+                    // console.log(data)
+                    value = data;
+                }
+            })
+            return value
         }
     </script>
 </head>
@@ -387,6 +488,27 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button id="relatedActivity" type="button" class="btn btn-primary">关联</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 删除交易的模态窗口 -->
+<div class="modal fade" id="removeTransactionModal" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 30%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">删除交易</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确定要删除该交易吗？</p>
+                <input type="hidden" id="transactionId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="deleteTransactionBtn" type="button" class="btn btn-danger">删除</button>
             </div>
         </div>
     </div>
@@ -676,7 +798,7 @@
             <h4>交易</h4>
         </div>
         <div style="position: relative;top: 0px;">
-            <table id="activityTable3" class="table table-hover" style="width: 900px;">
+            <table id="activityTable2" class="table table-hover" style="width: 900px;">
                 <thead>
                 <tr style="color: #B3B3B3;">
                     <td>名称</td>
@@ -688,24 +810,15 @@
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td><a href="../transaction/detail.html" style="text-decoration: none;">动力节点-交易01</a></td>
-                    <td>5,000</td>
-                    <td>谈判/复审</td>
-                    <td>90</td>
-                    <td>2017-02-07</td>
-                    <td>新业务</td>
-                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#unbundModal"
-                           style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
-                </tr>
+                <tbody id="transactionTbody">
                 </tbody>
             </table>
         </div>
 
         <div>
-            <a href="../transaction/save.html" style="text-decoration: none;"><span
-                    class="glyphicon glyphicon-plus"></span>新建交易</a>
+            <a id="addTransactionBtn" style="text-decoration: none;">
+                <span class="glyphicon glyphicon-plus"></span>新建交易
+            </a>
         </div>
     </div>
 </div>

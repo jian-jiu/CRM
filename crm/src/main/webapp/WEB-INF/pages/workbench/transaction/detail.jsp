@@ -1,6 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <%@include file="../../../community/HeadPart.jsp" %>
     <style type="text/css">
         .mystage {
             font-size: 20px;
@@ -15,12 +17,14 @@
         }
     </style>
     <script type="text/javascript">
-
         //默认情况下取消和保存按钮是隐藏的
-        var cancelAndSaveBtnDefault = true;
-
-        $(function () {
-            $("#remark").focus(function () {
+        let cancelAndSaveBtnDefault = true;
+        $(() => {
+            findTransactionHistory()
+            let transactionId = $("#transactionId")
+            //线索备注输入框
+            let remark = $("#remark")
+            remark.focus(() => {
                 if (cancelAndSaveBtnDefault) {
                     //设置remarkDiv的高度为130px
                     $("#remarkDiv").css("height", "130px");
@@ -29,31 +33,23 @@
                     cancelAndSaveBtnDefault = false;
                 }
             });
-
-            $("#cancelBtn").click(function () {
+            $("#cancelBtn").click(() => {
                 //显示
                 $("#cancelAndSaveBtn").hide();
                 //设置remarkDiv的高度为130px
                 $("#remarkDiv").css("height", "90px");
                 cancelAndSaveBtnDefault = true;
             });
-
-            $(".remarkDiv").mouseover(function () {
+            //线索备注Div
+            $("#transactionRemarkDiv").on("mouseover", ".remarkDiv", function () {
                 $(this).children("div").children("div").show();
-            });
-
-            $(".remarkDiv").mouseout(function () {
+            }).on("mouseout", ".remarkDiv", function () {
                 $(this).children("div").children("div").hide();
-            });
-
-            $(".myHref").mouseover(function () {
+            }).on("mouseover", ".myHref", function () {
                 $(this).children("span").css("color", "red");
-            });
-
-            $(".myHref").mouseout(function () {
+            }).on("mouseout", ".myHref", function () {
                 $(this).children("span").css("color", "#E6E6E6");
-            });
-
+            })
 
             //阶段提示框
             $(".mystage").popover({
@@ -62,50 +58,236 @@
                 html: 'true',
                 animation: false
             }).on("mouseenter", function () {
-                var _this = this;
+                let _this = this;
                 $(this).popover("show");
                 $(this).siblings(".popover").on("mouseleave", function () {
                     $(_this).popover('hide');
                 });
             }).on("mouseleave", function () {
-                var _this = this;
+                let _this = this;
                 setTimeout(function () {
                     if (!$(".popover:hover").length) {
                         $(_this).popover("hide")
                     }
                 }, 100);
             });
+
+            //添加线索备注按钮
+            let addTransactionRemarkBtn = $("#addTransactionRemarkBtn")
+            //确认修改按钮点击事件
+            let updateRemarkBtn = $("#updateRemarkBtn")
+            //修改线索备注模态窗口
+            let editRemarkModal = $("#editRemarkModal")
+            //添加线索备注点击按钮
+            addTransactionRemarkBtn.click(() => {
+                let noteContent = remark.val()
+                let id = transactionId.val()
+                if (!noteContent) {
+                    alert("备注信息不能为空")
+                    return
+                }
+                $.ajax({
+                    url: "workbench/transaction/addTransactionRemark",
+                    data: {
+                        tranId: id,
+                        noteContent: noteContent,
+                        createBy: '${sessionScope.sessionUser.id}'
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            $("#remarkDiv").before(
+                                '<div id="' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
+                                <img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+                                    <div style="position: relative; top: -40px; left: 40px;">\
+                                    <h5>' + noteContent + '</h5>\
+                                    <font color="gray">交易</font> <font color="gray">-</font> <b>' + data.data.createBy + '</b>\
+                                    <small style="color: gray;">' + data.data.createTime + ' 由 ${sessionScope.sessionUser.name} 创建</small>\
+                                        <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                            <a class="myHref" onclick="modifyTransactionRemark(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                            &nbsp;&nbsp;&nbsp;&nbsp;\
+                                            <a class="myHref" onclick="removeTransactionRemark(\'' + data.data.id + '\')">\
+                                            <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                        </div>\
+                                    </div>\
+                                </div>')
+                            remark.val("")
+                        }
+                    }
+                })
+            })
+            //修改按钮点击事件
+            updateRemarkBtn.click(() => {
+                let id = $("#editId").val()
+                let noteContent = $("#noteContent").val()
+                $.ajax({
+                    url: "workbench/transaction/modifyTransactionRemark",
+                    data: {
+                        id: id,
+                        noteContent: noteContent
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            $("#" + id + "").empty()
+                            $("#" + id + "").append(
+                                '<img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+                                <div style="position: relative; top: -40px; left: 40px;">\
+                                <h5>' + noteContent + '</h5>\
+                                <font color="gray">交易</font> <font color="gray">-</font> <b>' + data.data.editBy + '</b>\
+                                <small style="color: gray;">' + data.data.editTime + ' 由 ${sessionScope.sessionUser.name} 修改</small>\
+                                    <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                    <a class="myHref" onclick="modifyTransactionRemark(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    &nbsp;&nbsp;&nbsp;&nbsp;\
+                                    <a class="myHref" onclick="removeTransactionRemark(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    </div>\
+                                </div>')
+                            editRemarkModal.modal("hide")
+                        }
+                    }
+                })
+            })
+
+
         });
 
+        //查询交易历史记录
+        function findTransactionHistory() {
+            $.ajax({
+                url: 'workbench/transaction/findTransactionHistoryForDetailByTranId',
+                data: {
+                    tranId: $("#transactionId").val()
+                },
+                type: 'post',
+                datatype: 'json',
+                success(data) {
+                    console.log(data)
+                    let html = []
+                    $(data).each(function () {
+                        html.push('<tr>\
+                                    <td>' + this.stage + '</td>\
+                                    <td>' + this.money + '</td>\
+                                    <td>' + getPossibilityByStageValue(this.stage) + '</td>\
+                                    <td>' + this.expectedDate + '</td>\
+                                    <td>' + this.createTime + '</td>\
+                                    <td>' + this.createBy + '</td>\
+                                </tr>')
+                    })
+                    $("#transactionHistoryTbody").html(html)
+                }
+            })
+        }
 
-    </script>
-    <%@include file="../../../community/HeadPart.jsp" %>
-    <script type="text/javascript">
-        $(() => {
+        //修改线索备注函数
+        function modifyTransactionRemark(id) {
+            $.ajax({
+                url: "workbench/transaction/findTransactionRemarkById",
+                data: {
+                    id: id
+                },
+                type: "post",
+                datatype: "json",
+                success(data) {
+                    if (data.code == "1") {
+                        $("#editId").val(data.data.id)
+                        $("#noteContent").val(data.data.noteContent)
+                        $("#editRemarkModal").modal("show")
+                    }
+                }
+            })
+        }
 
-        })
+        //删除线索备注函数
+        function removeTransactionRemark(id) {
+            $.ajax({
+                url: "workbench/transaction/removeTransactionRemarkById",
+                data: {
+                    id: id
+                },
+                type: "post",
+                datatype: "json",
+                success(data) {
+                    if (data.code == "1") {
+                        $("#" + id + "").remove()
+                    }
+                }
+            })
+        }
+
+
+        //查询交易阶段可能性
+        function getPossibilityByStageValue(stageValue) {
+            let value = 0
+            $.ajax({
+                url: 'workbench/transaction/getPossibilityByStageValue',
+                data: {
+                    stageValue: stageValue
+                },
+                type: 'post',
+                datatype: 'json',
+                complete: false,
+                async: false,
+                success(data) {
+                    // console.log(data)
+                    value = data;
+                }
+            })
+            return value
+        }
+
     </script>
 </head>
 <body>
-
+<!-- 修改市场活动备注的模态窗口 -->
+<div class="modal fade" id="editRemarkModal" role="dialog">
+    <%-- 备注的id --%>
+    <input type="hidden" id="editId">
+    <div class="modal-dialog" role="document" style="width: 40%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改备注</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">内容</label>
+                        <div class="col-sm-10" style="width: 81%;">
+                            <textarea class="form-control" rows="3" id="noteContent"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 返回按钮 -->
 <div style="position: relative; top: 35px; left: 10px;">
-    <a href="javascript:void(0);" onclick="window.history.back();"><span class="glyphicon glyphicon-arrow-left"
-                                                                         style="font-size: 20px; color: #DDDDDD"></span></a>
+    <a href="javascript:void(0);" onclick="window.history.back();">
+        <span class="glyphicon glyphicon-arrow-left" style="font-size: 20px; color: #DDDDDD"></span>
+    </a>
 </div>
-
 <!-- 大标题 -->
 <div style="position: relative; left: 40px; top: -30px;">
     <div class="page-header">
-        <h3>动力节点-交易01 <small>￥5,000</small></h3>
+        <h3>${transaction.name} <small>￥${transaction.money}</small></h3>
+        <input type="hidden" id="transactionId" value="${transaction.id}">
     </div>
-
 </div>
-
 <br/>
 <br/>
 <br/>
-
 <!-- 阶段状态 -->
 <div style="position: relative; left: 40px; top: -50px;">
     阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -136,38 +318,37 @@
     <span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom"
           data-content="因竞争丢失关闭"></span>
     -----------
-    <span class="closingDate">2010-10-10</span>
+    <span class="closingDate">${transaction.expectedDate}</span>
 </div>
-
 <!-- 详细信息 -->
 <div style="position: relative; top: 0px;">
     <div style="position: relative; left: 40px; height: 30px;">
         <div style="width: 300px; color: gray;">所有者</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>zhangsan</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${transaction.owner}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">金额</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>5,000</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${transaction.money}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 10px;">
         <div style="width: 300px; color: gray;">名称</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>动力节点-交易01</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${transaction.name}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">预计成交日期</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>2017-02-07</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${transaction.expectedDate}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 20px;">
         <div style="width: 300px; color: gray;">客户名称</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>动力节点</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${transaction.customerId}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">阶段</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>谈判/复审</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${transaction.stage}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
         <div style="width: 300px; color: gray;">类型</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>新业务</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${transaction.type}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">可能性</div>
         <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>90</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
@@ -175,34 +356,36 @@
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 40px;">
         <div style="width: 300px; color: gray;">来源</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>广告</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${transaction.source}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">市场活动源</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>发传单</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${transaction.activityId}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 50px;">
         <div style="width: 300px; color: gray;">联系人名称</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>李四</b></div>
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${transaction.contactsId}</b></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 60px;">
         <div style="width: 300px; color: gray;">创建者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small
-                style="font-size: 10px; color: gray;">2017-01-18 10:10:10</small></div>
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;">
+            <b>${transaction.createBy}&nbsp;&nbsp;</b><small
+                style="font-size: 10px; color: gray;">${transaction.createTime}</small></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 70px;">
         <div style="width: 300px; color: gray;">修改者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small
-                style="font-size: 10px; color: gray;">2017-01-19 10:10:10</small></div>
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;">
+            <b>${transaction.editBy}&nbsp;&nbsp;</b><small
+                style="font-size: 10px; color: gray;">${transaction.editTime}</small></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 80px;">
         <div style="width: 300px; color: gray;">描述</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                这是一条线索的描述信息 （线索转换之后会将线索的描述转换到交易的描述中）
+                ${transaction.description}
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -211,70 +394,55 @@
         <div style="width: 300px; color: gray;">联系纪要</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                &nbsp;
+                ${transaction.contactSummary}&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 100px;">
         <div style="width: 300px; color: gray;">下次联系时间</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>&nbsp;</b></div>
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;">
+            <b>${transaction.nextContactTime}&nbsp;</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
 </div>
-
 <!-- 备注 -->
-<div style="position: relative; top: 100px; left: 40px;">
+<div id="transactionRemarkDiv" style="position: relative; top: 100px; left: 40px;">
     <div class="page-header">
         <h4>备注</h4>
     </div>
-
-    <!-- 备注1 -->
-    <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
-        <div style="position: relative; top: -40px; left: 40px;">
-            <h5>哎呦！</h5>
-            <font color="gray">交易</font> <font color="gray">-</font> <b>动力节点-交易01</b> <small style="color: gray;">
-            2017-01-22 10:10:10 由zhangsan</small>
-            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
+    <c:forEach items="${transactionRemarkList}" var="transactionRemark">
+        <div id="${transactionRemark.id}" class="remarkDiv" style="height: 60px;">
+            <img title="${transactionRemark.createBy}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">
+            <div style="position: relative; top: -40px; left: 40px;">
+                <h5>${transactionRemark.noteContent}</h5>
+                <font color="gray">交易</font> <font color="gray">-</font> <b>${transaction.name}</b>
+                <small style="color: gray;">${transactionRemark.editFlag=="1"?transactionRemark.editTime:transactionRemark.createTime}
+                    由 ${transactionRemark.editFlag=="1"?transactionRemark.editBy:transactionRemark.createBy}
+                        ${transactionRemark.editFlag=="1"?"修改":"创建"}</small>
+                <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+                    <a class="myHref" onclick="modifyTransactionRemark('${transactionRemark.id}')">
+                        <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span>
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="myHref" onclick="removeTransactionRemark('${transactionRemark.id}')">
+                        <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- 备注2 -->
-    <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
-        <div style="position: relative; top: -40px; left: 40px;">
-            <h5>呵呵！</h5>
-            <font color="gray">交易</font> <font color="gray">-</font> <b>动力节点-交易01</b> <small style="color: gray;">
-            2017-01-22 10:20:10 由zhangsan</small>
-            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-            </div>
-        </div>
-    </div>
-
+    </c:forEach>
     <div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
         <form role="form" style="position: relative;top: 10px; left: 10px;">
             <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"
                       placeholder="添加备注..."></textarea>
             <p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
                 <button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-                <button type="button" class="btn btn-primary">保存</button>
+                <button id="addTransactionRemarkBtn" type="button" class="btn btn-primary">保存</button>
             </p>
         </form>
     </div>
 </div>
-
 <!-- 阶段历史 -->
 <div>
     <div style="position: relative; top: 100px; left: 40px;">
@@ -293,7 +461,7 @@
                     <td>创建人</td>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="transactionHistoryTbody">
                 <tr>
                     <td>资质审查</td>
                     <td>5,000</td>
@@ -324,8 +492,6 @@
 
     </div>
 </div>
-
 <div style="height: 200px;"></div>
-
 </body>
 </html>

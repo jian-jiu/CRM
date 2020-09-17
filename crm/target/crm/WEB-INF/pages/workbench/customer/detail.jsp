@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -8,6 +7,7 @@
         //默认情况下取消和保存按钮是隐藏的
         let cancelAndSaveBtnDefault = true;
         $(() => {
+            findTransaction()
 
             //联系人id
             let customerId = $("#customerId")
@@ -54,10 +54,6 @@
                 container: '#createContactsModal'
             })
 
-            //删除联系人的模态窗口
-            let removeContactsModal = $("#removeContactsModal")
-            //删除交易的模态窗口
-            let removeTransactionModal = $("#removeTransactionModal")
             //创建联系人的模态窗口
             let createContactsModal = $("#createContactsModal")
 
@@ -223,6 +219,7 @@
                 })
             })
 
+            //删除联系人单击事件
             $("#removeCustomerBtn").click(() => {
                 let ids = $("#removeCustomerId").val()
                 $.ajax({
@@ -236,6 +233,29 @@
                         if (data.code == "1") {
                             $("#tr_" + ids + "").remove()
                             $("#removeContactsModal").modal("hide")
+                        }
+                    }
+                })
+            })
+
+            //创建交易按钮单击事件
+            $("#addTransactionBtn").click(() => {
+                location.href = "workbench/transaction/saveIndex"
+            })
+
+            //确定删除交易单击事件
+            $("#deleteTransactionBtn").click(() => {
+                $.ajax({
+                    url: 'workbench/transaction/removeTransactionByPrimaryKeys',
+                    data: {
+                        ids: $("#transactionId").val()
+                    },
+                    type: 'post',
+                    datatype: 'json',
+                    success(data) {
+                        if (data.code == "1") {
+                            findTransaction()
+                            $("#removeTransactionModal").modal("hide")
                         }
                     }
                 })
@@ -278,9 +298,68 @@
             })
         }
 
+        //删除联系人函数
         function deleteCustomer(id) {
             $("#removeCustomerId").val(id)
             $("#removeContactsModal").modal("show")
+        }
+
+        //查询交易信息
+        function findTransaction() {
+            $.ajax({
+                url: 'workbench/customer/findTransactionForDetailById',
+                data: {
+                    id: $("#customerId").val()
+                },
+                type: 'post',
+                datatype: 'json',
+                complete: false,
+                success(data) {
+                    // console.log(data)
+                    let html = []
+                    $(data).each(function () {
+                        html.push('<tr>\
+                                        <td><a href="workbench/transaction/findTransactionForDetailByPrimaryKeyToDetail?id=' + this.id + '" style="text-decoration: none;">' + this.name + '</a></td>\
+                                        <td>' + this.money + '</td>\
+                                        <td>' + this.stage + '</td>\
+                                        <td>' + getPossibilityByStageValue(this.stage) + '</td>\
+                                        <td>' + this.expectedDate + '</td>\
+                                        <td>' + (this.type || "") + '</td>\
+                                        <td><a onclick="deleteTransaction(\'' + this.id + '\')" style="text-decoration: none;">\
+                                                <span class="glyphicon glyphicon-remove"></span>删除\
+                                            </a>\
+                                        </td>\
+                                    </tr>')
+                    })
+                    $("#transactionTbody").html(html)
+                }
+            })
+        }
+
+        //删除交易弹出窗口
+        function deleteTransaction(id) {
+            $("#transactionId").val(id)
+            $("#removeTransactionModal").modal("show")
+        }
+
+        //查询交易阶段可能性
+        function getPossibilityByStageValue(stageValue) {
+            let value = 0
+            $.ajax({
+                url: 'workbench/transaction/getPossibilityByStageValue',
+                data: {
+                    stageValue: stageValue
+                },
+                type: 'post',
+                datatype: 'json',
+                complete: false,
+                async: false,
+                success(data) {
+                    // console.log(data)
+                    value = data;
+                }
+            })
+            return value
         }
     </script>
 </head>
@@ -347,10 +426,11 @@
             </div>
             <div class="modal-body">
                 <p>您确定要删除该交易吗？</p>
+                <input type="hidden" id="transactionId">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">删除</button>
+                <button id="deleteTransactionBtn" type="button" class="btn btn-danger">删除</button>
             </div>
         </div>
     </div>
@@ -625,24 +705,15 @@
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td><a href="../transaction/detail.html" style="text-decoration: none;">动力节点-交易01</a></td>
-                    <td>5,000</td>
-                    <td>谈判/复审</td>
-                    <td>90</td>
-                    <td>2017-02-07</td>
-                    <td>新业务</td>
-                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeTransactionModal"
-                           style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
-                </tr>
+                <tbody id="transactionTbody">
                 </tbody>
             </table>
         </div>
 
         <div>
-            <a href="../transaction/save.html" style="text-decoration: none;"><span
-                    class="glyphicon glyphicon-plus"></span>新建交易</a>
+            <a id="addTransactionBtn" style="text-decoration: none;">
+                <span class="glyphicon glyphicon-plus"></span>新建交易
+            </a>
         </div>
     </div>
 </div>

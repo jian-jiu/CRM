@@ -248,7 +248,7 @@
                     datatype: 'json',
                     success(data) {
                         if (data.code == "1") {
-                            alert(1111)
+                           location.href = "workbench/transaction/index"
                         }
                     }
                 })

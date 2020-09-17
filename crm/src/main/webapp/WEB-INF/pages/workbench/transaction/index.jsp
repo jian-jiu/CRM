@@ -34,7 +34,8 @@
                     $(data.data.transactionList).each(function () {
                         html.push('<tr>\
                                         <td><input value="' + this.id + '" type="checkbox"/></td>\
-                                            <td><a style="text-decoration: none; cursor: pointer;"onclick="">' + this.name + '</a></td>\
+                                            <td><a style="text-decoration: none; cursor: pointer;" \
+                                            href="workbench/transaction/findTransactionForDetailByPrimaryKeyToDetail?id=' + this.id + '">' + this.name + '</a></td>\
                                         <td>' + this.customerId + '</td>\
                                         <td>' + this.stage + '</td>\
                                         <td>' + (this.type || "") + '</td>\
@@ -102,8 +103,14 @@
                 }
             })
 
+            //页面查询按钮单击事件
             $("#findBtn").click(() => {
                 findTransaction(1, demo.bs_pagination('getOption', 'rowsPerPage'))
+            })
+
+            //页面修改按钮单击事件
+            $("#updateToViewBtn").click(() => {
+
             })
 
             //点击删除按钮
@@ -246,9 +253,9 @@
                 <button id="addTransactionBtn" type="button" class="btn btn-primary">
                     <span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
-                <button type="button" class="btn btn-default">
+                <%--<button id="updateToViewBtn" type="button" class="btn btn-default">
                     <span class="glyphicon glyphicon-pencil"></span> 修改
-                </button>
+                </button>--%>
                 <button id="removeBtn" type="button" class="btn btn-danger">
                     <span class="glyphicon glyphicon-minus"></span> 删除
                 </button>

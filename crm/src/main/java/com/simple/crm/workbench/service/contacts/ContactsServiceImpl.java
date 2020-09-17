@@ -32,6 +32,7 @@ public class ContactsServiceImpl implements ContactsService {
     private final ContactsMapper contactsMapper;
     private final ContactsRemarkMapper contactsRemarkMapper;
     private final ContactsActivityRelationMapper contactsActivityRelationMapper;
+
     private final CustomerMapper customerMapper;
 
     private final HttpSession session;
@@ -49,6 +50,11 @@ public class ContactsServiceImpl implements ContactsService {
     @Override
     public Contacts findContactsForDetailById(String id) {
         return contactsMapper.selectContactsForDetailById(id);
+    }
+
+    @Override
+    public List<Contacts> findContactsForDetail() {
+        return contactsMapper.selectContactsForDetail();
     }
 
     /**
@@ -78,20 +84,17 @@ public class ContactsServiceImpl implements ContactsService {
 
     @Override
     public List<Contacts> findPagingContactsForDetail(Map<String, Object> map) {
-        Contacts contacts = (Contacts) map.get("contacts");
-        if (!("".equals(contacts.getCustomerId()))) {
-            List<Customer> customerList = customerMapper.selectCustomerLikeName(contacts.getCustomerId());
-            if (customerList != null) {
-                map.put("customerList", customerList);
-            }
-            contacts.setCustomerId("111");
-        }
         return contactsMapper.selectPagingContactsForDetail(map);
     }
 
     @Override
     public List<Contacts> findContactsForDetailByName(String name) {
         return contactsMapper.selectContactsForDetailByName(name);
+    }
+
+    @Override
+    public List<Contacts> findContactsForDetailByCustomerId(String customerId) {
+        return contactsMapper.selectContactsForDetailByCustomerId(customerId);
     }
 
     @Override

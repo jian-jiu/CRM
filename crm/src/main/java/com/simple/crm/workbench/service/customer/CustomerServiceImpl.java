@@ -40,8 +40,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<Customer> findCustomerForDetail() {
+        return customerMapper.selectCustomerForDetail();
+    }
+
+    @Override
     public List<Customer> findPagingCustomerForDetail(Map<String, Object> map) {
         return customerMapper.selectPagingCustomerForDetail(map);
+    }
+
+    @Override
+    public List<String> findAllName() {
+        return customerMapper.selectAllName();
     }
 
     @Override

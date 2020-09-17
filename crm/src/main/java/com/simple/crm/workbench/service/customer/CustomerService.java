@@ -19,7 +19,11 @@ public interface CustomerService {
 
     Customer findCustomerByName(String name);
 
+    List<Customer> findCustomerForDetail();
+
     List<Customer> findPagingCustomerForDetail(Map<String, Object> map);
+
+    List<String> findAllName();
 
     long findCountCustomer(Map<String, Object> map);
 

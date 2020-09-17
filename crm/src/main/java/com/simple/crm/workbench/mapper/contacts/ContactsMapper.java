@@ -46,13 +46,17 @@ public interface ContactsMapper {
      */
     Contacts selectByPrimaryKey(String id);
 
+    Contacts selectContactsForDetailById(String id);
+
     Contacts selectContactsDetailedCustomerIdById(String id);
 
-    Contacts selectContactsForDetailById(String id);
+    List<Contacts> selectContactsForDetail();
 
     List<Contacts> selectPagingContactsForDetail(Map<String, Object> map);
 
     List<Contacts> selectContactsForDetailByName(String name);
+
+    List<Contacts> selectContactsForDetailByCustomerId(String customerId);
 
     long selectCountContacts(HashMap<String, Object> map);
 

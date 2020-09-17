@@ -5,8 +5,10 @@ import com.simple.crm.commons.domain.ReturnObject;
 import com.simple.crm.commons.utils.otherutil.DateUtils;
 import com.simple.crm.commons.utils.otherutil.UUIDUtils;
 import com.simple.crm.settings.domain.User;
+import com.simple.crm.workbench.domain.contacts.Contacts;
 import com.simple.crm.workbench.domain.customer.Customer;
 import com.simple.crm.workbench.domain.customer.CustomerRemark;
+import com.simple.crm.workbench.service.contacts.ContactsService;
 import com.simple.crm.workbench.service.customer.CustomerRemarkService;
 import com.simple.crm.workbench.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * 客户
+ *
  * @author 简单
  * @date 2020/9/11
  */
@@ -31,6 +35,8 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final CustomerRemarkService customerRemarkService;
+
+    private final ContactsService contactsService;
 
     private final HttpSession session;
 
@@ -50,9 +56,11 @@ public class CustomerController {
     public ModelAndView findCustomerForDetailById(String id, ModelAndView modelAndView) {
         Customer customer = customerService.findCustomerForDetailById(id);
         List<CustomerRemark> customerRemarkList = customerRemarkService.findAllCustomerRemarkForDetailByCustomerId(id);
+        List<Contacts> contactsList = contactsService.findContactsForDetailByCustomerId(id);
 
         modelAndView.addObject("customer", customer);
         modelAndView.addObject("customerRemarkList", customerRemarkList);
+        modelAndView.addObject("contactsList", contactsList);
         modelAndView.setViewName("workbench/customer/detail");
         return modelAndView;
     }
@@ -102,6 +110,32 @@ public class CustomerController {
         returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
         returnObject.setData(customer);
         return returnObject;
+    }
+
+    /**
+     * 根据客户id查询联系人数据
+     *
+     * @param customerId 客户id
+     * @return 结果集
+     */
+    @RequestMapping("findCustomerByCustomerId")
+    public Object findCustomerByCustomerId(String customerId) {
+        List<Contacts> contactsList = contactsService.findContactsForDetailByCustomerId(customerId);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        returnObject.setData(contactsList);
+        return returnObject;
+    }
+
+    /**
+     * 查询所有客户名字
+     *
+     * @return 所有客户名字
+     */
+    @RequestMapping("findCustomerAllName")
+    public Object findCustomerAllName() {
+        return customerService.findAllName();
     }
 
 

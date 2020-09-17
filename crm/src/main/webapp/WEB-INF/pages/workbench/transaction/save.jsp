@@ -5,6 +5,19 @@
     <%@include file="../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
         $(() => {
+            //所有用户
+            let customerName;
+            //获取所有用户
+            $.ajax({
+                url: 'workbench/customer/findCustomerAllName',
+                type: 'post',
+                datatype: 'json',
+                success(data) {
+                    // console.log(data)
+                    customerName = data
+                }
+            })
+
             //设置创建日期样式
             $(".addDate").datetimepicker({
                 language: 'zh-CN',//语言
@@ -22,13 +35,17 @@
             //创建参数
             let createActivitySrc = $("#create-activitySrc")
             let createContactsName = $("#create-contactsName")
+            //选择下拉框
+            let createTransactionStage = $("#create-transactionStage")
+            //客户输入框
+            let createAccountName = $("#create-accountName")
 
             //市场活动数据区
             let activityTbody = $("#activityTbody")
             //查找市场活动窗口
             let findMarketActivity = $("#findMarketActivity")
             //点击查询市场活动
-            $("#findActivityBtn").click(() => {
+            $("#findActivityBtn,#create-activitySrc").click(() => {
                 $.ajax({
                     url: "workbench/activity/findActivityForDetailSelectiveByName",
                     type: "post",
@@ -38,8 +55,8 @@
                             // console.log(data.data)
                             let html = []
                             $.each(data.data, function (index) {
-                                html.push('<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
-                                                <td><input id="' + this.id + '" type="radio" name="activity" value="' + this.name + '"/></td>\
+                                html.push('<tr id="' + this.id + '" activityName="' + this.name + '" class="' + (index % 2 == 0 ? "active" : "") + '">\
+                                                <td><input type="radio" name="activity" value="' + this.name + '"/></td>\
                                                 <td>' + this.name + '</td>\
                                                 <td>' + this.startDate + '</td>\
                                                 <td>' + this.endDate + '</td>\
@@ -82,8 +99,8 @@
                 })
             })
             //选择了一条市场活动
-            activityTbody.on("click", "input[name='activity']", function () {
-                createActivitySrc.val(this.value)
+            activityTbody.on("click", "tr", function () {
+                createActivitySrc.val($(this).attr("activityName"))
                 createActivitySrc.attr('activityId', this.id)
                 findMarketActivity.modal("hide")
             })
@@ -93,7 +110,7 @@
             //查找联系人窗口
             let findContacts = $("#findContacts")
             //点击查询联系人
-            $("#findContactsBtn").click(() => {
+            $("#findContactsBtn,#create-contactsName").click(() => {
                 $.ajax({
                     url: "workbench/contacts/findContactsForDetailByName",
                     type: "post",
@@ -103,7 +120,7 @@
                             // console.log(data.data)
                             let html = []
                             $.each(data.data, function (index) {
-                                html.push('<tr class="' + (index % 2 == 0 ? "active" : "") + '">\
+                                html.push('<tr id="' + this.id + '" activityName="' + this.fullName + '" class="' + (index % 2 == 0 ? "active" : "") + '">\
                                                 <td><input type="radio" name="activity" id="' + this.id + '" value="' + this.fullName + '"/></td>\
                                                     <td>' + this.fullName + '</td>\
                                                     <td>' + this.email + '</td>\
@@ -144,28 +161,97 @@
                 })
             })
             //选择了一条联系人
-            contactsTbody.on("click", "input[name='activity']", function () {
-                createContactsName.val(this.value)
+            contactsTbody.on("click", "tr", function () {
+                createContactsName.val($(this).attr("activityName"))
                 createContactsName.attr('contactsId', this.id)
                 findContacts.modal("hide")
             })
 
+            //选择阶段事件
+            createTransactionStage.change(() => {
+                //获取下拉框 已选择的值
+                $.ajax({
+                    url: 'workbench/transaction/getPossibilityByStageValue',
+                    data: {
+                        stageValue: $("#create-transactionStage option:selected").text()
+                    },
+                    type: 'post',
+                    datatype: 'json',
+                    complete: false,
+                    success(data) {
+                        $("#create-possibility").val(data)
+                    }
+                })
+            })
+
+            //客户输入框内容改变事件
+            createAccountName.keyup(() => {
+                createAccountName.typeahead({
+                    source: customerName
+                })
+            })
+
             //保存按钮单击事件
             $("#addContactsBtn").click(() => {
-                let owner = $("#create-transactionOwner")
-                let money = $("#create-amountOfMoney")
-                let name = $("#create-transactionName")
-                let expectedDate = $("#create-expectedClosingDate")
-                let customerId = $("#create-accountName")
-                let stage = $("#create-transactionStage")
-                let type = $("#create-transactionType")
-                let possibility = $("#create-possibility")
-                let source = $("#create-clueSource")
-                let activityId = $("#create-activitySrc")
-                let contactsId = $("#create-contactsName")
-                let description = $("#create-describe")
-                let contactSummary = $("#create-contactSummary")
-                let nextContactTime = $("#create-nextContactTime")
+                let owner = $("#create-transactionOwner").val()
+                let money = $("#create-amountOfMoney").val()
+                let name = $("#create-transactionName").val()
+                let expectedDate = $("#create-expectedClosingDate").val()
+                let customerId = $("#create-accountName").val()
+                let stage = $("#create-transactionStage").val()
+                let type = $("#create-transactionType").val()
+                let possibility = $("#create-possibility").val()
+                let source = $("#create-clueSource").val()
+                let activityId = $("#create-activitySrc").attr("activityId")
+                let contactsId = $("#create-contactsName").attr("contactsId")
+                let description = $("#create-describe").val()
+                let contactSummary = $("#create-contactSummary").val()
+                let nextContactTime = $("#create-nextContactTime").val()
+
+                if (!name){
+                    alert("名称不能为空")
+                    return
+                }
+                if (!expectedDate){
+                    alert("预计成交日期不能为空")
+                    return
+                }
+                if (!customerId){
+                    alert("客户名称不能为空")
+                    return
+                }
+                if (!stage){
+                    alert("阶段不能为空")
+                    return
+                }
+
+                $.ajax({
+                    url: 'workbench/transaction/insertTransaction',
+                    data: {
+                        owner: owner,
+                        money: money,
+                        name: name,
+                        expectedDate: expectedDate,
+                        customerId: customerId,
+                        stage: stage,
+                        type: type,
+                        possibility: possibility,
+                        source: source,
+                        activityId: activityId,
+                        contactsId: contactsId,
+                        createBy: "${sessionScope.sessionUser.id}",
+                        description: description,
+                        contactSummary: contactSummary,
+                        nextContactTime: nextContactTime
+                    },
+                    type: 'post',
+                    datatype: 'json',
+                    success(data) {
+                        if (data.code == "1") {
+                            alert(1111)
+                        }
+                    }
+                })
             })
         })
     </script>
@@ -268,7 +354,7 @@
         </div>
         <label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-amountOfMoney">
+            <input type="number" class="form-control" id="create-amountOfMoney" oninput="value=value.replace(/[^\d]/g,'')">
         </div>
     </div>
 
@@ -292,7 +378,8 @@
         <label for="create-accountName" class="col-sm-2 control-label">客户名称<span
                 style="font-size: 15px; color: red;">*</span></label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-accountName" placeholder="支持自动补全，输入客户不存在则新建">
+            <input type="text" class="form-control" id="create-accountName" placeholder="支持自动补全，输入客户不存在则新建"
+                   autocomplete="off">
         </div>
         <label for="create-transactionStage" class="col-sm-2 control-label">阶段<span
                 style="font-size: 15px; color: red;">*</span></label>
@@ -318,7 +405,7 @@
         </div>
         <label for="create-possibility" class="col-sm-2 control-label">可能性</label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-possibility">
+            <input type="text" class="form-control" id="create-possibility" disabled>
         </div>
     </div>
 
@@ -336,7 +423,8 @@
             <a id="findActivityBtn"><span class="glyphicon glyphicon-search"></span></a>
         </label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" activityId="" id="create-activitySrc">
+            <input type="text" class="form-control" activityId="" id="create-activitySrc" readonly
+                   style="background-color: #ffffff">
         </div>
     </div>
 
@@ -345,7 +433,8 @@
             <a id="findContactsBtn"><span class="glyphicon glyphicon-search"></span></a>
         </label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" contactsId="" id="create-contactsName">
+            <input type="text" class="form-control" contactsId="" id="create-contactsName" readonly
+                   style="background-color: #ffffff">
         </div>
     </div>
 

@@ -11,7 +11,6 @@
             let customerId = $("#findCustomerId").val()
             let clueSource = $("#findClueSource").val()
             let birth = $("#findBirth").val()
-
             $.ajax({
                 url: "workbench/contacts/findPagingContactsForDetail",
                 data: {
@@ -76,6 +75,19 @@
 
         $(() => {
             findContact(1, 10)
+
+            //所有用户
+            let customerName;
+            //获取所有用户
+            $.ajax({
+                url: 'workbench/customer/findCustomerAllName',
+                type: 'post',
+                datatype: 'json',
+                success(data) {
+                    // console.log(data)
+                    customerName = data
+                }
+            })
 
             //分页div
             let demo = $("#demo_pag")
@@ -152,6 +164,8 @@
 
             //创建界面所有者
             let createContactsOwner = $("#create-contactsOwner")
+            //客户
+            let createCustomerName = $("#create-customerName")
             //创建按钮点击事件
             createContactsViewBtn.click(() => {
                 $("#createForm")[0].reset()
@@ -168,7 +182,7 @@
                 let cellPhone = $("#create-cellPhone").val()
                 let email = $("#create-email").val()
                 let birth = $("#create-birth").val()
-                let customerId = $("#create-customerName").val()
+                let customerId = createCustomerName.val()
                 let description = $("#create-describe").val()
                 let contactSummary = $("#create-contactSummary").val()
                 let nextContactTime = $("#create-nextContactTime").val()
@@ -327,6 +341,18 @@
                     }
                 })
             })
+
+            //客户输入框内容改变事件
+            createCustomerName.keyup(() => {
+                createCustomerName.typeahead({
+                    source: customerName
+                })
+            })
+            editCustomerName.keyup(() => {
+                editCustomerName.typeahead({
+                    source: customerName
+                })
+            })
         });
     </script>
 </head>
@@ -366,8 +392,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="create-surname" class="col-sm-2 control-label">姓名<span
-                                style="font-size: 15px; color: red;">*</span></label>
+                        <label for="create-surname" class="col-sm-2 control-label">姓名
+                            <span style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-surname">
                         </div>
@@ -410,7 +436,7 @@
                         <label for="create-customerName" class="col-sm-2 control-label">客户名称</label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-customerName"
-                                   placeholder="支持自动补全，输入客户不存在则新建">
+                                   placeholder="支持自动补全，输入客户不存在则新建" autocomplete="off">
                         </div>
                     </div>
 
@@ -537,7 +563,7 @@
                         <label for="edit-customerName" class="col-sm-2 control-label">客户名称</label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="edit-customerName"
-                                   placeholder="支持自动补全，输入客户不存在则新建">
+                                   placeholder="支持自动补全，输入客户不存在则新建" autocomplete="off">
                         </div>
                     </div>
 
@@ -623,7 +649,13 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">客户名称</div>
-                        <input id="findCustomerId" class="form-control" type="text">
+<%--                        <input id="findCustomerId" class="form-control" type="text">--%>
+                        <select class="form-control" id="findCustomerId" style="width: 196px">
+                            <option></option>
+                            <c:forEach items="${customerList}" var="customer">
+                                <option value="${customer.id}">${customer.name}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
 

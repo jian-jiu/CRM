@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -7,6 +8,7 @@
         //默认情况下取消和保存按钮是隐藏的
         let cancelAndSaveBtnDefault = true;
         $(() => {
+
             //联系人id
             let customerId = $("#customerId")
             //联系人备注输入框
@@ -40,6 +42,17 @@
                 $(this).children("span").css("color", "#E6E6E6");
             })
 
+            //设置创建日期样式
+            $(".addDate").datetimepicker({
+                language: 'zh-CN',//语言
+                format: 'yyyy-mm-dd',//日期格式
+                minView: 'month',//选择器上能选择的最小日期
+                initialDate: new Date(),//设置默认时间
+                autoclose: true,//单击后是否关闭
+                todayBtn: true,//每次打开是否显示当前时间
+                clearBtn: true,//是否显示清空按钮
+                container: '#createContactsModal'
+            })
 
             //删除联系人的模态窗口
             let removeContactsModal = $("#removeContactsModal")
@@ -72,7 +85,7 @@
                                     <img title="' + data.data.createBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
                                     <div style="position: relative; top: -40px; left: 40px;">\
                                         <h5>' + noteContent + '</h5>\
-                                    <font color="gray">联系人</font> <font color="gray">-</font> <b>${customer.name}-${customer.website}</b> \
+                                    <font color="gray">客户</font> <font color="gray">-</font> <b>${customer.name}-${customer.website}</b> \
                                     <small style="color: gray;">' + data.data.createTime + ' 由 ' + data.data.createBy + ' 创建</small>\
                                         <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
                                             <a class="myHref" onclick="modifyContactsRemark(\'' + data.data.id + '\')">\
@@ -107,7 +120,7 @@
                                 '<img title="' + data.data.createBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
                                     <div style="position: relative; top: -40px; left: 40px;">\
                                         <h5>' + noteContent + '</h5>\
-                                    <font color="gray">联系人</font> <font color="gray">-</font> <b>${customer.name}-${customer.website}</b> \
+                                    <font color="gray">客户</font> <font color="gray">-</font> <b>${customer.name}-${customer.website}</b> \
                                     <small style="color: gray;">' + data.data.editTime + ' 由 ' + data.data.editBy + ' 修改</small>\
                                         <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
                                             <a class="myHref" onclick="modifyContactsRemark(\'' + data.data.id + '\')">\
@@ -122,7 +135,113 @@
                     }
                 })
             })
+
+            //创建按钮点击视图
+            let createContactsViewBtn = $("#createContactsViewBtn")
+            //确定创建联系人按钮
+            let createContactsBtn = $("#createContactsBtn")
+            //联系人数据区
+            let customerTbody = $("#customerTbody")
+
+            //创建界面所有者
+            let createContactsOwner = $("#create-contactsOwner")
+            //创建按钮点击事件
+            createContactsViewBtn.click(() => {
+                $("#createForm")[0].reset()
+                createContactsOwner.val("${sessionScope.sessionUser.id}")
+                createContactsModal.modal("show")
+            })
+            //确定添加数据按钮点击事件
+            createContactsBtn.click(() => {
+                let owner = $("#create-contactsOwner").val()
+                let source = $("#create-clueSource").val()
+                let fullName = $("#create-surname").val()
+                let appellation = $("#create-call").val()
+                let job = $("#create-job").val()
+                let cellPhone = $("#create-cellPhone").val()
+                let email = $("#create-email").val()
+                let birth = $("#create-birth").val()
+                let customerId = $("#create-customerName").val()
+                let description = $("#create-describe").val()
+                let contactSummary = $("#create-contactSummary").val()
+                let nextContactTime = $("#create-nextContactTime").val()
+                let address = $("#create-address").val()
+                if (!fullName) {
+                    alert("姓名不能为空")
+                    return;
+                }
+                $.ajax({
+                    url: "workbench/contacts/addContacts",
+                    data: {
+                        owner: owner,
+                        source: source,
+                        fullName: fullName,
+                        appellation: appellation,
+                        job: job,
+                        cellPhone: cellPhone,
+                        email: email,
+                        birth: birth,
+                        customerId: customerId,
+                        description: description,
+                        contactSummary: contactSummary,
+                        nextContactTime: nextContactTime,
+                        address: address
+                    },
+                    type: "post",
+                    datatype: "json",
+                    success(data) {
+                        if (data.code == "1") {
+                            $.ajax({
+                                url: 'workbench/customer/findCustomerByCustomerId',
+                                data: {
+                                    customerId: $("#customerId").val()
+                                },
+                                type: 'post',
+                                datatype: 'json',
+                                success(data) {
+                                    if (data.code == "1") {
+                                        let html = []
+                                        $.each(data.data, function () {
+                                            html.push('<tr id="tr_' + this.id + '">\
+                                                            <td><a href="deleteCustomer(\'' + this.id + '\')"\
+                                                            style="text-decoration: none;">' + this.fullName + '</a>\
+                                                                </td>\
+                                                                <td>' + this.email + '</td>\
+                                                                <td>' + this.cellPhone + '</td>\
+                                                                <td><a onclick="deleteCustomer(\'' + this.id + '\')"style="text-decoration: none;">\
+                                                                    <span class="glyphicon glyphicon-remove"></span>删除</a>\
+                                                            </td>\
+                                                        </tr>')
+                                        })
+                                        customerTbody.html(html)
+                                    }
+                                }
+                            })
+                            createContactsModal.modal("hide")
+                        }
+                    }
+                })
+            })
+
+            $("#removeCustomerBtn").click(() => {
+                let ids = $("#removeCustomerId").val()
+                $.ajax({
+                    url: "workbench/contacts/removeByMultiplePrimaryKey",
+                    data: {
+                        ids: ids
+                    },
+                    type: 'post',
+                    datatype: 'json',
+                    success(data) {
+                        if (data.code == "1") {
+                            $("#tr_" + ids + "").remove()
+                            $("#removeContactsModal").modal("hide")
+                        }
+                    }
+                })
+            })
         });
+
         //修改线索备注函数
         function modifyContactsRemark(id) {
             $.ajax({
@@ -157,6 +276,11 @@
                     }
                 }
             })
+        }
+
+        function deleteCustomer(id) {
+            $("#removeCustomerId").val(id)
+            $("#removeContactsModal").modal("show")
         }
     </script>
 </head>
@@ -202,10 +326,11 @@
             </div>
             <div class="modal-body">
                 <p>您确定要删除该联系人吗？</p>
+                <input type="hidden" id="removeCustomerId">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">删除</button>
+                <button id="removeCustomerBtn" type="button" class="btn btn-danger">删除</button>
             </div>
         </div>
     </div>
@@ -235,42 +360,31 @@
     <div class="modal-dialog" role="document" style="width: 85%;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" onclick="$('#createContactsModal').modal('hide');">
+                <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">×</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel1">创建联系人</h4>
+                <h4 class="modal-title" id="myModalLabelx">创建联系人</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
+                <form id="createForm" class="form-horizontal" role="form">
 
                     <div class="form-group">
                         <label for="create-contactsOwner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-contactsOwner">
-                                <option>zhangsan</option>
-                                <option>lisi</option>
-                                <option>wangwu</option>
+                                <c:forEach items="${userList}" var="user">
+                                    <option value="${user.id}">${user.name}</option>
+                                </c:forEach>
                             </select>
                         </div>
                         <label for="create-clueSource" class="col-sm-2 control-label">来源</label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-clueSource">
                                 <option></option>
-                                <option>广告</option>
-                                <option>推销电话</option>
-                                <option>员工介绍</option>
-                                <option>外部介绍</option>
-                                <option>在线商场</option>
-                                <option>合作伙伴</option>
-                                <option>公开媒介</option>
-                                <option>销售邮件</option>
-                                <option>合作伙伴研讨会</option>
-                                <option>内部研讨会</option>
-                                <option>交易会</option>
-                                <option>web下载</option>
-                                <option>web调研</option>
-                                <option>聊天</option>
+                                <c:forEach items="${sourceList}" var="source">
+                                    <option value="${source.id}">${source.value}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -285,11 +399,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-call">
                                 <option></option>
-                                <option>先生</option>
-                                <option>夫人</option>
-                                <option>女士</option>
-                                <option>博士</option>
-                                <option>教授</option>
+                                <c:forEach items="${appellationList}" var="appellation">
+                                    <option value="${appellation.id}">${appellation.value}</option>
+                                </c:forEach>
                             </select>
                         </div>
 
@@ -300,9 +412,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-job">
                         </div>
-                        <label for="create-mphone" class="col-sm-2 control-label">手机</label>
+                        <label for="create-cellPhone" class="col-sm-2 control-label">手机</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-mphone">
+                            <input type="text" class="form-control" id="create-cellPhone">
                         </div>
                     </div>
 
@@ -313,7 +425,8 @@
                         </div>
                         <label for="create-birth" class="col-sm-2 control-label">生日</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-birth">
+                            <input type="text" class="form-control addDate" id="create-birth" readonly
+                                   style="background-color: #ffffff">
                         </div>
                     </div>
 
@@ -321,7 +434,7 @@
                         <label for="create-customerName" class="col-sm-2 control-label">客户名称</label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-customerName"
-                                   placeholder="支持自动补全，输入客户不存在则新建">
+                                   placeholder="支持自动补全，输入客户不存在则新建" value="${customer.name}">
                         </div>
                     </div>
 
@@ -336,15 +449,16 @@
 
                     <div style="position: relative;top: 15px;">
                         <div class="form-group">
-                            <label for="edit-contactSummary" class="col-sm-2 control-label">联系纪要</label>
+                            <label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="edit-contactSummary">这个线索即将被转换</textarea>
+                                <textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="edit-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
+                            <label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-nextContactTime" value="2017-05-01">
+                                <input type="text" class="form-control addDate" id="create-nextContactTime" readonly
+                                       style="background-color: #ffffff">
                             </div>
                         </div>
                     </div>
@@ -353,9 +467,9 @@
 
                     <div style="position: relative;top: 20px;">
                         <div class="form-group">
-                            <label for="edit-address1" class="col-sm-2 control-label">详细地址</label>
+                            <label for="create-address" class="col-sm-2 control-label">详细地址</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="1" id="edit-address1">北京大兴区大族企业湾</textarea>
+                                <textarea class="form-control" rows="1" id="create-address"></textarea>
                             </div>
                         </div>
                     </div>
@@ -364,7 +478,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+                <button id="createContactsBtn" type="button" class="btn btn-primary">保存</button>
             </div>
         </div>
     </div>
@@ -466,7 +580,7 @@
             <img title="${customerRemark.createBy}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">
             <div style="position: relative; top: -40px; left: 40px;">
                 <h5>${customerRemark.noteContent}</h5>
-                <font color="gray">联系人</font> <font color="gray">-</font>
+                <font color="gray">客户</font> <font color="gray">-</font>
                 <b>${customer.name}-${customer.website}</b> <small style="color: gray;">
                     ${customerRemark.editFlag?customerRemark.editTime:customerRemark.createTime} 由
                     ${customerRemark.editFlag?customerRemark.editBy:customerRemark.createBy}
@@ -548,21 +662,27 @@
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td><a href="../contacts/detail.html" style="text-decoration: none;">李四</a></td>
-                    <td>lisi@bjpowernode.com</td>
-                    <td>13543645364</td>
-                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeContactsModal"
-                           style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
-                </tr>
+                <tbody id="customerTbody">
+                <c:forEach items="${contactsList}" var="contacts">
+                    <tr id="tr_${contacts.id}">
+                        <td><a href="deleteCustomer('${contacts.id}')"
+                               style="text-decoration: none;">${contacts.fullName}</a>
+                        </td>
+                        <td>${contacts.email}</td>
+                        <td>${contacts.cellPhone}</td>
+                        <td>
+                            <a onclick="deleteCustomer('${contacts.id}')" style="text-decoration: none;">
+                                <span class="glyphicon glyphicon-remove"></span>删除
+                            </a>
+                        </td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
 
         <div>
-            <a href="javascript:void(0);" data-toggle="modal" data-target="#createContactsModal"
-               style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建联系人</a>
+            <a id="createContactsViewBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建联系人</a>
         </div>
     </div>
 </div>

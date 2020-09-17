@@ -27,6 +27,8 @@ public interface CustomerMapper {
 
     Customer selectCustomerForDetailById(String id);
 
+    List<Customer> selectCustomerForDetail();
+
     /**
      * 根据name查询客户是否存在
      *
@@ -34,6 +36,8 @@ public interface CustomerMapper {
      * @return 客户对象
      */
     Customer selectCustomerByName(String name);
+
+    List<String> selectAllName();
 
     List<Customer> selectCustomerLikeName(String name);
 

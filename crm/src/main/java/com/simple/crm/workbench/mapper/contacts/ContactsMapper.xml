@@ -57,10 +57,7 @@
                 and tc1.full_name like '%' #{contacts.fullName} '%'
             </if>
             <if test="contacts.customerId != null and contacts.customerId != ''">
-                and tc1.customer_id in
-                <foreach collection="customerList" item="customer" open="(" separator="," close=")">
-                    #{customer.id}
-                </foreach>
+                and tc1.customer_id = #{contacts.customerId}
             </if>
             <if test="contacts.source != null and contacts.source != ''">
                 and tc1.source like '%' #{contacts.source} '%'
@@ -103,6 +100,17 @@
         <include refid="selectResultContactsForDetailSql"/>
         <include refid="selectContactsForDetailSql"/>
         where tc1.id = #{id}
+    </select>
+    <select id="selectContactsForDetailByCustomerId" resultMap="BaseResultMap">
+        select
+        <include refid="selectResultContactsForDetailSql"/>
+        <include refid="selectContactsForDetailSql"/>
+        where tc1.customer_id = #{customerId}
+    </select>
+    <select id="selectContactsForDetail" resultMap="BaseResultMap">
+        select
+        <include refid="selectResultContactsForDetailSql"/>
+        <include refid="selectContactsForDetailSql"/>
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

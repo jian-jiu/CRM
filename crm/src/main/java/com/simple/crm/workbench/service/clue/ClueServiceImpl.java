@@ -130,10 +130,12 @@ public class ClueServiceImpl implements ClueService {
 
         //根据线索id查询线索备注信息
         List<ClueRemark> clueRemarkList = clueRemarkMapper.selectByClueId(clueId);
-        if (clueRemarkList != null) {
+        if (clueRemarkList != null && clueRemarkList.size() > 0) {
+            CustomerRemark customerRemark;
+            ContactsRemark contactsRemark;
             for (ClueRemark clueRemark : clueRemarkList) {
                 //把线索备注信息转换到客户备注信息中
-                CustomerRemark customerRemark = new CustomerRemark();
+                customerRemark = new CustomerRemark();
                 customerRemark.setId(UUIDUtils.getUUID());
                 customerRemark.setNoteContent(clueRemark.getNoteContent());
                 customerRemark.setCreateBy(clueRemark.getCreateBy());
@@ -145,7 +147,7 @@ public class ClueServiceImpl implements ClueService {
                 customerRemarkMapper.insertSelective(customerRemark);
 
                 //把线索备注信息转换到联系人备注信息中
-                ContactsRemark contactsRemark = new ContactsRemark();
+                contactsRemark = new ContactsRemark();
                 contactsRemark.setId(UUIDUtils.getUUID());
                 contactsRemark.setNoteContent(clueRemark.getNoteContent());
                 contactsRemark.setCreateBy(clueRemark.getCreateBy());
@@ -159,10 +161,11 @@ public class ClueServiceImpl implements ClueService {
         }
         //根据线索id查询线索和市场活动关系数据
         List<ClueActivityRelation> clueActivityRelationList = clueActivityRelationMapper.selectByClueId(clueId);
-        if (clueActivityRelationList != null) {
+        if (clueActivityRelationList != null && clueActivityRelationList.size() > 0) {
+            ContactsActivityRelation contactsActivityRelation;
             for (ClueActivityRelation clueActivityRelation : clueActivityRelationList) {
                 //把线索和市场活动关系并转换到联系人和市场活动关系表中
-                ContactsActivityRelation contactsActivityRelation = new ContactsActivityRelation();
+                contactsActivityRelation = new ContactsActivityRelation();
                 contactsActivityRelation.setId(UUIDUtils.getUUID());
                 contactsActivityRelation.setContactsId(contacts.getId());
                 contactsActivityRelation.setActivityId(clueActivityRelation.getActivityId());

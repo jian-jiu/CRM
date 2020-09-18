@@ -34,7 +34,7 @@
 <%-- 自动补全插件--%>
 <script type="text/javascript" charset="utf-8" src="static/jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 
-<%-- 统计插件--%>
+<%-- 统计视图插件--%>
 <script type="text/javascript" charset="utf-8" src="static/jquery/echars/echarts.min.js"></script>
 
 <%-- 自定义--%>

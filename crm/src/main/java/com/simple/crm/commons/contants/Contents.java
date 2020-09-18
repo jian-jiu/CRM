@@ -7,6 +7,7 @@ package com.simple.crm.commons.contants;
  * @date 2020/8/4 19:22
  */
 public class Contents {
+
     /**
      * 成功
      */

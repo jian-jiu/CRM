@@ -17,6 +17,7 @@ import java.net.URLEncoder;
  * @date 2020/9/1
  */
 public class BaiduTranslatorUtils {
+
     /**
      * 百度搜索URL
      */
@@ -32,7 +33,7 @@ public class BaiduTranslatorUtils {
     /**
      * APP ID
      */
-    private final static String appid = "20200901000556957";
+    private final static String appId = "20200901000556957";
     /**
      * 平台分配的密钥
      */
@@ -41,17 +42,17 @@ public class BaiduTranslatorUtils {
     /**
      * 传入要搜索的单词
      *
-     * @param q
-     * @return
+     * @param q 需要翻译的信息
+     * @return 翻译后的信息
      * @throws Exception
      */
     public static String getTranslateResult(String q) throws Exception {
         //随机数
         String salt = String.valueOf(Math.random()).substring(2, 12);
-        String a = appid + q + salt + key;
+        String a = appId + q + salt + key;
         String sign = Md5Util.getMd5(a);
         q = URLEncoder.encode(q, "gb2312");
-        String url = PreUrl + "?q=" + q + "&from=" + from + "&to=" + to + "&appid=" + appid + "&salt=" + salt + "&sign=" + sign;
+        String url = PreUrl + "?q=" + q + "&from=" + from + "&to=" + to + "&appId=" + appId + "&salt=" + salt + "&sign=" + sign;
         String s = "";
         try {
             URL url1 = new URL(url);

@@ -10,6 +10,7 @@ import java.util.Date;
  * @date 2020/8/4 19:32
  */
 public class DateUtils {
+
     /**
      * 时间初始化格式
      *
@@ -20,4 +21,5 @@ public class DateUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
     }
+
 }

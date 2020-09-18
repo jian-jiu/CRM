@@ -7,6 +7,7 @@ package com.simple.crm.commons.utils.otherutil;
  * @date 2020/9/1
  */
 public class StringOperating {
+
     /**
      * 取两个文本之间的文本值
      *
@@ -35,4 +36,5 @@ public class StringOperating {
         result = text.substring(zLen, yLen);
         return result;
     }
+
 }

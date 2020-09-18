@@ -5,13 +5,15 @@ import com.simple.crm.settings.domain.User;
 import java.util.List;
 
 /**
+ * 用户工具包
+ *
  * @author 简单
  * @date 2020/9/4
  */
 public class UserUtil {
 
     /**
-     * 查询传过来的用户id
+     * 查询传过来用户的id
      *
      * @param users    用户list集合
      * @param username 查询用户名
@@ -25,4 +27,5 @@ public class UserUtil {
         }
         return null;
     }
+
 }

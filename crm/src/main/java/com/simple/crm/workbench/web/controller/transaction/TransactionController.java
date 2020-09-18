@@ -4,7 +4,9 @@ import com.simple.crm.commons.contants.Contents;
 import com.simple.crm.commons.domain.ReturnObject;
 import com.simple.crm.commons.utils.otherutil.DateUtils;
 import com.simple.crm.commons.utils.otherutil.UUIDUtils;
+import com.simple.crm.settings.domain.DicValue;
 import com.simple.crm.settings.domain.User;
+import com.simple.crm.settings.service.dicvalue.DicValueService;
 import com.simple.crm.workbench.domain.contacts.Contacts;
 import com.simple.crm.workbench.domain.customer.Customer;
 import com.simple.crm.workbench.domain.transaction.Transaction;
@@ -36,7 +38,10 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final TransactionRemarkService transactionRemarkService;
 
+    private final DicValueService dicValueService;
+
     private final CustomerService customerService;
+
     private final ContactsService contactsService;
 
     private final HttpSession session;
@@ -67,11 +72,13 @@ public class TransactionController {
     @RequestMapping("findTransactionForDetailByPrimaryKeyToDetail")
     public ModelAndView findTransactionForDetailByPrimaryKeyToDetail(String id, ModelAndView modelAndView) {
         Transaction transaction = transactionService.findForDetailByPrimaryKey(id);
+        transaction.setPossibility(getPossibilityByStageValue(transaction.getStage()));
         List<TransactionRemark> transactionRemarkList = transactionRemarkService.findForDetailByTranId(id);
-
+        List<DicValue> stageList = dicValueService.findDicValueByDicType("stage");
 
         modelAndView.addObject("transaction", transaction);
         modelAndView.addObject("transactionRemarkList", transactionRemarkList);
+        modelAndView.addObject("stageList", stageList);
         modelAndView.setViewName("workbench/transaction/detail");
         return modelAndView;
     }
@@ -121,27 +128,6 @@ public class TransactionController {
 
 
     /**
-     * 根据多个主键id删除数据
-     *
-     * @param ids id数组
-     * @return 结果集
-     */
-    @RequestMapping("removeTransactionByPrimaryKeys")
-    public Object removeTransactionByPrimaryKeys(String[] ids) {
-        int i = transactionService.removeByPrimaryKeys(ids);
-
-        ReturnObject returnObject = new ReturnObject();
-        if (i > 0) {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
-        } else {
-            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
-            returnObject.setMessage("删除失败");
-        }
-        return returnObject;
-    }
-
-
-    /**
      * 添加一条交易记录
      *
      * @param transaction 交易对象
@@ -164,6 +150,43 @@ public class TransactionController {
         } else {
             returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("添加失败");
+        }
+        return returnObject;
+    }
+
+
+    @RequestMapping("updateTransactionStage")
+    public Object updateTransactionStage(Transaction transaction) {
+        transaction.setEditTime(DateUtils.formatDateTime(new Date()));
+        if (transaction.getEditBy() == null || "".equals(transaction.getEditBy())) {
+            User user = (User) session.getAttribute(Contents.SESSION_USER);
+            transaction.setEditBy(user.getId());
+        }
+
+        transactionService.updateByPrimaryKey(transaction);
+
+        ReturnObject returnObject = new ReturnObject();
+        returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        return returnObject;
+    }
+
+
+    /**
+     * 根据多个主键id删除数据
+     *
+     * @param ids id数组
+     * @return 结果集
+     */
+    @RequestMapping("removeTransactionByPrimaryKeys")
+    public Object removeTransactionByPrimaryKeys(String[] ids) {
+        int i = transactionService.removeByPrimaryKeys(ids);
+
+        ReturnObject returnObject = new ReturnObject();
+        if (i > 0) {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_SUCCESS);
+        } else {
+            returnObject.setCode(Contents.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("删除失败");
         }
         return returnObject;
     }

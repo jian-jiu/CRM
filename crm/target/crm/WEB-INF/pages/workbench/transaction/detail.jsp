@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -20,6 +21,8 @@
         //默认情况下取消和保存按钮是隐藏的
         let cancelAndSaveBtnDefault = true;
         $(() => {
+            console.log('${stageList}')
+
             findTransactionHistory()
             let transactionId = $("#transactionId")
             //线索备注输入框
@@ -153,7 +156,26 @@
                 })
             })
 
-
+            $("#stageDiv").on("click", "span", function () {
+                let stageId = $(this).attr("stageId")
+                if (stageId) {
+                    $.ajax({
+                        url: 'workbench/transaction/updateTransactionStage',
+                        data: {
+                            id: transactionId.val(),
+                            stage: stageId,
+                            money: '${transaction.money}',
+                            expectedDate: '${transaction.expectedDate}',
+                            createBy: '${sessionScope.sessionUser.id}'
+                        },
+                        type: 'post',
+                        datatype: 'json',
+                        success(data) {
+                            location.href = 'workbench/transaction/findTransactionForDetailByPrimaryKeyToDetail?id=' + transactionId.val()
+                        }
+                    })
+                }
+            })
         });
 
         //查询交易历史记录
@@ -166,7 +188,7 @@
                 type: 'post',
                 datatype: 'json',
                 success(data) {
-                    console.log(data)
+                    // console.log(data)
                     let html = []
                     $(data).each(function () {
                         html.push('<tr>\
@@ -219,7 +241,6 @@
             })
         }
 
-
         //查询交易阶段可能性
         function getPossibilityByStageValue(stageValue) {
             let value = 0
@@ -239,7 +260,6 @@
             })
             return value
         }
-
     </script>
 </head>
 <body>
@@ -289,9 +309,42 @@
 <br/>
 <br/>
 <!-- 阶段状态 -->
-<div style="position: relative; left: 40px; top: -50px;">
+<div id="stageDiv" style="position: relative; left: 40px; top: -50px;">
     阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom"
+    <c:forEach items="${stageList}" var="stage" varStatus="index">
+        <c:if test="${index.count == fn:length(stageList) || index.count == fn:length(stageList) - 1}">
+            <c:if test="${transaction.stage == stage.value}">
+                <span class="glyphicon glyphicon-remove mystage" data-toggle="popover"
+                      data-placement="bottom" data-content="${stage.value}" style="color: #ff0000;"></span>
+                -----------
+            </c:if>
+            <c:if test="${transaction.stage != stage.value}">
+                <span stageId="${stage.id}" class="glyphicon glyphicon-remove mystage" data-toggle="popover"
+                      data-placement="bottom" data-content="${stage.value}"></span>
+                -----------
+            </c:if>
+        </c:if>
+
+        <c:if test="${index.count <= fn:length(stageList) - 2 }">
+            <c:if test="${transaction.orderNo < stage.orderNo}">
+                <span stageId="${stage.id}" class="glyphicon glyphicon-record mystage" data-toggle="popover"
+                      data-placement="bottom" data-content="${stage.value}"></span>
+                -------------
+            </c:if>
+            <c:if test="${transaction.stage == stage.value}">
+                <span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover"
+                      data-placement="bottom" data-content="${stage.value}" style="color: #90F790;"></span>
+                -------------
+            </c:if>
+            <c:if test="${transaction.orderNo > stage.orderNo}">
+                <span stageId="${stage.id}" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover"
+                      data-placement="bottom"
+                      data-content="${stage.value}" ${transaction.orderNo > fn:length(stageList) -2 ?'':'style="color: #90F790;"'}></span>
+                -------------
+            </c:if>
+        </c:if>
+    </c:forEach>
+    <%--<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom"
           data-content="资质审查" style="color: #90F790;"></span>
     -----------
     <span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom"
@@ -312,12 +365,12 @@
     <span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom"
           data-content="成交"></span>
     -----------
-    <span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom"
+    <span class="glyphicon glyphicon-thumbs-up mystage" data-toggle="popover" data-placement="bottom"
           data-content="丢失的线索"></span>
     -----------
-    <span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom"
+    <span class="glyphicon glyphicon-thumbs-down mystage" data-toggle="popover" data-placement="bottom"
           data-content="因竞争丢失关闭"></span>
-    -----------
+    -------------%>
     <span class="closingDate">${transaction.expectedDate}</span>
 </div>
 <!-- 详细信息 -->
@@ -350,7 +403,9 @@
         <div style="width: 300px; color: gray;">类型</div>
         <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${transaction.type}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">可能性</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>90</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;">
+            <b>${transaction.possibility}&nbsp;</b>
+        </div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
@@ -370,8 +425,9 @@
     <div style="position: relative; left: 40px; height: 30px; top: 60px;">
         <div style="width: 300px; color: gray;">创建者</div>
         <div style="width: 500px;position: relative; left: 200px; top: -20px;">
-            <b>${transaction.createBy}&nbsp;&nbsp;</b><small
-                style="font-size: 10px; color: gray;">${transaction.createTime}</small></div>
+            <b>${transaction.createBy}&nbsp;&nbsp;</b>
+            <small style="font-size: 10px; color: gray;">${transaction.createTime}</small>
+        </div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 70px;">

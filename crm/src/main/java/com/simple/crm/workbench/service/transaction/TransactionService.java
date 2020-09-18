@@ -33,11 +33,11 @@ public interface TransactionService {
 
     long findCount(Map<String,Object> map);
 
-
-    int removeByPrimaryKeys(String[] ids);
-
+    int updateByPrimaryKey(Transaction transaction);
 
     int insertSelective(Transaction record);
+
+    int removeByPrimaryKeys(String[] ids);
 
 
 }

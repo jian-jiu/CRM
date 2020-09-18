@@ -72,6 +72,14 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionMapper.selectCount(map);
     }
 
+    @Override
+    public int updateByPrimaryKey(Transaction transaction) {
+        //添加交易历史
+        addTransactionHistory(transaction);
+
+        return transactionMapper.updateByPrimaryKeySelective(transaction);
+    }
+
 
     @Override
     public int insertSelective(Transaction record) {
@@ -91,15 +99,7 @@ public class TransactionServiceImpl implements TransactionService {
             record.setCustomerId(customer.getId());
         }
         //添加交易历史
-        TransactionHistory transactionHistory = new TransactionHistory();
-        transactionHistory.setId(UUIDUtils.getUUID());
-        transactionHistory.setStage(record.getStage());
-        transactionHistory.setMoney(record.getMoney());
-        transactionHistory.setExpectedDate(record.getExpectedDate());
-        transactionHistory.setCreateTime(DateUtils.formatDateTime(new Date()));
-        transactionHistory.setCreateBy(record.getCreateBy());
-        transactionHistory.setTranId(record.getId());
-        transactionHistoryMapper.insertSelective(transactionHistory);
+        addTransactionHistory(record);
 
         return transactionMapper.insertSelective(record);
     }
@@ -118,4 +118,22 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionMapper.deleteByPrimaryKeys(ids);
     }
 
+    /**
+     * 添加交易历史
+     *
+     * @param transaction
+     * @return
+     */
+    public void addTransactionHistory(Transaction transaction) {
+        System.out.println("++++++++++++++++++++++++++++++++");
+        TransactionHistory transactionHistory = new TransactionHistory();
+        transactionHistory.setId(UUIDUtils.getUUID());
+        transactionHistory.setStage(transaction.getStage());
+        transactionHistory.setMoney(transaction.getMoney());
+        transactionHistory.setExpectedDate(transaction.getExpectedDate());
+        transactionHistory.setCreateTime(DateUtils.formatDateTime(new Date()));
+        transactionHistory.setCreateBy(transaction.getCreateBy());
+        transactionHistory.setTranId(transaction.getId());
+        transactionHistoryMapper.insertSelective(transactionHistory);
+    }
 }

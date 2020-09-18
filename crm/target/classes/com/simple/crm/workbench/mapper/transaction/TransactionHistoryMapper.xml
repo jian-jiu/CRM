@@ -32,6 +32,7 @@
                  join tbl_dic_value as tdv on tth.stage = tdv.id
                  join tbl_user tu on tth.create_by = tu.id
         where tth.tran_id = #{tranId}
+        order by create_time
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

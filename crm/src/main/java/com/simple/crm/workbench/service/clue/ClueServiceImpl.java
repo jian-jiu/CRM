@@ -13,6 +13,7 @@ import com.simple.crm.workbench.domain.contacts.ContactsRemark;
 import com.simple.crm.workbench.domain.customer.Customer;
 import com.simple.crm.workbench.domain.customer.CustomerRemark;
 import com.simple.crm.workbench.domain.transaction.Transaction;
+import com.simple.crm.workbench.domain.transaction.TransactionHistory;
 import com.simple.crm.workbench.mapper.clue.ClueActivityRelationMapper;
 import com.simple.crm.workbench.mapper.clue.ClueMapper;
 import com.simple.crm.workbench.mapper.clue.ClueRemarkMapper;
@@ -21,6 +22,7 @@ import com.simple.crm.workbench.mapper.contacts.ContactsMapper;
 import com.simple.crm.workbench.mapper.contacts.ContactsRemarkMapper;
 import com.simple.crm.workbench.mapper.customer.CustomerMapper;
 import com.simple.crm.workbench.mapper.customer.CustomerRemarkMapper;
+import com.simple.crm.workbench.mapper.transaction.TransactionHistoryMapper;
 import com.simple.crm.workbench.mapper.transaction.TransactionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,7 @@ public class ClueServiceImpl implements ClueService {
      * 交易
      */
     private final TransactionMapper transactionMapper;
+    private final TransactionHistoryMapper transactionHistoryMapper;
 
     private final HttpSession session;
 
@@ -190,6 +193,17 @@ public class ClueServiceImpl implements ClueService {
             transaction.setCreateBy(user.getId());
             transaction.setCreateTime(DateUtils.formatDateTime(new Date()));
             transactionMapper.insertSelective(transaction);
+
+            //添加交易历史
+            TransactionHistory transactionHistory = new TransactionHistory();
+            transactionHistory.setId(UUIDUtils.getUUID());
+            transactionHistory.setStage(transaction.getStage());
+            transactionHistory.setMoney(transaction.getMoney());
+            transactionHistory.setExpectedDate(transaction.getExpectedDate());
+            transactionHistory.setCreateTime(DateUtils.formatDateTime(new Date()));
+            transactionHistory.setCreateBy(transaction.getCreateBy());
+            transactionHistory.setTranId(transaction.getId());
+            transactionHistoryMapper.insertSelective(transactionHistory);
         }
         //删除有关线索内容
         String[] clueIds = {clueId};

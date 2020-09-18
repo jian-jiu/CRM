@@ -35,7 +35,7 @@
     </select>
 
     <sql id="selectReturnDetailedSql">
-        tt.id,tu1.name as owner,tt.money,tt.name,tt.expected_date,tc1.name as customer_id,tdv1.value as stage,
+        tt.id,tu1.name as owner,tt.money,tt.name,tt.expected_date,tc1.name as customer_id,tdv1.value as stage,tdv1.order_no as orderNo,
         tdv2.value as type,tdv3.value as source,ta.name as activity_id,tc2.full_name as contacts_id,tu2.name as create_by,
         tt.create_time,tu3.name as edit_by,tt.edit_time,tt.description,tt.contact_summary,tt.next_contact_time
     </sql>

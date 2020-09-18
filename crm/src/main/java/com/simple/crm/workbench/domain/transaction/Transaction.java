@@ -49,6 +49,26 @@ public class Transaction implements Serializable {
 
     private String nextContactTime;
 
+    private String possibility;
+
+    private String orderNo;
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getPossibility() {
+        return possibility;
+    }
+
+    public void setPossibility(String possibility) {
+        this.possibility = possibility;
+    }
+
     public String getId() {
         return id;
     }

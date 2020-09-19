@@ -4,9 +4,11 @@
 <head>
     <%@include file="../../../community/HeadPart.jsp" %>
     <script type="text/javascript">
+        //活动id
+        let activityId = $("#id")
         //默认情况下取消和保存按钮是隐藏的
         let cancelAndSaveBtnDefault = true;
-
+        //页面加载完毕
         $(() => {
             //备注输入框
             let remark = $("#remark")
@@ -22,7 +24,6 @@
                     cancelAndSaveBtnDefault = false;
                 }
             });
-
             $("#cancelBtn").click(() => {
                 //显示
                 $("#cancelAndSaveBtn").hide();
@@ -30,7 +31,6 @@
                 remarkDiv.css("height", "90px");
                 cancelAndSaveBtnDefault = true;
             });
-
             $("#ActivityRemarkTopDiv").on("mouseover", ".remarkDiv", function () {
                 $(this).children("div").children("div").show();
             }).on("mouseout", ".remarkDiv", function () {
@@ -47,6 +47,71 @@
             let editRemarkModal = $("#editRemarkModal")
             //添加备注按钮
             let addActivityRemarkBtn = $("#addActivityRemarkBtn")
+
+            //添加市场活动备注按钮单击事件
+            addActivityRemarkBtn.click(() => {
+                let noteContent = remark.val()
+                let id = activityId.val()
+                if (!noteContent) {
+                    alert("备注消息不能为空!!!")
+                    return
+                }
+                $.post("workbench/activity/addActivityRemark", {activityId: id, noteContent: noteContent}, (data) => {
+                    if (data.code == "1") {
+                        remarkDiv.before(
+                            '<div id="div_' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
+                            <img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+                                <div style="position: relative; top: -40px; left: 40px;">\
+                                <h5>' + noteContent + '</h5>\
+                                <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
+                                <small style="color: gray;">\
+                                ' + data.data.createTime + ' 由 ${sessionScope.sessionUser.name} 创建</small>\
+                                    <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                    <a class="myHref" onclick="editActivityRemark(\'' + data.data.id + '\')">\
+                                        <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    &nbsp;&nbsp;&nbsp;&nbsp;\
+                                    <a class="myHref" onclick="removeActivityRemark(\'' + data.data.id + '\')">\
+                                        <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                    </div>\
+                                </div>\
+                            </div>')
+                        //设置备注输入框的值
+                        remark.val("")
+                    }
+                }, "json")
+            })
+
+            //单击确定修改按钮
+            updateRemarkBtn.click(() => {
+                let editId = $("#editId").val()
+                let noteContent = $.trim($("#noteContent").val())
+                $.post("workbench/activity/updateActivityRemarkById", {
+                    id: editId,
+                    noteContent: noteContent
+                }, (data) => {
+                    if (data.code == "1") {
+                        console.log(data.data)
+                        let editIdDiv = $("#div_" + editId + "")
+                        editIdDiv.empty()
+                        editIdDiv.append(
+                            '<img title="div_' + data.data.editBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
+                            <div style="position: relative; top: -40px; left: 40px;">\
+                            <h5>' + data.data.noteContent + '</h5>\
+                            <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
+                            <small style="color: gray;">' + data.data.editTime + ' 由 ' + data.data.editBy + ' 修改</small>\
+                                <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
+                                <a class="myHref" onclick="editActivityRemark(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                &nbsp;&nbsp;&nbsp;&nbsp;\
+                                <a class="myHref" onclick="removeActivityRemark(\'' + data.data.id + '\')">\
+                                    <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
+                                </div>\
+                            </div>')
+                        //关闭修改窗口
+                        editRemarkModal.modal("hide")
+                    }
+                }, "json")
+            })
 
             //回车事件
             $(window).keydown(e => {
@@ -66,75 +131,6 @@
             })
         })
 
-        let activityId = $("#id")
-
-        //添加市场活动备注按钮单击事件
-        addActivityRemarkBtn.click(() => {
-            let noteContent = remark.val()
-            let id = activityId.val()
-            if (!noteContent) {
-                alert("备注消息不能为空!!!")
-                return
-            }
-            $.post("workbench/activity/addActivityRemark", {activityId: id, noteContent: noteContent}, (data) => {
-                if (data.code == "1") {
-                    remarkDiv.before(
-                        '<div id="div_' + data.data.id + '" class="remarkDiv" style="height: 60px;">\
-                            <img title="${sessionScope.sessionUser.name}" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
-                                <div style="position: relative; top: -40px; left: 40px;">\
-                                <h5>' + noteContent + '</h5>\
-                                <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
-                                <small style="color: gray;">\
-                                ' + data.data.createTime + ' 由 ${sessionScope.sessionUser.name} 创建</small>\
-                                    <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
-                                    <a class="myHref" onclick="editActivityRemark(\'' + data.data.id + '\')">\
-                                        <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
-                                    &nbsp;&nbsp;&nbsp;&nbsp;\
-                                    <a class="myHref" onclick="removeActivityRemark(\'' + data.data.id + '\')">\
-                                        <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
-                                    </div>\
-                                </div>\
-                            </div>')
-                    //设置备注输入框的值
-                    remark.val("")
-                }
-            }, "json")
-        })
-
-        //单击确定修改按钮
-        updateRemarkBtn.click(() => {
-            let editId = $("#editId").val()
-            let noteContent = $.trim($("#noteContent").val())
-            $.post("workbench/activity/updateActivityRemarkById", {
-                id: editId,
-                noteContent: noteContent
-            }, (data) => {
-                if (data.code == "1") {
-                    console.log(data.data)
-                    let editIdDiv = $("#div_" + editId + "")
-                    editIdDiv.empty()
-                    editIdDiv.append(
-                        '<img title="div_' + data.data.editBy + '" src="static/image/QQ.jpg" style="width: 30px; height:30px;">\
-                            <div style="position: relative; top: -40px; left: 40px;">\
-                            <h5>' + data.data.noteContent + '</h5>\
-                            <font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> \
-                            <small style="color: gray;">' + data.data.editTime + ' 由 ' + data.data.editBy + ' 修改</small>\
-                                <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\
-                                <a class="myHref" onclick="editActivityRemark(\'' + data.data.id + '\')">\
-                                    <span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>\
-                                &nbsp;&nbsp;&nbsp;&nbsp;\
-                                <a class="myHref" onclick="removeActivityRemark(\'' + data.data.id + '\')">\
-                                    <span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>\
-                                </div>\
-                            </div>')
-                    //关闭修改窗口
-                    editRemarkModal.modal("hide")
-                }
-            }, "json")
-        })
-        })
-        ;
-
         //编辑函数
         function editActivityRemark(id) {
             let noteContent = $("#div_" + id + " h5").html()
@@ -152,10 +148,8 @@
             }, "json")
         }
     </script>
-
 </head>
 <body>
-
 <!-- 修改市场活动备注的模态窗口 -->
 <div class="modal fade" id="editRemarkModal" role="dialog">
     <%-- 备注的id --%>
@@ -185,48 +179,39 @@
         </div>
     </div>
 </div>
-
 <!-- 返回按钮 -->
 <div style="position: relative; top: 35px; left: 10px;">
     <a href="javascript:void(0);" onclick="window.history.back();">
         <span class="glyphicon glyphicon-arrow-left" style="font-size: 20px; color: #DDDDDD"></span></a>
 </div>
-
 <!-- 大标题 -->
 <div style="position: relative; left: 40px; top: -30px;">
     <div class="page-header">
-        <h3>市场活动-${activity.name} <small>${activity.startDate}
-            ~ ${activity.endDate}</small></h3>
+        <h3>市场活动-${activity.name} <small>${activity.startDate} ~ ${activity.endDate}</small></h3>
         <input type="hidden" id="id" name="id" value="${activity.id}">
     </div>
-
 </div>
-
 <br/>
 <br/>
 <br/>
-
 <!-- 详细信息 -->
 <div style="position: relative; top: -70px;">
     <div style="position: relative; left: 40px; height: 30px;">
         <div style="width: 300px; color: gray;">所有者</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.owner}</b>
-        </div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.owner}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">名称</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${activity.name}</b>
-        </div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${activity.name}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
-
     <div style="position: relative; left: 40px; height: 30px; top: 10px;">
         <div style="width: 300px; color: gray;">开始日期</div>
         <div style="width: 300px;position: relative; left: 200px; top: -20px;">
-            <b>${not empty activity.startDate && !(activity.startDate eq null)?activity.startDate:"未设置"}</b>
+            <b>${not empty activity.startDate && !(activity.startDate eq null)?activity.startDate:"&nbsp;"}</b>
         </div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">结束日期</div>
         <div style="width: 300px;position: relative; left: 650px; top: -60px;">
-            <b>${not empty activity.endDate && !(activity.endDate eq null)?activity.startDate:"未设置"}</b>
+            <b>${not empty activity.endDate && !(activity.endDate eq null)?activity.startDate:"&nbsp;"}</b>
         </div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
@@ -240,22 +225,24 @@
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
         <div style="width: 300px; color: gray;">创建者</div>
         <div style="width: 500px;position: relative; left: 200px; top: -20px;">
-            <b>${activity.createBy}&nbsp;&nbsp;</b><small
-                style="font-size: 10px; color: gray;">${activity.createTime}</small></div>
+            <b>${activity.createBy}&nbsp;&nbsp;</b>
+            <small style="font-size: 10px; color: gray;">${activity.createTime}</small>
+        </div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 40px;">
         <div style="width: 300px; color: gray;">修改者</div>
         <div style="width: 500px;position: relative; left: 200px; top: -20px;">
-            <b>${activity.editBy}&nbsp;&nbsp;</b><small
-                style="font-size: 10px; color: gray;">${activity.editTime}</small></div>
+            <b>${activity.editBy}&nbsp;&nbsp;</b>
+            <small style="font-size: 10px; color: gray;">${activity.editTime}&nbsp;</small>
+        </div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 50px;">
         <div style="width: 300px; color: gray;">描述</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${activity.description}
+                ${activity.description}&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>

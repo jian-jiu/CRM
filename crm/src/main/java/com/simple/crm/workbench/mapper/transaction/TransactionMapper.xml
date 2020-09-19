@@ -108,6 +108,12 @@
         <include refid="selectDetailedSql"/>
         where tt.contacts_id = #{contactsId}
     </select>
+    <select id="selectCountOfGroupByStage" resultType="com.simple.crm.workbench.domain.FunnelVO">
+        select count(*) as value, max(tdv.value) as name
+        from tbl_tran as tt
+                 join tbl_dic_value tdv on tt.stage = tdv.id
+        group by tt.stage
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete

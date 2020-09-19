@@ -1,5 +1,6 @@
 package com.simple.crm.workbench.service.transaction;
 
+import com.simple.crm.workbench.domain.FunnelVO;
 import com.simple.crm.workbench.domain.transaction.Transaction;
 
 import java.util.List;
@@ -30,6 +31,13 @@ public interface TransactionService {
      * @return 和联系人有关的
      */
     List<Transaction> findForDetailByContactsId(String contactsId);
+
+    /**
+     * 查询交易表中各个阶段的数据
+     *
+     * @return 阶段数据
+     */
+    List<FunnelVO> findCountOfGroupByStage();
 
     long findCount(Map<String,Object> map);
 

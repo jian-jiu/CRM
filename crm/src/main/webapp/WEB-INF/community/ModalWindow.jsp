@@ -164,17 +164,19 @@
         })
     })
 </script>
+
 <!-- 顶部 -->
 <div id="top" style="height: 50px; background-color: #3C3C3C; width: 100%;">
     <div style="position: absolute; top: 5px; left: 0px; font-size: 30px; font-weight: 400; color: white; font-family: 'times new roman'">
-        CRM &nbsp;<span style="font-size: 12px;">&copy;2020&nbsp;简单九儿</span></div>
+        CRM &nbsp;<span style="font-size: 12px;">&copy;2020&nbsp;简单九儿 </span>
+    </div>
     <div style="position: absolute; top: 15px; right: 15px;">
         <ul>
             <li class="dropdown user-dropdown">
                 <a href="javascript:void(0)" style="text-decoration: none; color: white;" class="dropdown-toggle"
                    data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user"></span>${sessionScope.sessionUser.name}<span
-                        class="caret"></span>
+                    <span class="glyphicon glyphicon-user"></span>${sessionScope.sessionUser.name}
+                    <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     <c:if test="${(pageContext.request.requestURL).toString().contains('settings/dictionary/index.jsp') or
@@ -187,12 +189,15 @@
                     <c:if test="${(pageContext.request.requestURL).toString().endsWith('settings/dictionary/index.jsp')}">
                         <li><a href="settings/index"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
                     </c:if>
-                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span
-                            class="glyphicon glyphicon-file"></span> 我的资料</a></li>
-                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span
-                            class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
-                    <li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span
-                            class="glyphicon glyphicon-off"></span> 退出</a></li>
+                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation">
+                        <span class="glyphicon glyphicon-file"></span> 我的资料</a>
+                    </li>
+                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal">
+                        <span class="glyphicon glyphicon-edit"></span> 修改密码</a>
+                    </li>
+                    <li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal">
+                        <span class="glyphicon glyphicon-off"></span> 退出</a>
+                    </li>
                 </ul>
             </li>
         </ul>

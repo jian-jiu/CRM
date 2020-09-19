@@ -21,4 +21,5 @@ public class SettingsIndexController {
     public String index() {
         return "settings/index";
     }
+
 }

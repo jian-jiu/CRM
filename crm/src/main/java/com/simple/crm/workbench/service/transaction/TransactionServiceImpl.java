@@ -4,6 +4,7 @@ import com.simple.crm.commons.contants.Contents;
 import com.simple.crm.commons.utils.otherutil.DateUtils;
 import com.simple.crm.commons.utils.otherutil.UUIDUtils;
 import com.simple.crm.settings.domain.User;
+import com.simple.crm.workbench.domain.FunnelVO;
 import com.simple.crm.workbench.domain.customer.Customer;
 import com.simple.crm.workbench.domain.transaction.Transaction;
 import com.simple.crm.workbench.domain.transaction.TransactionHistory;
@@ -65,6 +66,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<Transaction> findForDetailByContactsId(String contactsId) {
         return transactionMapper.selectForDetailByContactsId(contactsId);
+    }
+
+    /**
+     * 查询交易表中各个阶段的数据
+     *
+     * @return 阶段数据
+     */
+    @Override
+    public List<FunnelVO> findCountOfGroupByStage() {
+        return transactionMapper.selectCountOfGroupByStage();
     }
 
     @Override

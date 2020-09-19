@@ -22,7 +22,7 @@
             src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
-    <title>Test</title>
+    <title>日期插件演示</title>
 
     <script type="text/javascript">
         $(function () {

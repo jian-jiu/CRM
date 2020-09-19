@@ -597,9 +597,9 @@
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 10px;">
         <div style="width: 300px; color: gray;">公司网站</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${customer.website}</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${customer.website}&nbsp;</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">公司座机</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${customer.phone}</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${customer.phone}&nbsp;</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
@@ -608,34 +608,35 @@
         <div style="width: 500px;position: relative; left: 200px; top: -20px;">
             <b>${customer.createBy}&nbsp;&nbsp;</b><small
                 style="font-size: 10px; color: gray;">${customer.createTime}</small></div>
-        <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
+        <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
         <div style="width: 300px; color: gray;">修改者</div>
         <div style="width: 500px;position: relative; left: 200px; top: -20px;">
             <b>${customer.editBy}&nbsp;&nbsp;</b><small
                 style="font-size: 10px; color: gray;">${customer.editTime}</small></div>
-        <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
+        <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 40px;">
         <div style="width: 300px; color: gray;">联系纪要</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${customer.contactSummary}
+                ${customer.contactSummary}&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 50px;">
         <div style="width: 300px; color: gray;">下次联系时间</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${customer.nextContactTime}</b></div>
-        <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px; "></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${customer.nextContactTime}&nbsp;</b>
+        </div>
+        <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px; "></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 60px;">
         <div style="width: 300px; color: gray;">描述</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${customer.description}
+                ${customer.description}&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -644,7 +645,7 @@
         <div style="width: 300px; color: gray;">详细地址</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${customer.address}
+                ${customer.address}&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -736,7 +737,7 @@
                 <tbody id="customerTbody">
                 <c:forEach items="${contactsList}" var="contacts">
                     <tr id="tr_${contacts.id}">
-                        <td><a href="deleteCustomer('${contacts.id}')"
+                        <td><a href="workbench/contacts/findContactsForDetailByIdToView?id=${contacts.id}"
                                style="text-decoration: none;">${contacts.fullName}</a>
                         </td>
                         <td>${contacts.email}</td>

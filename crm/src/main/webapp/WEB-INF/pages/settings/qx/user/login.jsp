@@ -87,7 +87,8 @@
 <div style="position: absolute; top: 30%; right: 100px;width:450px;height:400px;border:1px solid #D5D5D5">
     <div style="position: absolute; top: 0px; right: 60px;">
         <div class="page-header">
-            <h1 title="${requestScope.ip}">登录</h1>
+            <span title="${requestScope.ip}" style="font-size: 36px">登录</span>&nbsp;
+            <span>默认账号：admin &nbsp; 密码：123456</span>
         </div>
         <form class="form-horizontal" action="workbench/index.html" role="form" autocomplete="off">
             <div class="form-group form-group-lg">

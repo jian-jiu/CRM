@@ -14,9 +14,6 @@
           <element id="module-output" name="crm" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: com.auth0:java-jwt:3.5.0" />
-          <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.11" />
-          <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt:0.6.0" />
           <element id="library" level="project" name="Maven: com.alibaba:fastjson:1.2.47" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.2" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.2" />
@@ -29,6 +26,7 @@
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.2" />
           <element id="library" level="project" name="Maven: org.apache.taglibs:taglibs-standard-impl:1.2.1" />
           <element id="library" level="project" name="Maven: javax.servlet.jsp.jstl:jstl-api:1.2" />
+          <element id="library" level="project" name="Maven: javax.servlet:servlet-api:2.5" />
           <element id="library" level="project" name="Maven: javax.servlet.jsp:jsp-api:2.1" />
           <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:3.1.0" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.21" />

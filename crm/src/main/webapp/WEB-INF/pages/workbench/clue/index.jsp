@@ -809,8 +809,7 @@
             </form>
         </div>
         <%-- 操作列表--%>
-        <div class="btn-toolbar" role="toolbar"
-             style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
+        <div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button id="addClueBtnView" type="button" class="btn btn-primary">
                     <span class="glyphicon glyphicon-plus"></span> 创建

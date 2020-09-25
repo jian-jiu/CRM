@@ -7,8 +7,6 @@ import org.junit.Test;
  * @date 2020/9/1
  */
 public class test {
-    public static void main(String[] args) {
-    }
 
     @Test
     public void string() {

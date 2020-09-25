@@ -9,7 +9,8 @@ import org.junit.Test;
 public class test {
 
     @Test
-    public void string() {
+    public void
+    string() {
         String a = "2020-9-4";
         String b = "2020-9-1";
         System.out.println(a.compareTo(b) > -1);
